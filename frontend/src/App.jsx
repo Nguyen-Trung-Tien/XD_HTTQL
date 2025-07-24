@@ -2,8 +2,8 @@ import React from 'react'
 
 const App = () => {
   return (
-    <div>
-      <p>Hello World</p>
+    <div className="text-2xl text-red-500 font-bold underline">
+      Hello world!
     </div>
   )
 }
