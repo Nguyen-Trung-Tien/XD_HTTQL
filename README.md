@@ -1,0 +1,2 @@
+-Tài liệu: https://sequelize.org/docs/v6/other-topics/migrations/
+-Khởi tạo bảng: npx sequelize-cli db:migrate
