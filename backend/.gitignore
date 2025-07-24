@@ -24,3 +24,6 @@ logs/
 *.log
 log/
 .qodo
+
+# Ignore .env
+.env
