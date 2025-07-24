@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   ImportReceipt.init(
     {
-      supplier_id: DataTypes.INTEGER,
-      user_id: DataTypes.INTEGER,
+      supplierId: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
       import_date: DataTypes.DATE,
       note: DataTypes.TEXT,
     },

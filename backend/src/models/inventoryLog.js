@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   InventoryLog.init(
     {
-      product_id: DataTypes.INTEGER,
-      user_id: DataTypes.INTEGER,
+      productId: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
       change_type: DataTypes.STRING,
       quantity: DataTypes.STRING,
     },

@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   ImportReceipt.init(
     {
-      product_id: DataTypes.INTEGER,
-      quantity: DataTypes.STRING,
+      productId: DataTypes.INTEGER,
+      quantity: DataTypes.INTEGER,
       price: DataTypes.STRING,
     },
     {

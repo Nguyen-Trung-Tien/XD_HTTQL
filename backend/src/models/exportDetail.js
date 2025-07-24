@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   ExportReceipt.init(
     {
-      export_id: DataTypes.INTEGER,
-      product_id: DataTypes.INTEGER,
-      quantity: DataTypes.TEXT,
+      exportId: DataTypes.INTEGER,
+      productId: DataTypes.INTEGER,
+      quantity: DataTypes.INTEGER,
     },
     {
       sequelize,

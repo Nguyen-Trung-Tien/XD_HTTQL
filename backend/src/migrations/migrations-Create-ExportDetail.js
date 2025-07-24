@@ -9,14 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      export_id: {
+      exportId: {
         type: Sequelize.INTEGER,
       },
-      product_id: {
+      productId: {
         type: Sequelize.DATE,
       },
       quantity: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
