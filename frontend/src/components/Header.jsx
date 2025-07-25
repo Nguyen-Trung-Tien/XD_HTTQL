@@ -83,7 +83,7 @@ function Header({ setMobileMenuOpen, mobileMenuOpen }) {
                   className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
-                    NT
+                    TT
                   </div>
                   <span className="ml-2 hidden md:block">Trịnh Thịnh</span>
                   <svg
