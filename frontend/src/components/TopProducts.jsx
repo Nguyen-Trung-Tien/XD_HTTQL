@@ -46,6 +46,7 @@ function TopProducts() {
       };
       
       return (
+        <div className="p-6 bg-blue-50 min-h-screen">
         <div className="bg-card shadow-card rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold text-textPrimary">Sản phẩm bán chạy</h3>
@@ -92,6 +93,7 @@ function TopProducts() {
               </tbody>
             </table>
           </div>
+        </div>
         </div>
       );
     }
