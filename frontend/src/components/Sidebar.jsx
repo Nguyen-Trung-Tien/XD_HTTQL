@@ -114,12 +114,14 @@ function Sidebar() {
 	return (
 		<>
 			{/* Desktop Sidebar */}
-			<div className='flex flex-col w-64 bg-card shadow-card'>
+			<div className='flex flex-col w-64  bg-card shadow-card'>
 				<div className='hidden md:flex md:flex-shrink-0'>
 					<div className='flex flex-col flex-1 overflow-y-auto'>
 						<nav className='flex-1 px-2 space-y-1'>
 							{menuItems.map((item) => (
 								<NavLink
+									key={item.id}
+									e
 									className={({ isActive }) =>
 										`flex items-center w-full px-4 py-3 rounded-md hover:bg-primaryLight/10 group ${
 											isActive ? 'bg-primaryLight/10' : 'bg-white'
