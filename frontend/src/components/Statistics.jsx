@@ -221,7 +221,7 @@ function Statistics() {
   ];
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-blue-50 min-h-screen">
       <h1 className="text-2xl font-bold text-textPrimary mb-6">Thống Kê</h1>
 
       <div className="flex justify-between items-center mb-6">
