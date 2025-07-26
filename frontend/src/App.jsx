@@ -6,13 +6,14 @@ import TopProducts from './components/TopProducts';
 import Inventory from './components/Inventory';
 import Statistics from './components/Statistics';
 import Layout from './components/Layout';
+import ProductList from './components/ProductList';
 function App() {
 	return (
 		<>
 			<Routes>
 				<Route path='/' element={<Layout />}>
 					<Route index element={<Dashboard />} />
-					<Route path='products' element={<TopProducts />} />
+					<Route path='products' element={<ProductList />} />
 					<Route path='inventory' element={<Inventory />} />
 					<Route path='orders' element={<Orders />} />
 					<Route path='shippers' element={<Shippers />} />
