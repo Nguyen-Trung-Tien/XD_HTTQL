@@ -46,15 +46,14 @@ function TopProducts() {
   };
 
   return (
-    <div className="p-6 bg-blue-50 min-h-screen">
+    <div className="bg-blue-50 mb-8">
+
       <h1 className="text-2xl font-bold text-textPrimary mb-6">
-        Sản Phẩm
+        Sản phẩm bán chạy
       </h1>
       <div className="bg-card shadow-card rounded-lg p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-semibold text-textPrimary">
-            Sản phẩm bán chạy
-          </h3>
+        <div className="flex justify-end mb-6">
+
           <button className="text-primary hover:text-accent transition-colors text-sm font-medium">
             Xem tất cả
           </button>
