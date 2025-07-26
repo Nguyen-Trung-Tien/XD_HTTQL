@@ -26,10 +26,10 @@ const createNewUser = async (data) => {
     password: hashedPassword,
     firstName: data.firstName,
     lastName: data.lastName,
-    address: data.address,
     phoneNumber: data.phoneNumber,
-    image: data.image,
-    role: data.role,
+    address: data.address,
+    role: data.role || "staff",
+    image: data.image || null,
   });
 
   return {
