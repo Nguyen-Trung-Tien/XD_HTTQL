@@ -4,10 +4,12 @@ const dotenv = require("dotenv");
 const routes = require("./routers");
 const connectDB = require("./config/connectDB");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
