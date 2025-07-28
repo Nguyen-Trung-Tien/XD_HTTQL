@@ -1,4 +1,3 @@
-const { where } = require("sequelize");
 const db = require("../models/index.js");
 const bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
@@ -44,8 +43,8 @@ const handleLoginUser = (email, password) => {
         });
 
         if (user) {
-          let check = await bcrypt.compareSync(password, user.password);
-          if (check) {
+          let checkPassword = await bcrypt.compareSync(password, user.password);
+          if (checkPassword) {
             userData.errCode = 0;
             userData.errMessage = "OK";
             delete user.password;
@@ -73,12 +72,12 @@ const handleLoginUser = (email, password) => {
 const createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const emailExists = await checkUserEmail(data.email);
+      let emailExists = await checkUserEmail(data.email);
       if (emailExists) {
-        return {
+        return resolve({
           errCode: 1,
           errMessage: "Your Email is already in use! Please try another email!",
-        };
+        });
       }
       const hashedPassword = await hashUserPassword(data.password);
       await db.User.create({
