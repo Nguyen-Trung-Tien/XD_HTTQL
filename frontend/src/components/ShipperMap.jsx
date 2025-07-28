@@ -1,5 +1,4 @@
 import React from "react";
-
 function ShipperMap() {
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden mb-6">
