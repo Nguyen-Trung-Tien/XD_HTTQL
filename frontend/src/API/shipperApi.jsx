@@ -7,4 +7,11 @@ const getAllShippers = async () => {
   const response = await axios.get(`${API_URL}/api/v1/shipper/get-all`);
   return Array.isArray(response.data) ? response.data : [];
 };
-export { getAllShippers };
+const addNewShipper = async (shipperData) => {
+  const response = await axios.post(
+    `${API_URL}/api/v1/shipper/create-new-shipper`,
+    shipperData
+  );
+  return response.data;
+};
+export { getAllShippers, addNewShipper };
