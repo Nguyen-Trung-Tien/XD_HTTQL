@@ -8,7 +8,7 @@ import Inventory from "./components/Inventory";
 import Statistics from "./components/Statistics";
 import Layout from "./components/Layout";
 import ProductList from "./components/ProductList";
-import AddShipperForm from "./components/AddShipperForm";
+
 function App() {
   return (
     <>
@@ -20,9 +20,7 @@ function App() {
           <Route path="inventory" element={<Inventory />} />
           <Route path="orders" element={<Orders />} />
           <Route path="shippers" element={<Shippers />} />
-          <Route path="stats" element={<Statistics />} />
-          <Route path="shippers/add" element={<AddShipperForm />} />
-          
+          <Route path="stats" element={<Statistics />} />  
         </Route>
       </Routes>
     </>
