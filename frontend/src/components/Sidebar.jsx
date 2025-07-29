@@ -121,7 +121,6 @@ function Sidebar() {
 							{menuItems.map((item) => (
 								<NavLink
 									key={item.id}
-									e
 									className={({ isActive }) =>
 										`flex items-center w-full px-4 py-3 rounded-md hover:bg-primaryLight/10 group ${
 											isActive ? 'bg-primaryLight/10' : 'bg-white'
