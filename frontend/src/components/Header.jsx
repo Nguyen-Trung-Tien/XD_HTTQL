@@ -63,59 +63,58 @@ function Header() {
 
           {/* User Profile */}
 
-            <div className="relative ml-3" ref={userMenuRef}>
-              <div>
-
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary/30"
+          <div className="relative ml-3" ref={userMenuRef}>
+            <div>
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
+                  TT
+                </div>
+                <span className="ml-2 hidden md:block">Trịnh Thịnh</span>
+                <svg
+                  className="w-4 h-4 ml-1 text-textSecondary"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
-                    TT
-                  </div>
-                  <span className="ml-2 hidden md:block">Trịnh Thịnh</span>
-                  <svg
-                    className="w-4 h-4 ml-1 text-textSecondary"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
 
-                {userMenuOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
-                    <a
-                      href="#profile"
-                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
-                    >
-                      Hồ sơ
-                    </a>
-                    <a
-                      href="#settings"
-                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
-                    >
-                      Cài đặt
-                    </a>
-                    <div className="border-t border-border my-1"></div>
-                    <button
-                      onClick={logout}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
-                    >
-                      Đăng xuất
-                    </button>
-                  </div>
-                )}
-              </div>
+              {userMenuOpen && (
+                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
+                  <a
+                    href="#profile"
+                    className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                  >
+                    Hồ sơ
+                  </a>
+                  <a
+                    href="#settings"
+                    className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                  >
+                    Cài đặt
+                  </a>
+                  <div className="border-t border-border my-1"></div>
+                  <button
+                    onClick={logout}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
+      </div>
     </header>
   );
 }
