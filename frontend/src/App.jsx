@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import Dashboard from './components/Dashboard';
 import Orders from './components/Orders';
 import Shippers from './components/Shippers';
@@ -12,6 +13,7 @@ import EditProduct from './components/EditProduct';
 function App() {
 	return (
 		<>
+			<ToastContainer />
 			<Routes>
 				<Route path='/' element={<Layout />}>
 					<Route index element={<Dashboard />} />

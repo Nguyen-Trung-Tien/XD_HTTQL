@@ -1,4 +1,4 @@
-const UserService = require("../services/userService");
+const UserService = require("../services/UserService");
 
 const handleCreateNewUser = async (req, res) => {
   const message = await UserService.createNewUser(req.body);
@@ -40,4 +40,34 @@ const handleGetAllUsers = async (req, res) => {
   });
 };
 
-module.exports = { handleCreateNewUser, handleGetAllUsers, handleLoginUser };
+const handleUpdateUser = async (req, res) => {
+  try {
+    let data = req.body;
+    let message = await UserService.UpdateUserData(data);
+    return res.status(200).json(message);
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+const handleDeleteUser = async (req, res) => {
+  try {
+    if (!req.body.id) {
+      return res.status(200).json({
+        errCode: 1,
+        errMessage: "Missing required parameter!",
+      });
+    }
+    let message = await UserService.DeleteUserData(req.body.id);
+    return res.status(200).json(message);
+  } catch (e) {
+    console.log("User not found!", e);
+  }
+};
+module.exports = {
+  handleCreateNewUser,
+  handleGetAllUsers,
+  handleLoginUser,
+  handleUpdateUser,
+  handleDeleteUser,
+};
