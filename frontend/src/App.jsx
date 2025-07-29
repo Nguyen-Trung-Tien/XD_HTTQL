@@ -1,27 +1,29 @@
-import { Routes, Route } from 'react-router-dom';
-import Dashboard from './components/Dashboard';
-import Orders from './components/Orders';
-import Shippers from './components/Shippers';
-import TopProducts from './components/TopProducts';
-import Inventory from './components/Inventory';
-import Statistics from './components/Statistics';
-import Layout from './components/Layout';
-import ProductList from './components/ProductList';
+import { Routes, Route } from "react-router-dom";
+import Dashboard from "./components/Dashboard";
+import Orders from "./components/Orders";
+import Shippers from "./components/Shippers";
+import TopProducts from "./components/TopProducts";
+import Inventory from "./components/Inventory";
+import Statistics from "./components/Statistics";
+import Layout from "./components/Layout";
+import ProductList from "./components/ProductList";
+import SignIn from "./components/SignIn";
 function App() {
-	return (
-		<>
-			<Routes>
-				<Route path='/' element={<Layout />}>
-					<Route index element={<Dashboard />} />
-					<Route path='products' element={<ProductList />} />
-					<Route path='inventory' element={<Inventory />} />
-					<Route path='orders' element={<Orders />} />
-					<Route path='shippers' element={<Shippers />} />
-					<Route path='stats' element={<Statistics />} />
-				</Route>
-			</Routes>
-		</>
-	);
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<ProductList />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="shippers" element={<Shippers />} />
+          <Route path="stats" element={<Statistics />} />
+          <Route path="sign-in" element={<SignIn />} />
+        </Route>
+      </Routes>
+    </>
+  );
 }
 
 export default App;
