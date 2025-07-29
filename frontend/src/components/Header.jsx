@@ -1,10 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/UserContext";
 
 function Header() {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const userMenuRef = React.useRef(null);
   const navigate = useNavigate();
+  const { currentUser, logout } = useAuth();
 
   React.useEffect(() => {
     const handleClickOutside = (event) => {
@@ -12,28 +14,27 @@ function Header() {
         setUserMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const handleSign = () => {
-    navigate("/sign-in");
-  };
+  const handleSign = () => navigate("/sign-in");
+
   return (
-    <header className="bg-card ">
+    <header className="bg-card">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center justify-center h-16 px-4">
-            <h2
-              onClick={() => navigate("/")}
-              className="text-xl font-bold gradient-text cursor-pointer"
-            >
+          <div
+            className="flex items-center justify-center h-16 px-4"
+            onClick={() => navigate("/")}
+          >
+            <h2 className="text-xl font-bold gradient-text cursor-pointer">
               Hệ Thống Kho
             </h2>
           </div>
+
           {/* Search Bar */}
           <div className="hidden md:flex md:mx-4 max-w-xl w-full">
             <div className="relative w-full">
@@ -61,24 +62,27 @@ function Header() {
           </div>
 
           {/* User Profile */}
-          <div className="flex items-center ">
-            <button
-              type="button"
-              onClick={() => handleSign()}
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            >
-              SignIn
-            </button>
-            <div className="relative ml-3" ref={userMenuRef}>
-              <div>
+
+          <div className="flex items-center">
+            {!currentUser ? (
+              <button
+                onClick={handleSign}
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              >
+                Đăng nhập
+              </button>
+            ) : (
+              <div className="relative ml-3" ref={userMenuRef}>
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
-                    TT
+                    {currentUser?.initials || "U"}
                   </div>
-                  <span className="ml-2 hidden md:block">Trịnh Thịnh</span>
+                  <span className="ml-2 hidden md:block">
+                    {currentUser.name}
+                  </span>
                   <svg
                     className="w-4 h-4 ml-1 text-textSecondary"
                     fill="none"
@@ -93,31 +97,32 @@ function Header() {
                     />
                   </svg>
                 </button>
+
+                {userMenuOpen && (
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
+                    <a
+                      href="#profile"
+                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                    >
+                      Hồ sơ
+                    </a>
+                    <a
+                      href="#settings"
+                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                    >
+                      Cài đặt
+                    </a>
+                    <div className="border-t border-border my-1"></div>
+                    <button
+                      onClick={logout}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
               </div>
-              {userMenuOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
-                  <a
-                    href="#profile"
-                    className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
-                  >
-                    Hồ sơ
-                  </a>
-                  <a
-                    href="#settings"
-                    className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
-                  >
-                    Cài đặt
-                  </a>
-                  <div className="border-t border-border my-1"></div>
-                  <a
-                    href="#logout"
-                    className="block px-4 py-2 text-sm text-red-500 hover:bg-red-50"
-                  >
-                    Đăng xuất
-                  </a>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>
