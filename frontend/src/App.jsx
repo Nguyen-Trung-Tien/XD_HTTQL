@@ -13,6 +13,7 @@ import SignIn from "./components/SignIn";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./redux/userSlice";
+import SignUp from "./components/SignUp";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,10 +27,12 @@ function App() {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} />
 
       <Routes>
         <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="products">

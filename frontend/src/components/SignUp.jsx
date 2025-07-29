@@ -1,49 +1,50 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SignInUser } from "../API/user/userApi";
-import { useDispatch } from "react-redux";
-import { login } from "../redux/userSlice";
+import { SignUpUser } from "../API/user/userApi";
 import { toast } from "react-toastify";
 
-const SignIn = () => {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const handleSignin = async () => {
+
+  const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      return setError("Mật khẩu không khớp!");
+    }
+
     try {
-      const data = await SignInUser(email, password);
+      const dataToSend = {
+        email,
+        password,
+        confirmPassword,
+      };
 
+      const data = await SignUpUser(dataToSend);
       if (data?.errCode === 0) {
-        // Lưu vào Redux
-        dispatch(login(data.user));
-
-        // Lưu vào localStorage để giữ user khi reload
-        localStorage.setItem("user", JSON.stringify(data.user));
-        toast.success("Đăng nhập thành công!");
-        navigate("/");
+        toast.success("Tạo tài khoản thành công!");
+        navigate("/sign-in");
       } else {
-        setError(data.message || "Email or password is incorrect");
+        setError(data.message || "Đăng ký thất bại");
+        toast.error(data.message || "Đăng ký thất bại");
       }
     } catch (err) {
       toast.error("Lỗi hệ thống. Vui lòng thử lại!");
       setError(
-        err.response?.data?.message || "Login failed. Please try again."
+        err.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại."
       );
     }
   };
 
-  const handleSignUp = () => {
-    navigate("/sign-up");
-  };
   return (
     <div className="bg-gray-50">
       <div className="min-h-screen flex flex-col items-center justify-center py-6 px-4">
         <div className="max-w-[480px] w-full">
           <div className="p-6 sm:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
             <h1 className="text-slate-900 text-center text-3xl font-semibold">
-              Đăng Nhập Tài Khoản
+              Đăng Ký Tài Khoản
             </h1>
             <form
               className="mt-12 space-y-6"
@@ -80,7 +81,21 @@ const SignIn = () => {
                   />
                 </div>
               </div>
-
+              <div>
+                <label className="text-slate-900 text-sm font-medium mb-2 block">
+                  Confirm Password
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
+                    placeholder="Enter confirm password"
+                  />
+                </div>
+              </div>
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center">
                   <input
@@ -88,14 +103,6 @@ const SignIn = () => {
                     name="remember-me"
                     className="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
                   />
-                </div>
-                <div className="text-sm">
-                  <a
-                    href="javascript:void(0);"
-                    className="text-blue-600 hover:underline font-semibold"
-                  >
-                    Quên mật khẩu?
-                  </a>
                 </div>
               </div>
 
@@ -106,20 +113,20 @@ const SignIn = () => {
               <div className="!mt-12">
                 <button
                   type="button"
-                  onClick={handleSignin}
+                  onClick={handleSignUp}
                   className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer"
                 >
-                  Đăng nhập
+                  Đăng ký
                 </button>
               </div>
               <p className="text-slate-900 text-sm !mt-6 text-center">
-                Bạn chưa có tài khoản?
+                Bạn đã có tài khoản?
                 <a
-                  onClick={handleSignUp}
-                  href="javascript:void(0);"
+                  onClick={() => navigate("/sign-in")}
+                  href="#"
                   className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold"
                 >
-                  Tạo tài khoản.
+                  Đăng nhập
                 </a>
               </p>
             </form>
@@ -130,4 +137,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
