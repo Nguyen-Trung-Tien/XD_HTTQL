@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { getAllShippers } from "../API/shipperAPI";
-
-function ShipperList() {
+import { getAllShippers, addNewShipper } from "../API/shipperAPI";
+import { useNavigate } from "react-router-dom";
+function ShipperList({ onAddShipper }) {
   const [shippers, setShippers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchShippers = async () => {
       try {
-        const data = await getAllShippers(); 
+        const data = await getAllShippers();
         console.log(data);
         setShippers(data);
-
       } catch (err) {
         setError("Không thể tải dữ liệu shipper.");
         console.error(err);
@@ -24,13 +24,29 @@ function ShipperList() {
 
     fetchShippers();
   }, []);
+  const handleAddShipper = async () => {
+    const newShipper = {
+      name: "Shipper mới",
+      phoneNumber: "0123456789",
+      status: "available",
+      address: "Chưa cập nhật",
+    };
+
+    try {
+      const addedShipper = await addNewShipper(newShipper);
+      setShippers((prev) => [...prev, addedShipper]);
+    } catch (err) {
+      console.error("Lỗi khi thêm shipper:", err);
+      alert("Không thể thêm shipper.");
+    }
+  };
   const statusClassMap = {
     delivering: "bg-accent/20 text-accent",
     available: "bg-green-100 text-green-800",
   };
 
   const statusTextMap = {
-    delivering: "Đang giao hàng",
+    delivering: "Đang giao",
     available: "Sẵn sàng",
   };
   const getStatusClass = (status) =>
@@ -52,7 +68,10 @@ function ShipperList() {
           <h3 className="text-lg font-semibold text-textPrimary">
             Trạng thái Shipper
           </h3>
-          <button className="px-4 py-1.5 gradient-bg rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity">
+          <button
+            onClick={onAddShipper}
+            className="px-4 py-1.5 gradient-bg rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+          >
             Thêm Shipper mới
           </button>
         </div>
@@ -141,7 +160,7 @@ function ShipperList() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <svg
-                        className="w-4 h-4 text-accent mr-1"
+                        className="w-4 h-4 text-textPrimary mr-1"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
