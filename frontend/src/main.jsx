@@ -1,13 +1,14 @@
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom"; // nên dùng react-router-dom
+import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
-import { AuthProvider } from "./hooks/UserContext.jsx";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <AuthProvider>
+    <Provider store={store}>
       <App />
-    </AuthProvider>
+    </Provider>
   </BrowserRouter>
 );

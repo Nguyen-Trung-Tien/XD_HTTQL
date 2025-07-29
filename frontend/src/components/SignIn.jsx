@@ -1,19 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SignUser } from "../API/user/userApi";
-
+import { useDispatch } from "react-redux";
+import { login } from "../redux/userSlice";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleSignin = async () => {
     try {
       const data = await SignUser(email, password);
 
       if (data?.errCode === 0) {
-        // Đăng nhập thành công (bạn có thể xử lý chuyển trang hoặc lưu thông tin ở đây)
+        // Lưu vào Redux
+        dispatch(login(data.user));
+
+        // Lưu vào localStorage để giữ user khi reload
+        localStorage.setItem("user", JSON.stringify(data.user));
+
         navigate("/");
       } else {
         setError(data.message || "Email or password is incorrect");

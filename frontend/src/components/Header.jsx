@@ -1,12 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/UserContext";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice"; // import action logout
 
 function Header() {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const userMenuRef = React.useRef(null);
   const navigate = useNavigate();
-  const { currentUser, logout } = useAuth();
+
+  // Lấy currentUser từ Redux store
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     const handleClickOutside = (event) => {
@@ -20,7 +24,11 @@ function Header() {
     };
   }, []);
 
-  const handleSign = () => navigate("/sign-in");
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("user"); // Xoá user trong localStorage nếu có
+    navigate("/sign-in"); // Chuyển về trang đăng nhập
+  };
 
   return (
     <header className="bg-card">
@@ -62,56 +70,59 @@ function Header() {
           </div>
 
           {/* User Profile */}
-
-          <div className="relative ml-3" ref={userMenuRef}>
-            <div>
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary/30"
-              >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
-                  TT
-                </div>
-                <span className="ml-2 hidden md:block">Trịnh Thịnh</span>
-                <svg
-                  className="w-4 h-4 ml-1 text-textSecondary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+          <div className="flex items-center">
+            {currentUser && (
+              <div className="relative ml-3" ref={userMenuRef}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
+                    {currentUser?.initials || "U"}
+                  </div>
+                  <span className="ml-2 hidden md:block">
+                    {currentUser.email}
+                  </span>
+                  <svg
+                    className="w-4 h-4 ml-1 text-textSecondary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
 
-              {userMenuOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
-                  <a
-                    href="#profile"
-                    className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
-                  >
-                    Hồ sơ
-                  </a>
-                  <a
-                    href="#settings"
-                    className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
-                  >
-                    Cài đặt
-                  </a>
-                  <div className="border-t border-border my-1"></div>
-                  <button
-                    onClick={logout}
-                    className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
-                  >
-                    Đăng xuất
-                  </button>
-                </div>
-              )}
-            </div>
+                {userMenuOpen && (
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
+                    <a
+                      href="#profile"
+                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                    >
+                      Hồ sơ
+                    </a>
+                    <a
+                      href="#settings"
+                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                    >
+                      Cài đặt
+                    </a>
+                    <div className="border-t border-border my-1"></div>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

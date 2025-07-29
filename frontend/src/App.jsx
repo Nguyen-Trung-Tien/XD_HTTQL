@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import Dashboard from "./components/Dashboard";
 import Orders from "./components/Orders";
 import Shippers from "./components/Shippers";
@@ -10,8 +10,20 @@ import ProductList from "./components/ProductList";
 import CreateProduct from "./components/CreateProduct";
 import EditProduct from "./components/EditProduct";
 import SignIn from "./components/SignIn";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "./redux/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      dispatch(login(user));
+    }
+  }, []);
+
   return (
     <>
       <ToastContainer />
