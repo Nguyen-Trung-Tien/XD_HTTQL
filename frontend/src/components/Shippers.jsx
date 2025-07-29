@@ -1,10 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ShipperMap from "./ShipperMap";
 import ShipperList from "./ShipperList";
 import AddShipperForm from "./AddShipperForm";
+import { getAllShippers } from "../API/shipper/shipperApi";
 
 function Shippers() {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [shippers, setShippers] = useState([]);
+
+  useEffect(() => {
+    const fetchShippers = async () => {
+      try {
+        const data = await getAllShippers();
+        setShippers(data);
+      } catch (error) {
+        console.error("Error fetching shippers:", error);
+      }
+    };
+    
+    fetchShippers();
+  }, []);
+
+  const handleAddSuccess = (newShipper) => {
+    setShippers(prev => [...prev, newShipper]);
+    setShowAddModal(false);
+  };
 
   return (
     <div className="p-6">
@@ -12,26 +32,19 @@ function Shippers() {
         Quản Lý Shipper
       </h1>
       <section className="mb-8">
-        <ShipperMap />
+        <ShipperMap shippers={shippers} />
       </section>
       <section className="mb-8">
-        <ShipperList onAddShipper={() => setShowAddModal(true)} />
+        <ShipperList 
+          shippers={shippers} 
+          onAddShipper={() => setShowAddModal(true)} 
+        />
       </section>
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-0 relative">
-            <button
-              className="absolute top-2 right-2 text-xl text-gray-400 hover:text-red-500"
-              onClick={() => setShowAddModal(false)}
-            >
-              ×
-            </button>
-            <AddShipperForm
-              onSuccess={() => setShowAddModal(false)}
-              onClose={() => setShowAddModal(false)}
-            />
-          </div>
-        </div>
+        <AddShipperForm
+          onSuccess={handleAddSuccess}
+          onClose={() => setShowAddModal(false)}
+        />
       )}
     </div>
   );
