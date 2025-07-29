@@ -61,7 +61,7 @@ function Header() {
           </div>
 
           {/* User Profile */}
-          <div className="flex items-center">
+          <div className="flex items-center ">
             <button
               type="button"
               onClick={() => handleSign()}
