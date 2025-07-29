@@ -1,7 +1,6 @@
 import React from "react";
 import RevenueChart from "./RevenueChart";
 import TopProducts from "./TopProducts";
-
 function Dashboard() {
   return (
     <div className="p-6">

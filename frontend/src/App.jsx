@@ -9,6 +9,7 @@ import Layout from './components/Layout';
 import ProductList from './components/ProductList';
 import CreateProduct from './components/CreateProduct';
 import EditProduct from './components/EditProduct';
+import SignIn from "./components/SignIn";
 
 function App() {
 	return (
@@ -24,6 +25,7 @@ function App() {
 					<Route path='orders' element={<Orders />} />
 					<Route path='shippers' element={<Shippers />} />
 					<Route path='stats' element={<Statistics />} />
+          <Route path="sign-in" element={<SignIn />} />
 				</Route>
 			</Routes>
 		</>
