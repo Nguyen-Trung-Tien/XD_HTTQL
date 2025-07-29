@@ -1,12 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/UserContext";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice"; // import action logout
 
 function Header() {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const userMenuRef = React.useRef(null);
   const navigate = useNavigate();
-  const { currentUser, logout } = useAuth();
+
+  // Lấy currentUser từ Redux store
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     const handleClickOutside = (event) => {
@@ -20,7 +24,11 @@ function Header() {
     };
   }, []);
 
-  const handleSign = () => navigate("/sign-in");
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("user"); // Xoá user trong localStorage nếu có
+    navigate("/sign-in"); // Chuyển về trang đăng nhập
+  };
 
   return (
     <header className="bg-card">
@@ -63,14 +71,7 @@ function Header() {
 
           {/* User Profile */}
           <div className="flex items-center">
-            {!currentUser ? (
-              <button
-                onClick={handleSign}
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              >
-                Đăng nhập
-              </button>
-            ) : (
+            {currentUser && (
               <div className="relative ml-3" ref={userMenuRef}>
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
@@ -80,7 +81,7 @@ function Header() {
                     {currentUser?.initials || "U"}
                   </div>
                   <span className="ml-2 hidden md:block">
-                    {currentUser.name}
+                    {currentUser.email}
                   </span>
                   <svg
                     className="w-4 h-4 ml-1 text-textSecondary"
@@ -113,7 +114,7 @@ function Header() {
                     </a>
                     <div className="border-t border-border my-1"></div>
                     <button
-                      onClick={logout}
+                      onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
                     >
                       Đăng xuất
