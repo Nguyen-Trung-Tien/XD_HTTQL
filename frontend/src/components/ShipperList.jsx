@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAllShippers, addNewShipper } from "../API/shipperAPI";
+import { getAllShippers, addNewShipper } from "../API/shipper/shipperApi";
 import { useNavigate } from "react-router-dom";
 function ShipperList({ onAddShipper }) {
   const [shippers, setShippers] = useState([]);
@@ -41,7 +41,7 @@ function ShipperList({ onAddShipper }) {
     }
   };
   const statusClassMap = {
-    delivering: "bg-accent/20 text-accent",
+    delivering: "bg-[#FFD700]/20 text-[#FFD700]",
     available: "bg-green-100 text-green-800",
   };
 
@@ -157,10 +157,10 @@ function ShipperList({ onAddShipper }) {
                       Không có đơn hàng
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
+                  <td className="px-6 py-4 align-top">
+                    <div className="flex items-start gap-1 max-w-[200px] whitespace-normal break-words text-sm text-textPrimary">
                       <svg
-                        className="w-4 h-4 text-textPrimary mr-1"
+                        className="w-4 h-4 text-textPrimary mt-1 shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -179,11 +179,10 @@ function ShipperList({ onAddShipper }) {
                           d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                         ></path>
                       </svg>
-                      <span className="text-sm text-textPrimary">
-                        {shipper.address || "Chưa cập nhật"}
-                      </span>
+                      <span>{shipper.address || "Chưa cập nhật"}</span>
                     </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex space-x-2">
                       <button className="p-1 text-primary hover:text-accent transition-colors">

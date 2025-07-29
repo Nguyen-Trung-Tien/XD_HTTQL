@@ -1,5 +1,52 @@
-import React from "react";
-function ShipperMap() {
+import React, { useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
+function ShipperMap({ shippers = [] }) {
+  const [filter, setFilter] = useState("all"); // 'all', 'available', 'delivering'
+
+  const validShippers = Array.isArray(shippers)
+    ? shippers.filter(
+        (s) => s && typeof s.lat === "number" && typeof s.lng === "number"
+      )
+    : [];
+  const filteredShippers =
+    filter === "all"
+      ? validShippers
+      : validShippers.filter((s) => s.status === filter);
+
+  const center =
+    validShippers.length > 0
+      ? [validShippers[0].lat, validShippers[0].lng]
+      : [10.762622, 106.660172];
+
+  const createCustomIcon = (status) => {
+    const color = status === "delivering" ? "#FFD700" : "#00BFFF";
+    return L.divIcon({
+      className: "custom-icon",
+      html: `<div style="background-color: ${color}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>`,
+      iconSize: [20, 20],
+    });
+  };
+
+  const deliveringCount = shippers.filter(
+    (s) => s.status === "delivering"
+  ).length;
+  const availableCount = shippers.filter(
+    (s) => s.status === "available"
+  ).length;
+
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden mb-6">
       <div className="p-6">
@@ -8,109 +55,86 @@ function ShipperMap() {
             Vị trí Shipper
           </h3>
           <div className="flex space-x-2">
-            <button className="px-3 py-1 text-sm rounded-md gradient-bg text-white hover:opacity-90 transition-opacity">
-              Tất cả
+            <button
+              onClick={() => setFilter("all")}
+              className={`px-3 py-1 text-sm rounded-md ${
+                filter === "all"
+                  ? "gradient-bg text-white"
+                  : "bg-gray-100 text-textSecondary"
+              } hover:opacity-90 transition-opacity`}
+            >
+              Tất cả ({shippers.length})
             </button>
-            <button className="px-3 py-1 text-sm rounded-md bg-gray-100 text-textSecondary hover:bg-gray-200 transition-colors">
-              Sẵn sàng
+            <button
+              onClick={() => setFilter("available")}
+              className={`px-3 py-1 text-sm rounded-md ${
+                filter === "available"
+                  ? "gradient-bg text-white"
+                  : "bg-gray-100 text-textSecondary"
+              } hover:opacity-90 transition-opacity`}
+            >
+              Sẵn sàng ({availableCount})
             </button>
-            <button className="px-3 py-1 text-sm rounded-md bg-gray-100 text-textSecondary hover:bg-gray-200 transition-colors">
-              Đang giao
+            <button
+              onClick={() => setFilter("delivering")}
+              className={`px-3 py-1 text-sm rounded-md ${
+                filter === "delivering"
+                  ? "gradient-bg text-white"
+                  : "bg-gray-100 text-textSecondary"
+              } hover:opacity-90 transition-opacity`}
+            >
+              Đang giao ({deliveringCount})
             </button>
           </div>
         </div>
 
-        <div className="relative h-80 bg-gray-100 rounded-lg overflow-hidden">
-          {/* Map Placeholder (would be replaced with actual map in a real implementation) */}
-          <div className="absolute inset-0 bg-[#E8F4F8]">
-            {/* Grid lines */}
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, rgba(0, 191, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 191, 255, 0.1) 1px, transparent 1px)",
-                backgroundSize: "50px 50px",
-              }}
-            ></div>
+        <div className="relative h-80 bg-gray-100 rounded-lg overflow-hidden mb-4">
+          <MapContainer
+            center={center}
+            zoom={13}
+            style={{ height: "100%", width: "100%", zIndex: 0 }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
 
-            {/* Roads */}
-            <div className="absolute h-1 w-full top-1/2 bg-white"></div>
-            <div className="absolute h-full w-1 left-1/2 bg-white"></div>
-            <div className="absolute h-1 w-1/2 top-1/4 left-1/4 bg-white"></div>
-            <div className="absolute h-1/2 w-1 top-1/4 left-1/4 bg-white"></div>
-            <div className="absolute h-1 w-1/3 top-3/4 left-1/3 bg-white"></div>
-
-            {/* Map markers */}
-            <div
-              className="absolute w-4 h-4 bg-accent rounded-full top-1/4 left-1/3 animate-pulse"
-              style={{ boxShadow: "0 0 10px rgba(255, 215, 0, 0.7)" }}
-            ></div>
-            <div
-              className="absolute w-4 h-4 bg-accent rounded-full top-1/2 left-1/2 animate-pulse"
-              style={{ boxShadow: "0 0 10px rgba(255, 215, 0, 0.7)" }}
-            ></div>
-            <div
-              className="absolute w-4 h-4 bg-accent rounded-full top-1/3 left-2/3 animate-pulse"
-              style={{ boxShadow: "0 0 10px rgba(255, 215, 0, 0.7)" }}
-            ></div>
-            <div
-              className="absolute w-4 h-4 bg-primary rounded-full top-2/3 left-1/4 animate-pulse"
-              style={{ boxShadow: "0 0 10px rgba(0, 191, 255, 0.7)" }}
-            ></div>
-            <div
-              className="absolute w-4 h-4 bg-primary rounded-full top-3/4 left-3/4 animate-pulse"
-              style={{ boxShadow: "0 0 10px rgba(0, 191, 255, 0.7)" }}
-            ></div>
-          </div>
-
-          {/* Map controls */}
-          <div className="absolute top-4 right-4 flex flex-col space-y-2">
-            <button className="w-8 h-8 bg-white rounded-md flex items-center justify-center text-primary hover:text-accent transition-colors shadow-sm">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+            {filteredShippers.map((shipper) => (
+              <Marker
+                key={shipper.id}
+                position={[shipper.lat, shipper.lng]}
+                icon={createCustomIcon(shipper.status)}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                ></path>
-              </svg>
-            </button>
-            <button className="w-8 h-8 bg-white rounded-md flex items-center justify-center text-primary hover:text-accent transition-colors shadow-sm">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M20 12H4"
-                ></path>
-              </svg>
-            </button>
-          </div>
+                <Popup>
+                  <div>
+                    <strong>{shipper.name}</strong>
+                    <p>SĐT: {shipper.phoneNumber}</p>
+                    <p>
+                      Trạng thái:{" "}
+                      {shipper.status === "delivering"
+                        ? "Đang giao"
+                        : "Sẵn sàng"}
+                    </p>
+                    <p>Địa chỉ: {shipper.address}</p>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
 
-          {/* Map legend */}
-          <div className="absolute bottom-4 left-4 bg-white rounded-md p-2 shadow-sm">
-            <div className="flex items-center space-x-2 mb-1">
-              <div className="w-3 h-3 bg-accent rounded-full"></div>
-              <span className="text-xs text-textSecondary">
-                Đang giao hàng (3)
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-primary rounded-full"></div>
-              <span className="text-xs text-textSecondary">Sẵn sàng (2)</span>
-            </div>
+        <div className="bg-white rounded-md p-2 shadow-sm flex justify-center space-x-6">
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 bg-primary rounded-full"></div>
+            <span className="text-xs text-textSecondary">
+              Sẵn sàng ({availableCount})
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 bg-accent rounded-full"></div>
+            <span className="text-xs text-textSecondary">
+              Đang giao ({deliveringCount})
+            </span>
           </div>
         </div>
       </div>
