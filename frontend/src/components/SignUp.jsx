@@ -11,6 +11,9 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      return setError("Vui lòng nhập đầy đủ thông tin!");
+    }
     if (password !== confirmPassword) {
       return setError("Mật khẩu không khớp!");
     }
