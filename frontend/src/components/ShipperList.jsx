@@ -12,43 +12,8 @@ function ShipperList({
   onAddShipper,
   onDeleteShipper,
   onFocusShipper,
+  loading,
 }) {
-  const [shipper, setShipper] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchShippers = async () => {
-      try {
-        const data = await getAllShippers();
-        setShipper(data);
-      } catch (err) {
-        setError("Không thể tải dữ liệu shipper.");
-        toast.error("Không thể tải dữ liệu shipper.");
-        setShipper([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchShippers();
-  }, []);
-
-  const handleDeleteShipper = async (shipperId) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa shipper này?")) {
-      try {
-        await deleteShipper(shipperId);
-        setShipper((prev) =>
-          prev.filter((shipper) => shipper.id !== shipperId)
-        );
-        toast.success("Xóa shipper thành công!");
-      } catch (err) {
-        toast.error("Lỗi khi xóa shipper:", err);
-      }
-    }
-  };
-
   const statusClassMap = {
     delivering: "bg-[#FFD700]/20 text-[#FFD700]",
     available: "bg-green-100 text-green-800",
@@ -66,9 +31,9 @@ function ShipperList({
     return <div className="p-6 text-center">Đang tải danh sách shipper...</div>;
   }
 
-  if (error) {
-    return <div className="p-6 text-center text-red-500">{error}</div>;
-  }
+  // if (error) {
+  //   return <div className="p-6 text-center text-red-500">{error}</div>;
+  // }
 
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden">
@@ -221,7 +186,7 @@ function ShipperList({
                       </button>
                       <button
                         className="p-1 text-primary hover:text-red-500 transition-colors"
-                        onClick={() => handleDeleteShipper(shipper.id)}
+                        onClick={() => onDeleteShipper(shipper.id)}
                       >
                         <svg
                           className="w-5 h-5"
