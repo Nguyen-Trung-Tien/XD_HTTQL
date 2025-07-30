@@ -14,4 +14,8 @@ const addNewShipper = async (shipperData) => {
   );
   return response.data;
 };
-export { getAllShippers, addNewShipper };
+const deleteShipper = async (shipperId) => {
+  const response = await axios.delete(`${API_URL}/api/v1/shipper/delete-shipper/${shipperId}`);
+  return response.data;
+};
+export { getAllShippers, addNewShipper, deleteShipper };

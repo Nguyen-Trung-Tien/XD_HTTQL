@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { getAllShippers, addNewShipper } from "../API/shipper/shipperApi";
+import {
+  getAllShippers,
+  addNewShipper,
+  deleteShipper,
+} from "../API/shipper/shipperApi";
 import { useNavigate } from "react-router-dom";
-function ShipperList({ onAddShipper }) {
-  const [shippers, setShippers] = useState([]);
+import { toast } from "react-toastify";
+
+function ShipperList({
+  shippers = [],
+  onAddShipper,
+  onDeleteShipper,
+  onFocusShipper,
+}) {
+  const [shipper, setShipper] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -11,12 +22,11 @@ function ShipperList({ onAddShipper }) {
     const fetchShippers = async () => {
       try {
         const data = await getAllShippers();
-        console.log(data);
-        setShippers(data);
+        setShipper(data);
       } catch (err) {
         setError("Không thể tải dữ liệu shipper.");
-        console.error(err);
-        setShippers([]);
+        toast.error("Không thể tải dữ liệu shipper.");
+        setShipper([]);
       } finally {
         setLoading(false);
       }
@@ -24,22 +34,21 @@ function ShipperList({ onAddShipper }) {
 
     fetchShippers();
   }, []);
-  const handleAddShipper = async () => {
-    const newShipper = {
-      name: "Shipper mới",
-      phoneNumber: "0123456789",
-      status: "available",
-      address: "Chưa cập nhật",
-    };
 
-    try {
-      const addedShipper = await addNewShipper(newShipper);
-      setShippers((prev) => [...prev, addedShipper]);
-    } catch (err) {
-      console.error("Lỗi khi thêm shipper:", err);
-      alert("Không thể thêm shipper.");
+  const handleDeleteShipper = async (shipperId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa shipper này?")) {
+      try {
+        await deleteShipper(shipperId);
+        setShipper((prev) =>
+          prev.filter((shipper) => shipper.id !== shipperId)
+        );
+        toast.success("Xóa shipper thành công!");
+      } catch (err) {
+        toast.error("Lỗi khi xóa shipper:", err);
+      }
     }
   };
+
   const statusClassMap = {
     delivering: "bg-[#FFD700]/20 text-[#FFD700]",
     available: "bg-green-100 text-green-800",
@@ -185,7 +194,10 @@ function ShipperList({ onAddShipper }) {
 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex space-x-2">
-                      <button className="p-1 text-primary hover:text-accent transition-colors">
+                      <button
+                        className="p-1 text-primary hover:text-accent transition-colors"
+                        onClick={() => onFocusShipper(shipper.id)}
+                      >
                         <svg
                           className="w-5 h-5"
                           fill="none"
@@ -207,7 +219,10 @@ function ShipperList({ onAddShipper }) {
                           ></path>
                         </svg>
                       </button>
-                      <button className="p-1 text-primary hover:text-accent transition-colors">
+                      <button
+                        className="p-1 text-primary hover:text-red-500 transition-colors"
+                        onClick={() => handleDeleteShipper(shipper.id)}
+                      >
                         <svg
                           className="w-5 h-5"
                           fill="none"
@@ -219,8 +234,8 @@ function ShipperList({ onAddShipper }) {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="2"
-                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                          ></path>
+                            d="M6 18L18 6M6 6l12 12"
+                          />
                         </svg>
                       </button>
                       <button className="p-1 text-primary hover:text-accent transition-colors">
