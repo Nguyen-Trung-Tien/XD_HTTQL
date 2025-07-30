@@ -1,53 +1,62 @@
+
 import React, { useState, useEffect } from "react";
 import ShipperMap from "./ShipperMap";
 import ShipperList from "./ShipperList";
 import AddShipperForm from "./AddShipperForm";
-import { getAllShippers } from "../API/shipper/shipperApi";
+import { getAllShippers, addNewShipper, deleteShipper } from "../API/shipper/shipperApi";
+import { toast } from "react-toastify";
 
-function Shippers() {
-  const [showAddModal, setShowAddModal] = useState(false);
+ function Shippers() {
   const [shippers, setShippers] = useState([]);
+  const [showAdd, setShowAdd] = useState(false);
+  const [focusId, setFocusId] = useState(null);
 
   useEffect(() => {
-    const fetchShippers = async () => {
+    (async () => {
       try {
         const data = await getAllShippers();
         setShippers(data);
-      } catch (error) {
-        console.error("Error fetching shippers:", error);
+      } catch (err) {
+        console.error("Không thể tải danh sách shipper:", err);
       }
-    };
-    
-    fetchShippers();
+    })();
   }, []);
 
-  const handleAddSuccess = (newShipper) => {
-    setShippers(prev => [...prev, newShipper]);
-    setShowAddModal(false);
+  const handleAdd = async (newData) => {
+    try {
+      const added = await addNewShipper(newData);
+      setShippers(prev => [...prev, added]);
+      toast.success("Thêm shipper thành công!");
+      setShowAdd(false);
+    } catch (err) {
+      toast.error("Thêm shipper thất bại");
+    }
   };
+
+
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-textPrimary mb-6">
-        Quản Lý Shipper
-      </h1>
-      <section className="mb-8">
-        <ShipperMap shippers={shippers} />
-      </section>
-      <section className="mb-8">
-        <ShipperList 
-          shippers={shippers} 
-          onAddShipper={() => setShowAddModal(true)} 
-        />
-      </section>
-      {showAddModal && (
+      <h1 className="text-2xl font-bold mb-6">Quản Lý Shipper</h1>
+
+      <ShipperMap
+        shippers={shippers}
+        focusId={focusId}
+      />
+
+      <ShipperList
+        shippers={shippers}
+        onAddShipper={() => setShowAdd(true)}
+        onFocusShipper={setFocusId}
+      />
+
+      {showAdd && (
         <AddShipperForm
-          onSuccess={handleAddSuccess}
-          onClose={() => setShowAddModal(false)}
+          onSubmit={handleAdd}
+          onClose={() => setShowAdd(false)}
         />
       )}
     </div>
   );
 }
-
 export default Shippers;
