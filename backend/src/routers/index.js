@@ -1,5 +1,5 @@
 const UserRouter = require("./UserRouter");
-const productsRouter = require('./products.router')
+const productsRouter = require('./products.route')
 const ShipperRouter = require("./shipperRouter");
 
 const routes = (app) => {

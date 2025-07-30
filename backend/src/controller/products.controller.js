@@ -13,3 +13,27 @@ module.exports.getAllProducts = async (req, res) => {
     });
   }
 }
+
+module.exports.createProduct = async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({
+      error: error.message
+    });
+  }
+}
+
+// module.exports.deleteProduct = async (req, res) => {
+//   try {
+//     const product = await Product.delete(req.params);
+//     res.status(201).json(product);
+//   } catch (error) {
+//     console.error('Error deleting product:', error);
+//     res.status(500).json({
+//       error: error.message
+//     });
+//   }
+// }

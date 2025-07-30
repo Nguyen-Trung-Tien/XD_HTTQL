@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { createProduct } from '../API/products/productsApi';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 function ProductForm({ onCreate }) {
+	const navigate = useNavigate();
+
 	const [form, setForm] = useState({
 		name: '',
 		category: '',
@@ -14,7 +19,7 @@ function ProductForm({ onCreate }) {
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		if (!form.name || !form.category || !form.price || !form.stock) {
@@ -24,19 +29,30 @@ function ProductForm({ onCreate }) {
 
 		const newProduct = {
 			...form,
-			id: Date.now(),
 			stock: parseInt(form.stock),
+			price: parseFloat(form.price),
 		};
 
-		onCreate?.(newProduct);
+		try {
+			const product = await createProduct(newProduct);
 
-		setForm({
-			name: '',
-			category: '',
-			price: '',
-			stock: '',
-			status: 'Còn hàng',
-		});
+			onCreate?.(product);
+
+			setForm({
+				name: '',
+				category: '',
+				price: '',
+				stock: '',
+				status: 'Còn hàng',
+			});
+
+			toast.success('Thêm sản phẩm thành công');
+
+			navigate('/products');
+		} catch (error) {
+			console.error('Error creating product:', error);
+			alert('Có lỗi xảy ra khi tạo sản phẩm!');
+		}
 	};
 
 	return (
@@ -104,7 +120,6 @@ function ProductForm({ onCreate }) {
 						onChange={handleChange}
 						className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'>
 						<option value='Còn hàng'>Còn hàng</option>
-						<option value='Sắp hết'>Sắp hết</option>
 						<option value='Hết hàng'>Hết hàng</option>
 					</select>
 				</div>
