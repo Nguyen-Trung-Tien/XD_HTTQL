@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { addNewShipper } from "../API/shipper/shipperApi";
 import { toast } from "react-toastify";
 import AddressAutocomplete from "./AddressAutocomplete";
 
-export default function AddShipperForm({ onSuccess, onClose }) {
+export default function AddShipperForm({ onSubmit, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
@@ -38,24 +37,25 @@ export default function AddShipperForm({ onSuccess, onClose }) {
       return;
     }
     if (!coords) {
-      toast.error("Vui lòng nhập địa chỉ ");
+      toast.error("Vui lòng chọn một địa chỉ hợp lệ");
       return;
     }
 
     setLoading(true);
     try {
+
       const payload = {
         ...formData,
         lat: coords.lat,
         lng: coords.lng,
       };
-      const res = await addNewShipper(payload);
-      toast.success("Thêm shipper thành công!");
-      onSuccess?.(res.data || res);
-      onClose?.();
+
+      if (onSubmit) {
+        await onSubmit(payload);
+      }
+      
     } catch (err) {
-      console.error(err);
-      toast.error("Thêm shipper thất bại!");
+      console.error("Lỗi khi submit form:", err);
     } finally {
       setLoading(false);
     }
