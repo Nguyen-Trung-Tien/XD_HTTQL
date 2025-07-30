@@ -28,14 +28,25 @@ export default function AddShipperForm({ onSubmit, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+
     if (!formData.name.trim()) {
       toast.error("Vui lòng nhập tên shipper");
       return;
     }
+
     if (!formData.phoneNumber.trim()) {
       toast.error("Vui lòng nhập số điện thoại");
       return;
     }
+
+    if (!phoneRegex.test(formData.phoneNumber)) {
+      toast.error(
+        "Số điện thoại không hợp lệ. Vui lòng nhập 10 số, bắt đầu bằng 0 hoặc +84."
+      );
+      return;
+    }
+
     if (!coords) {
       toast.error("Vui lòng chọn một địa chỉ hợp lệ");
       return;
@@ -43,7 +54,6 @@ export default function AddShipperForm({ onSubmit, onClose }) {
 
     setLoading(true);
     try {
-
       const payload = {
         ...formData,
         lat: coords.lat,
@@ -53,7 +63,6 @@ export default function AddShipperForm({ onSubmit, onClose }) {
       if (onSubmit) {
         await onSubmit(payload);
       }
-      
     } catch (err) {
       console.error("Lỗi khi submit form:", err);
     } finally {
