@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  getAllShippers,
-  addNewShipper,
-  deleteShipper,
-} from "../API/shipper/shipperApi";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function ShipperList({
   shippers = [],
   onAddShipper,
   onDeleteShipper,
+  onEditShipper,
   onFocusShipper,
   loading,
 }) {
@@ -203,7 +198,10 @@ function ShipperList({
                           />
                         </svg>
                       </button>
-                      <button className="p-1 text-primary hover:text-accent transition-colors">
+                      <button
+                        className="p-1 text-primary hover:text-blue-500 transition-colors"
+                        onClick={() => onEditShipper(shipper)}
+                      >
                         <svg
                           className="w-5 h-5"
                           fill="none"
@@ -215,7 +213,7 @@ function ShipperList({
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="2"
-                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"
                           ></path>
                         </svg>
                       </button>

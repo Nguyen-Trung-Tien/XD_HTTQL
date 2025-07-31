@@ -18,4 +18,11 @@ const deleteShipper = async (shipperId) => {
   const response = await axios.delete(`${API_URL}/api/v1/shipper/delete-shipper/${shipperId}`);
   return response.data;
 };
-export { getAllShippers, addNewShipper, deleteShipper };
+const updateShipper = async (shipperId, shipperData) => {
+  const response = await axios.put(
+    `${API_URL}/api/v1/shipper/update-shipper/${shipperId}`,
+    shipperData
+  );
+  return response.data;
+};
+export { getAllShippers, addNewShipper, deleteShipper, updateShipper };

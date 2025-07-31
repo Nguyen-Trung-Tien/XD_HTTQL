@@ -1,11 +1,13 @@
-import React, { useState, useEffect,useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ShipperMap from "./ShipperMap";
 import ShipperList from "./ShipperList";
 import AddShipperForm from "./AddShipperForm";
+import EditShipperForm from "./EditShipperForm";
 import {
   getAllShippers,
   addNewShipper,
   deleteShipper,
+  updateShipper,
 } from "../API/shipper/shipperApi";
 import { toast } from "react-toastify";
 
@@ -14,8 +16,10 @@ function Shippers() {
   const [showAdd, setShowAdd] = useState(false);
   const [focusId, setFocusId] = useState(null);
   const [loading, setLoading] = useState(true);
-    const fetchShippers = useCallback(async () => {
-    setLoading(true); 
+  const [editingShipper, setEditingShipper] = useState(null);
+
+  const fetchShippers = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await getAllShippers();
       setShippers(data);
@@ -35,7 +39,7 @@ function Shippers() {
       await addNewShipper(newData);
       toast.success("Thêm shipper thành công!");
       setShowAdd(false);
- 
+
       await fetchShippers();
     } catch (err) {
       toast.error("Thêm shipper thất bại");
@@ -56,6 +60,20 @@ function Shippers() {
       toast.error("Xóa shipper thất bại ");
     }
   };
+  const handleEdit = async (formData) => {
+    try {
+      await updateShipper(formData.id, {
+        name: formData.name,
+        phoneNumber: formData.phoneNumber,
+        status: formData.status,
+      });
+      toast.success("Cập nhật shipper thành công!");
+      setEditingShipper(null);
+      await fetchShippers();
+    } catch (err) {
+      toast.error("Cập nhật shipper thất bại");
+    }
+  };
 
   return (
     <div className="p-6">
@@ -68,13 +86,22 @@ function Shippers() {
         onAddShipper={() => setShowAdd(true)}
         onDeleteShipper={handleDeleteShipper}
         onFocusShipper={setFocusId}
+        onEditShipper={(shipper) => setEditingShipper(shipper)}
         loading={loading}
       />
 
       {showAdd && (
         <AddShipperForm
+          shipper={editingShipper}
           onSubmit={handleAdd}
           onClose={() => setShowAdd(false)}
+        />
+      )}
+      {editingShipper && (
+        <EditShipperForm
+          shipper={editingShipper} 
+          onSubmit={handleEdit} 
+          onClose={() => setEditingShipper(null)} 
         />
       )}
     </div>
