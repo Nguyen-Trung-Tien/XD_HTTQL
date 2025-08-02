@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../redux/userSlice"; // import action logout
+import { logout } from "../redux/slice/userSlice"; // import action logout
 
 function Header() {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
