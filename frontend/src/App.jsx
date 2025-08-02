@@ -12,7 +12,7 @@ import EditProduct from "./components/EditProduct";
 import SignIn from "./components/SignIn";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "./redux/userSlice";
+import { login } from "./redux/slice/userSlice";
 import SignUp from "./components/SignUp";
 
 function App() {
