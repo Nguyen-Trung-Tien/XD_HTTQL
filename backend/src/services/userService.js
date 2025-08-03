@@ -1,8 +1,9 @@
-const { raw } = require("body-parser");
 const db = require("../models/index.js");
 const bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
-
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 const hashUserPassword = (password) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -38,18 +39,45 @@ const handleLoginUser = (email, password) => {
       let isCheckEmail = await checkUserEmail(email);
       if (isCheckEmail) {
         let user = await db.User.findOne({
-          attributes: ["email", "password"],
+          attributes: ["id", "email", "password", "role", "refresh_token"],
           where: { email: email },
           raw: true,
         });
 
         if (user) {
           let checkPassword = await bcrypt.compareSync(password, user.password);
+
           if (checkPassword) {
+            const access_token = jwt.sign(
+              { id: user.id, email: user.email, role: user.role },
+              process.env.JWT_SECRET,
+              { expiresIn: "15m" }
+            );
+
+            const refresh_token = jwt.sign(
+              { id: user.id, email: user.email },
+              process.env.JWT_SECRET,
+              { expiresIn: "7d" }
+            );
+
+            await db.User.update(
+              { refresh_token: refresh_token },
+              { where: { id: user.id } }
+            );
+
             userData.errCode = 0;
             userData.errMessage = "OK";
             delete user.password;
             userData.user = user;
+            userData.user = {
+              id: user.id,
+              email: user.email,
+              role: user.role,
+              access_token,
+              refresh_token,
+            };
+            userData.access_token = access_token;
+            userData.refresh_token = refresh_token;
           } else {
             userData.errCode = 3;
             userData.errMessage = "Wrong password!";
