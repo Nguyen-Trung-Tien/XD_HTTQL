@@ -16,21 +16,16 @@ const SignIn = () => {
       const data = await SignInUser(email, password);
 
       if (data?.errCode === 0) {
-        // Lưu vào Redux
         dispatch(login(data.user));
-
-        // Lưu vào localStorage để giữ user khi reload
         localStorage.setItem("user", JSON.stringify(data.user));
         toast.success("Đăng nhập thành công!");
         navigate("/");
       } else {
-        setError(data.message || "Email or password is incorrect");
+        setError(data.message || "Email hoặc mật khẩu không đúng");
       }
     } catch (err) {
       toast.error("Lỗi hệ thống. Vui lòng thử lại!");
-      setError(
-        err.response?.data?.message || "Login failed. Please try again."
-      );
+      setError(err.response?.data?.message || "Đăng nhập thất bại");
     }
   };
 

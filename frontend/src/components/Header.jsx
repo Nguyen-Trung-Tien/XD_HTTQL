@@ -1,14 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../redux/slice/userSlice"; // import action logout
+import { resetUser } from "../redux/slice/userSlice"; // import action logout
 
 function Header() {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const userMenuRef = React.useRef(null);
   const navigate = useNavigate();
 
-  // Lấy currentUser từ Redux store
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 
@@ -25,9 +24,9 @@ function Header() {
   }, []);
 
   const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem("user"); // Xoá user trong localStorage nếu có
-    navigate("/sign-in"); // Chuyển về trang đăng nhập
+    dispatch(resetUser());
+    localStorage.removeItem("user");
+    navigate("/sign-in");
   };
 
   return (
@@ -81,7 +80,7 @@ function Header() {
                     {currentUser?.initials || "U"}
                   </div>
                   <span className="ml-2 hidden md:block">
-                    {currentUser.email}
+                    {currentUser?.email}
                   </span>
                   <svg
                     className="w-4 h-4 ml-1 text-textSecondary"
