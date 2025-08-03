@@ -19,34 +19,45 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.currentUser = action.payload;
+      const user = action.payload;
+      state.id = user.id || "";
+      state.email = user.email || "";
+      state.firstName = user.firstName || "";
+      state.lastName = user.lastName || "";
+      state.address = user.address || "";
+      state.phoneNumber = user.phoneNumber || "";
+      state.role = user.role || "";
+      state.image = user.image || "";
+      state.access_token = user.access_token || "";
+      state.refresh_token = user.refresh_token || "";
+      state.currentUser = user;
     },
     logout: (state) => {
+      state.id = "";
+      state.email = "";
+      state.firstName = "";
+      state.lastName = "";
+      state.address = "";
+      state.phoneNumber = "";
+      state.role = "";
+      state.image = "";
+      state.access_token = "";
+      state.refresh_token = "";
       state.currentUser = null;
     },
     updateUser: (state, action) => {
-      const {
-        id,
-        email,
-        firstName,
-        lastName,
-        address,
-        phoneNumber,
-        role,
-        image,
-        access_token,
-        refresh_token,
-      } = action.payload;
-      state.id = id;
-      state.email = email;
-      state.firstName = firstName;
-      state.lastName = lastName;
-      state.address = address;
-      state.phoneNumber = phoneNumber;
-      state.role = role;
-      state.image = image;
-      state.access_token = access_token;
-      state.refresh_token = refresh_token;
+      const user = action.payload;
+      state.id = user.id || state.id;
+      state.email = user.email || state.email;
+      state.firstName = user.firstName || state.firstName;
+      state.lastName = user.lastName || state.lastName;
+      state.address = user.address || state.address;
+      state.phoneNumber = user.phoneNumber || state.phoneNumber;
+      state.role = user.role || state.role;
+      state.image = user.image || state.image;
+      state.access_token = user.access_token || state.access_token;
+      state.refresh_token = user.refresh_token || state.refresh_token;
+      state.currentUser = { ...state.currentUser, ...user };
     },
     resetUser: (state) => {
       state.id = "";
@@ -59,9 +70,21 @@ const userSlice = createSlice({
       state.image = "";
       state.access_token = "";
       state.refresh_token = "";
+      state.currentUser = null;
     },
   },
 });
 
+export const loadUserFromStorage = () => {
+  try {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      return JSON.parse(userData);
+    }
+  } catch (e) {
+    console.error("Failed to load user from localStorage", e);
+  }
+  return null;
+};
 export const { login, logout, updateUser, resetUser } = userSlice.actions;
 export default userSlice.reducer;
