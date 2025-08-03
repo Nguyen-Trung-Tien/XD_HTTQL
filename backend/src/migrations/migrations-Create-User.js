@@ -34,6 +34,9 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
       },
+      refresh_token: {
+        type: Sequelize.TEXT,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

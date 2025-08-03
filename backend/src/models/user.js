@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "staff",
       },
       image: DataTypes.STRING,
+      refresh_token: DataTypes.TEXT,
     },
     {
       sequelize,
