@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { resetUser } from "../redux/slice/userSlice"; // import action logout
+import { resetUser } from "../redux/slice/userSlice";
+import { UserLogout } from "../API/user/userApi";
+import { toast } from "react-toastify";
 
 function Header() {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
@@ -23,10 +25,21 @@ function Header() {
     };
   }, []);
 
-  const handleLogout = () => {
-    dispatch(resetUser());
-    localStorage.removeItem("user");
-    navigate("/sign-in");
+  const handleLogout = async () => {
+    try {
+      const result = await UserLogout();
+      if (result?.data?.message === "Logout successful") {
+        localStorage.removeItem("user");
+        dispatch(resetUser());
+        toast.success("Đăng xuất thành công!");
+        navigate("/sign-in");
+      } else {
+        toast.error("Đăng xuất thất bại");
+      }
+    } catch (error) {
+      toast.error("Lỗi server khi đăng xuất");
+      console.error(error);
+    }
   };
 
   return (

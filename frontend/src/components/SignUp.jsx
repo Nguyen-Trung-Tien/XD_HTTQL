@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SignUpUser } from "../API/user/userApi";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +11,11 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const access_token = useSelector((state) => state.user.access_token);
+
+  if (access_token) {
+    return <Navigate to="/" replace />;
+  }
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword) {

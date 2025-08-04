@@ -55,8 +55,6 @@ const handleLoginUser = (email, password) => {
               id: user.id,
               email: user.email,
               role: user.role,
-              access_token,
-              refresh_token,
             };
           } else {
             userData.errCode = 3;
@@ -76,7 +74,6 @@ const handleLoginUser = (email, password) => {
     }
   });
 };
-
 
 const createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {

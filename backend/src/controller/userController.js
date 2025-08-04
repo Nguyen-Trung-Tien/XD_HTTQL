@@ -15,7 +15,7 @@ const handleLoginUser = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       errCode: 1,
-      // message: "Missing inputs parameter!",
+      message: "Missing inputs parameter!",
     });
   }
 
@@ -28,16 +28,16 @@ const handleLoginUser = async (req, res) => {
     });
   }
 
-  const accessToken = jwt.sign(
+  const access_token = jwt.sign(
     {
       id: userData.user.id,
       isAdmin: userData.user.role === "admin",
     },
     process.env.JWT_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "30s" }
   );
 
-  const refreshToken = jwt.sign(
+  const refresh_token = jwt.sign(
     {
       id: userData.user.id,
       isAdmin: userData.user.role === "admin",
@@ -47,11 +47,11 @@ const handleLoginUser = async (req, res) => {
   );
 
   await db.User.update(
-    { refresh_token: refreshToken },
+    { refresh_token: refresh_token },
     { where: { id: userData.user.id } }
   );
 
-  res.cookie("refreshToken", refreshToken, {
+  res.cookie("refresh_token", refresh_token, {
     httpOnly: true,
     secure: true,
     sameSite: "Strict",
@@ -62,7 +62,7 @@ const handleLoginUser = async (req, res) => {
     errCode: 0,
     message: "Login successful",
     user: userData.user,
-    accessToken: accessToken,
+    access_token: access_token,
   });
 };
 
@@ -110,47 +110,94 @@ const handleDeleteUser = async (req, res) => {
 
 const handleRefreshToken = async (req, res) => {
   try {
-    const refresh_token = req.body.refresh_token;
-    if (!refresh_token)
-      return res.status(401).json({ message: "Missing token" });
+    const { refresh_token } = req.body;
+    if (!refresh_token) {
+      return res.status(401).json({ message: "Missing refresh token" });
+    }
 
-    const user = await db.User.findOne({
-      where: { refresh_token: refresh_token },
-    });
+    const user = await db.User.findOne({ where: { refresh_token } });
+    if (!user) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
 
-    if (!user) return res.status(403).json({ message: "Token invalid" });
+    const decoded = jwt.verify(refresh_token, process.env.JWT_SECRET);
+    if (!decoded || user.id !== decoded.id) {
+      return res.status(403).json({ message: "Token invalid or mismatched" });
+    }
 
-    jwt.verify(refresh_token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) return res.status(403).json({ message: "Token expired" });
+    const newAccessToken = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
 
-      const newAccessToken = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: "15m" }
-      );
+    const newRefreshToken = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-      return res.status(200).json({
-        access_token: newAccessToken,
-      });
+    await db.User.update(
+      { refresh_token: newRefreshToken },
+      { where: { id: user.id } }
+    );
+    return res.status(200).json({
+      access_token: newAccessToken,
+      refresh_token: newRefreshToken,
     });
   } catch (err) {
-    console.log(err);
+    if (err.name === "TokenExpiredError") {
+      return res.status(403).json({ message: "Refresh token expired" });
+    }
+    console.error("Error in handleRefreshToken:", err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const handleLogout = async (req, res) => {
   try {
-    const { refresh_token } = req.body;
+    const refresh_token = req.cookies.refresh_token;
 
     if (!refresh_token) {
-      return res.status(400).json({ message: "Missing refresh_token" });
+      return res
+        .status(400)
+        .json({ message: "Missing refresh_token in cookie" });
     }
 
-    await db.User.update({ refresh_token: null }, { where: { refresh_token } });
+    const user = await db.User.findOne({ where: { refresh_token } });
 
-    return res.status(200).json({ message: "Logout successful" });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Token không hợp lệ hoặc user không tồn tại" });
+    }
+
+    // 1. Xóa refresh_token trong database
+    const result = await db.User.update(
+      { refresh_token: null },
+      { where: { id: user.id } }
+    );
+
+    if (result[0] === 1) {
+      // 2. Nếu thành công thì xóa cookie
+      res.clearCookie("refresh_token", {
+        httpOnly: true,
+        sameSite: "Lax",
+        secure: false,
+      });
+
+      return res.status(200).json({ message: "Logout successful" });
+    } else {
+      return res
+        .status(500)
+        .json({ message: "Failed to remove token from DB" });
+    }
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: "Internal server error", error });
   }
 };

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SignInUser } from "../API/user/userApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/slice/userSlice";
 import { toast } from "react-toastify";
+import { Navigate } from "react-router-dom";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +13,11 @@ const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const access_token = useSelector((state) => state.user.access_token);
+
+  if (access_token) {
+    return <Navigate to="/" replace />;
+  }
   const handleSignin = async () => {
     if (email.trim() === "" || password.trim() === "") {
       toast.error("Vui lòng nhập tài khoản và mật khẩu");
@@ -22,13 +28,26 @@ const SignIn = () => {
       const data = await SignInUser(email, password);
 
       if (data?.errCode === 0) {
-        dispatch(login(data.user));
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...data.user,
+            access_token: data.access_token,
+          })
+        );
+
+        dispatch(
+          login({
+            ...data.user,
+            access_token: data.access_token,
+          })
+        );
+
         toast.success("Đăng nhập thành công!");
         navigate("/");
       } else {
         toast.error(data.message || "Email hoặc mật khẩu không đúng");
+        setError();
       }
     } catch (err) {
       toast.error(

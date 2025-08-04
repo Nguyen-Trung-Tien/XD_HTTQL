@@ -4,20 +4,34 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const SignInUser = async (userEmail, userPassword) => {
   try {
-    const response = await axios.post(`${API_URL}/api/v1/user/login-user`, {
-      email: userEmail,
-      password: userPassword,
-    });
-    const { user, accessToken, errCode, message } =
-      response.data;
+    const response = await axios.post(
+      `${API_URL}/api/v1/user/login-user`,
+      {
+        email: userEmail,
+        password: userPassword,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
+    const { user, access_token, errCode, message } = response.data;
+
+    const userData = {
+      ...user,
+      access_token,
+    };
+
+    localStorage.setItem("user", JSON.stringify(userData));
+
     return {
       user,
-      accessToken,
+      access_token,
       errCode,
       message,
     };
   } catch (e) {
-    console.error(e);
+    console.error("SignInUser failed:", e);
     throw e;
   }
 };
@@ -35,6 +49,12 @@ const SignUpUser = async (data) => {
   }
 };
 
+const UserLogout = async () => {
+  return await axios.post(`${API_URL}/api/v1/user/logout`, null, {
+    withCredentials: true,
+  });
+};
+
 const RefreshToken = async () => {
   try {
     const response = await axios.post(
@@ -42,9 +62,9 @@ const RefreshToken = async () => {
       {},
       { withCredentials: true }
     );
-    const { accessToken, message } = response.data;
+    const { access_token, message } = response.data;
     return {
-      accessToken,
+      access_token,
       message,
     };
   } catch (e) {
@@ -53,5 +73,4 @@ const RefreshToken = async () => {
   }
 };
 
-
-export { SignInUser, SignUpUser, RefreshToken };
+export { SignInUser, SignUpUser, RefreshToken, UserLogout };

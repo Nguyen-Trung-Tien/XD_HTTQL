@@ -36,25 +36,18 @@ axiosJWT.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const refresh_token = store.getState().user.refresh_token;
-        if (!refresh_token) throw new Error("No refresh token available");
+        const res = await axios.post(
+          `${API_URL}/api/v1/user/refresh-token`,
+          {},
+          { withCredentials: true }
+        );
 
-        const res = await axios.post(`${API_URL}/api/v1/user/refresh-token`, {
-          refresh_token,
-        });
+        const { access_token, ...userData } = res.data;
 
-        const {
-          access_token,
-          refresh_token: newRefreshToken,
-          ...userData
-        } = res.data;
-
-        // Cập nhật Redux store
         store.dispatch(
           login({
             ...userData,
             access_token,
-            refresh_token: newRefreshToken,
           })
         );
 
@@ -63,7 +56,6 @@ axiosJWT.interceptors.response.use(
           JSON.stringify({
             ...userData,
             access_token,
-            refresh_token: newRefreshToken,
           })
         );
 
@@ -75,8 +67,8 @@ axiosJWT.interceptors.response.use(
         return Promise.reject(err);
       }
     }
+
     return Promise.reject(error);
   }
 );
-
 export default axiosJWT;
