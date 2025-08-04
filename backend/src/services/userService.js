@@ -73,6 +73,8 @@ const handleLoginUser = (email, password) => {
               id: user.id,
               email: user.email,
               role: user.role,
+              access_token,
+              refresh_token,
             };
             userData.access_token = access_token;
             userData.refresh_token = refresh_token;
