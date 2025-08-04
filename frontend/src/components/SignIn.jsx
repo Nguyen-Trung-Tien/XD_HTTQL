@@ -18,6 +18,7 @@ const SignIn = () => {
       if (data?.errCode === 0) {
         dispatch(login(data.user));
         localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("accessToken", data.accessToken);
         toast.success("Đăng nhập thành công!");
         navigate("/");
       } else {
