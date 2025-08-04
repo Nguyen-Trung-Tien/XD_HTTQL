@@ -63,7 +63,7 @@ const SignIn = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full border p-2 rounded"
+                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-[#00BFFF]"
                     placeholder="Nhập email"
                   />
                 </div>
@@ -79,7 +79,7 @@ const SignIn = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full border p-2 rounded"
+                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-[#00BFFF]"
                     placeholder="Nhập mật khẩu"
                   />
                 </div>

@@ -15,7 +15,7 @@ const SignUp = () => {
       return setError("Vui lòng nhập đầy đủ thông tin!");
     }
     if (password !== confirmPassword) {
-      return setError("Mật khẩu không khớp!");
+      return setError("Mật khẩu xác nhận không khớp!");
     }
 
     try {
@@ -55,7 +55,7 @@ const SignUp = () => {
             >
               <div>
                 <label className="text-slate-900 text-sm font-medium mb-2 block">
-                  User name
+                  Tên đăng nhập
                 </label>
                 <div className="relative flex items-center">
                   <input
@@ -63,15 +63,15 @@ const SignUp = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
-                    placeholder="Enter user email"
+                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-[#00BFFF]"
+                    placeholder="Nhập email của bạn"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="text-slate-900 text-sm font-medium mb-2 block">
-                  Password
+                  Mật khẩu
                 </label>
                 <div className="relative flex items-center">
                   <input
@@ -79,14 +79,14 @@ const SignUp = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
-                    placeholder="Enter password"
+                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-[#00BFFF]"
+                    placeholder="Nhập mật khẩu"
                   />
                 </div>
               </div>
               <div>
                 <label className="text-slate-900 text-sm font-medium mb-2 block">
-                  Confirm Password
+                  Xác nhận mật khẩu
                 </label>
                 <div className="relative flex items-center">
                   <input
@@ -94,17 +94,8 @@ const SignUp = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
-                    placeholder="Enter confirm password"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    className="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-[#00BFFF]"
+                    placeholder="Nhập lại mật khẩu"
                   />
                 </div>
               </div>
@@ -117,7 +108,7 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={handleSignUp}
-                  className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer"
+                  className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-[#00BFFF] hover:bg-[#00A9E0] focus:outline-none cursor-pointer"
                 >
                   Đăng ký
                 </button>
@@ -127,9 +118,9 @@ const SignUp = () => {
                 <a
                   onClick={() => navigate("/sign-in")}
                   href="#"
-                  className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold"
+                  className="text-[#00BFFF] hover:underline ml-1 whitespace-nowrap font-semibold cursor-pointer"
                 >
-                  Đăng nhập
+                  Đăng nhập ngay
                 </a>
               </p>
             </form>
