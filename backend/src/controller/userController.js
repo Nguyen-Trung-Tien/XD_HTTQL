@@ -10,20 +10,59 @@ const handleCreateNewUser = async (req, res) => {
 };
 
 const handleLoginUser = async (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
+  let { email, password } = req.body;
+
   if (!email || !password) {
-    return res.status(500).json({
+    return res.status(400).json({
       errCode: 1,
       message: "Missing inputs parameter!",
     });
   }
 
   let userData = await UserService.handleLoginUser(email, password);
+
+  if (userData.errCode !== 0) {
+    return res.status(400).json({
+      errCode: userData.errCode,
+      message: userData.errMessage,
+    });
+  }
+
+  const accessToken = jwt.sign(
+    {
+      id: userData.user.id,
+      isAdmin: userData.user.role === "admin",
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "15m" }
+  );
+
+  const refreshToken = jwt.sign(
+    {
+      id: userData.user.id,
+      isAdmin: userData.user.role === "admin",
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  await db.User.update(
+    { refresh_token: refreshToken },
+    { where: { id: userData.user.id } }
+  );
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
   return res.status(200).json({
-    errCode: userData.errCode,
-    message: userData.errMessage,
-    user: userData.user ? userData.user : {},
+    errCode: 0,
+    message: "Login successful",
+    user: userData.user,
+    accessToken: accessToken,
   });
 };
 

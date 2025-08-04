@@ -8,12 +8,11 @@ const SignInUser = async (userEmail, userPassword) => {
       email: userEmail,
       password: userPassword,
     });
-    const { user, access_token, refresh_token, errCode, message } =
+    const { user, accessToken, errCode, message } =
       response.data;
     return {
       user,
-      access_token,
-      refresh_token,
+      accessToken,
       errCode,
       message,
     };
@@ -36,14 +35,16 @@ const SignUpUser = async (data) => {
   }
 };
 
-const RefreshToken = async (refresh_token) => {
+const RefreshToken = async () => {
   try {
-    const response = await axios.post(`${API_URL}/api/v1/user/refresh-token`, {
-      refresh_token,
-    });
-    const { access_token, message } = response.data;
+    const response = await axios.post(
+      `${API_URL}/api/v1/user/refresh-token`,
+      {},
+      { withCredentials: true }
+    );
+    const { accessToken, message } = response.data;
     return {
-      access_token,
+      accessToken,
       message,
     };
   } catch (e) {
@@ -51,5 +52,6 @@ const RefreshToken = async (refresh_token) => {
     throw e;
   }
 };
+
 
 export { SignInUser, SignUpUser, RefreshToken };
