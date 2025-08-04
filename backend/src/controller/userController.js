@@ -34,7 +34,7 @@ const handleLoginUser = async (req, res) => {
       isAdmin: userData.user.role === "admin",
     },
     process.env.JWT_SECRET,
-    { expiresIn: "30s" }
+    { expiresIn: "15m" }
   );
 
   const refresh_token = jwt.sign(
