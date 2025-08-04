@@ -11,7 +11,13 @@ const SignIn = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const handleSignin = async () => {
+    if (email.trim() === "" || password.trim() === "") {
+      toast.error("Vui lòng nhập tài khoản và mật khẩu");
+      return;
+    }
+
     try {
       const data = await SignInUser(email, password);
 
@@ -22,17 +28,19 @@ const SignIn = () => {
         toast.success("Đăng nhập thành công!");
         navigate("/");
       } else {
-        setError(data.message || "Email hoặc mật khẩu không đúng");
+        toast.error(data.message || "Email hoặc mật khẩu không đúng");
       }
     } catch (err) {
-      toast.error("Lỗi hệ thống. Vui lòng thử lại!");
-      setError(err.response?.data?.message || "Đăng nhập thất bại");
+      toast.error(
+        err.response?.data?.message || "Lỗi hệ thống. Vui lòng thử lại!"
+      );
     }
   };
 
   const handleSignUp = () => {
     navigate("/sign-up");
   };
+
   return (
     <div className="bg-gray-50">
       <div className="min-h-screen flex flex-col items-center justify-center py-6 px-4">
@@ -47,7 +55,7 @@ const SignIn = () => {
             >
               <div>
                 <label className="text-slate-900 text-sm font-medium mb-2 block">
-                  User name
+                  Tên đăng nhập
                 </label>
                 <div className="relative flex items-center">
                   <input
@@ -55,15 +63,15 @@ const SignIn = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
-                    placeholder="Enter user email"
+                    className="w-full border p-2 rounded"
+                    placeholder="Nhập email"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="text-slate-900 text-sm font-medium mb-2 block">
-                  Password
+                  Mật khẩu
                 </label>
                 <div className="relative flex items-center">
                   <input
@@ -71,8 +79,8 @@ const SignIn = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
-                    placeholder="Enter password"
+                    className="w-full border p-2 rounded"
+                    placeholder="Nhập mật khẩu"
                   />
                 </div>
               </div>
@@ -82,13 +90,20 @@ const SignIn = () => {
                   <input
                     id="remember-me"
                     name="remember-me"
-                    className="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                    type="checkbox"
+                    className="h-4 w-4 shrink-0 text-[#00BFFF] focus:ring-[#00BFFF] border-slate-300 rounded"
                   />
+                  <label
+                    htmlFor="remember-me"
+                    className="ml-2 text-sm text-slate-700"
+                  >
+                    Ghi nhớ đăng nhập
+                  </label>
                 </div>
                 <div className="text-sm">
                   <a
-                    href="javascript:void(0);"
-                    className="text-blue-600 hover:underline font-semibold"
+                    href="#"
+                    className="text-[#00BFFF] hover:underline font-semibold"
                   >
                     Quên mật khẩu?
                   </a>
@@ -103,7 +118,8 @@ const SignIn = () => {
                 <button
                   type="button"
                   onClick={handleSignin}
-                  className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer"
+                  className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white"
+                  style={{ backgroundColor: "#00BFFF" }}
                 >
                   Đăng nhập
                 </button>
@@ -112,8 +128,8 @@ const SignIn = () => {
                 Bạn chưa có tài khoản?
                 <a
                   onClick={handleSignUp}
-                  href="javascript:void(0);"
-                  className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold"
+                  href="#"
+                  className="text-[#00BFFF] hover:underline ml-1 whitespace-nowrap font-semibold cursor-pointer"
                 >
                   Tạo tài khoản.
                 </a>
