@@ -39,7 +39,7 @@ const handleLoginUser = (email, password) => {
       let isCheckEmail = await checkUserEmail(email);
       if (isCheckEmail) {
         let user = await db.User.findOne({
-          attributes: ["id", "email", "password", "role", "refresh_token"],
+          attributes: ["id", "email", "password", "role"],
           where: { email: email },
           raw: true,
         });
@@ -48,34 +48,14 @@ const handleLoginUser = (email, password) => {
           let checkPassword = await bcrypt.compareSync(password, user.password);
 
           if (checkPassword) {
-            const access_token = jwt.sign(
-              { id: user.id, email: user.email, role: user.role },
-              process.env.JWT_SECRET,
-              { expiresIn: "15m" }
-            );
-
-            const refresh_token = jwt.sign(
-              { id: user.id, email: user.email },
-              process.env.JWT_SECRET,
-              { expiresIn: "7d" }
-            );
-
-            await db.User.update(
-              { refresh_token: refresh_token },
-              { where: { id: user.id } }
-            );
-
             userData.errCode = 0;
             userData.errMessage = "OK";
             delete user.password;
-            userData.user = user;
             userData.user = {
               id: user.id,
               email: user.email,
               role: user.role,
             };
-            userData.access_token = access_token;
-            userData.refresh_token = refresh_token;
           } else {
             userData.errCode = 3;
             userData.errMessage = "Wrong password!";
@@ -86,8 +66,7 @@ const handleLoginUser = (email, password) => {
         }
       } else {
         userData.errCode = 1;
-        userData.errMessage =
-          "Your`s Email isn`t exits in your`s system. Plz try other Email!";
+        userData.errMessage = "Your Email isn't exists. Please try another!";
       }
       resolve(userData);
     } catch (e) {
@@ -95,6 +74,7 @@ const handleLoginUser = (email, password) => {
     }
   });
 };
+
 
 const createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {
