@@ -18,9 +18,6 @@ module.exports = {
       price: {
         type: Sequelize.STRING,
       },
-      code: {
-        type: Sequelize.STRING,
-      },
       image: {
         type: Sequelize.STRING,
       },
@@ -32,9 +29,6 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
-      },
-      supplierId: {
-        type: Sequelize.INTEGER,
       },
       description: {
         type: Sequelize.STRING,
