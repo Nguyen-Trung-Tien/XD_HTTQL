@@ -2,3 +2,4 @@
 + Khởi tạo bảng: npx sequelize-cli db:migrate
 + Chạy lấy database: npx sequelize-cli db:seed:all
 + Xóa hết database: npx sequelize-cli db:migrate:undo:all
++ xóa database bảng products trong myssql: TRUNCATE TABLE httt.products

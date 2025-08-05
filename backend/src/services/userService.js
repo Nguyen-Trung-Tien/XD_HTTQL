@@ -1,7 +1,6 @@
 const db = require("../models/index.js");
 const bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
-const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
 const hashUserPassword = (password) => {
@@ -129,6 +128,7 @@ const getAllUsers = (userId) => {
     }
   });
 };
+
 const UpdateUserData = (data) => {
   return new Promise(async (resolve, reject) => {
     try {

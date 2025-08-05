@@ -1,4 +1,4 @@
-const UserService = require("../services/UserService");
+const UserService = require("../services/userService");
 const db = require("../models/index");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
@@ -68,13 +68,13 @@ const handleLoginUser = async (req, res) => {
 
 const handleGetAllUsers = async (req, res) => {
   let id = req.query.id;
-  if (!id) {
-    return res.status(200).json({
-      errCode: 1,
-      errMessage: "Missing required parameter!",
-      users: [],
-    });
-  }
+  // if (!id) {
+  //   return res.status(200).json({
+  //     errCode: 1,
+  //     errMessage: "Missing required parameter!",
+  //     users: [],
+  //   });
+  // }
   let users = await UserService.getAllUsers(id);
   return res.status(200).json({
     errCode: 0,
