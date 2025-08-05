@@ -42,6 +42,10 @@ function Header() {
     }
   };
 
+  const handleGetProfile = () => {
+    navigate("/profile");
+  };
+
   return (
     <header className="bg-card">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -113,7 +117,7 @@ function Header() {
                 {userMenuOpen && (
                   <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
                     <a
-                      href="#profile"
+                      onClick={handleGetProfile}
                       className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
                     >
                       Hồ sơ

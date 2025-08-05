@@ -49,6 +49,18 @@ const SignUpUser = async (data) => {
   }
 };
 
+const GetDetailUser = async (userId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/api/v1/user/get-all-user?id=${userId}`
+    );
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 const UserLogout = async () => {
   return await axios.post(`${API_URL}/api/v1/user/logout`, null, {
     withCredentials: true,
@@ -73,4 +85,4 @@ const RefreshToken = async () => {
   }
 };
 
-export { SignInUser, SignUpUser, RefreshToken, UserLogout };
+export { SignInUser, SignUpUser, RefreshToken, UserLogout, GetDetailUser };
