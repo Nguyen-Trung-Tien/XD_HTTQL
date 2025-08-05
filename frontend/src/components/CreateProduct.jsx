@@ -4,32 +4,114 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 
 function ProductForm({ onCreate }) {
+	const inventoryItems = [
+		{
+			id: 'SP001',
+			name: 'Điện thoại X Pro',
+			category: 'Điện tử',
+			stock: 45,
+			price: 23000000,
+			status: 'in-stock',
+			location: 'Kho A',
+			lastUpdated: '2023-10-15',
+		},
+		{
+			id: 'SP002',
+			name: 'Laptop Ultra Pro',
+			category: 'Điện tử',
+			stock: 12,
+			price: 35000000,
+			status: 'in-stock',
+			location: 'Kho B',
+			lastUpdated: '2023-10-18',
+		},
+		{
+			id: 'SP003',
+			name: 'Tai nghe không dây',
+			category: 'Phụ kiện',
+			stock: 78,
+			price: 3000000,
+			status: 'in-stock',
+			location: 'Kho A',
+			lastUpdated: '2023-10-20',
+		},
+		{
+			id: 'SP004',
+			name: 'Đồng hồ thông minh',
+			category: 'Thiết bị đeo',
+			stock: 5,
+			price: 7000000,
+			status: 'low-stock',
+			location: 'Kho C',
+			lastUpdated: '2023-10-22',
+		},
+		{
+			id: 'SP005',
+			name: 'Máy ảnh DSLR',
+			category: 'Điện tử',
+			stock: 0,
+			price: 18000000,
+			status: 'out-of-stock',
+			location: 'Kho B',
+			lastUpdated: '2023-10-10',
+		},
+	];
+
 	const navigate = useNavigate();
 
 	const [form, setForm] = useState({
-		name: '',
-		category: '',
 		price: '',
-		stock: '',
 		status: 'Còn hàng',
 	});
+	const [name, setName] = useState('');
+	const [category, setCategory] = useState('');
+	const [stock, setStock] = useState('');
+	const [stockError, setStockError] = useState('');
+
+	const uniqueCategories = [
+		...new Set(inventoryItems.map((item) => item.category)),
+	];
+
+	const inventory = inventoryItems
+		.filter((item) => item.name === name)
+		.map((product) => product.stock);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
+	const handleChangeStock = (e) => {
+		const value = e.target.value;
+		setStock(value);
+
+		const inventoryStock = inventory[0] || 0;
+
+		if (parseInt(value) > inventoryStock) {
+			setStockError('Số lượng nhập vào vượt quá hàng tồn kho!');
+		} else {
+			setStockError('');
+		}
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		if (!form.name || !form.category || !form.price || !form.stock) {
+		if (!name || !category || !form.price || !stock) {
 			alert('Vui lòng điền đầy đủ thông tin!');
+			return;
+		}
+
+		if (stockError) {
+			alert('Vui lòng kiểm tra lại số lượng!');
 			return;
 		}
 
 		const newProduct = {
 			...form,
-			stock: parseInt(form.stock),
+			name,
+			category,
+			stock: parseInt(stock),
 			price: parseFloat(form.price),
 		};
 
@@ -39,10 +121,7 @@ function ProductForm({ onCreate }) {
 			onCreate?.(product);
 
 			setForm({
-				name: '',
-				category: '',
 				price: '',
-				stock: '',
 				status: 'Còn hàng',
 			});
 
@@ -60,7 +139,7 @@ function ProductForm({ onCreate }) {
 			onSubmit={handleSubmit}
 			className='bg-white shadow-md rounded-2xl p-8 w-full max-w-md mx-auto'>
 			<h2 className='text-2xl font-semibold text-gray-800 mb-6 text-center'>
-				Tạo sản phẩm mới
+				Thêm sản phẩm mới
 			</h2>
 
 			<div className='space-y-4'>
@@ -68,24 +147,36 @@ function ProductForm({ onCreate }) {
 					<label className='block text-sm text-gray-600 mb-1'>
 						Tên sản phẩm
 					</label>
-					<input
-						type='text'
-						name='name'
-						value={form.name}
-						onChange={handleChange}
-						className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
-					/>
+					<select
+						onChange={(e) => setName(e.target.value)}
+						className='w-full mt-2 px-3 py-2 border border-gray-300 outline-none rounded-lg'>
+						<option selected disabled>
+							-- Chọn sản phẩm --
+						</option>
+						{inventoryItems.map((product, index) => {
+							return (
+								<option key={index} value={product.name}>
+									{product.name}
+								</option>
+							);
+						})}
+					</select>
 				</div>
 
 				<div>
 					<label className='block text-sm text-gray-600 mb-1'>Danh mục</label>
-					<input
-						type='text'
-						name='category'
-						value={form.category}
-						onChange={handleChange}
-						className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
-					/>
+					<select
+						onChange={(e) => setCategory(e.target.value)}
+						className='w-full mt-2 px-3 py-2 border border-gray-300 outline-none rounded-lg'>
+						<option selected disabled>
+							-- Chọn danh mục --
+						</option>
+						{uniqueCategories.map((category, index) => (
+							<option key={index} value={category}>
+								{category}
+							</option>
+						))}
+					</select>
 				</div>
 
 				<div>
@@ -100,16 +191,28 @@ function ProductForm({ onCreate }) {
 				</div>
 
 				<div>
-					<label className='block text-sm text-gray-600 mb-1'>
-						Số lượng trong kho
-					</label>
+					<label className='block text-sm text-gray-600 mb-1'>Số lượng</label>
 					<input
 						type='number'
 						name='stock'
-						value={form.stock}
-						onChange={handleChange}
-						className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+						value={stock}
+						onChange={handleChangeStock}
+						className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+							stockError
+								? 'border-red-500 focus:ring-red-400'
+								: 'border-gray-300 focus:ring-blue-400'
+						}`}
 					/>
+					{stockError && (
+						<p className='text-red-500 text-sm mt-1'>{stockError}</p>
+					)}
+				</div>
+
+				<div className='flex gap-2 mt-4'>
+					<label className='flex gap-1 block text-sm text-gray-600 mb-1'>
+						<p>Số lượng trong kho: </p>
+						{inventory}
+					</label>
 				</div>
 
 				<div>

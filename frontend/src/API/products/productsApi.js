@@ -13,7 +13,13 @@ const createProduct = async (productData) => {
   return response.data;
 };
 
+const editProduct = async (id, productData) => {
+  const response = await axios.put(`${API_URL}/api/v1/products/edit/${id}`, productData);
+  return response.data;
+};
+
 export {
   getAllProducts,
-  createProduct
+  createProduct,
+  editProduct
 };
