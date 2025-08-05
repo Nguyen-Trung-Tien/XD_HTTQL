@@ -18,6 +18,9 @@ module.exports = {
       price: {
         type: Sequelize.STRING,
       },
+      stock: {
+        type: Sequelize.INTEGER,
+      },
       image: {
         type: Sequelize.STRING,
       },
@@ -32,6 +35,9 @@ module.exports = {
       },
       description: {
         type: Sequelize.STRING,
+      },
+      deleted: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,

@@ -15,8 +15,6 @@ function ProductList() {
 		const fetchProduct = async () => {
 			try {
 				const data = await getAllProducts();
-				console.log(data);
-
 				setProducts(data);
 			} catch (err) {
 				console.error(err);
@@ -136,7 +134,7 @@ function ProductList() {
 					<NavLink
 						to={'/products/create'}
 						className='px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-sm'>
-						Tạo
+						Thêm
 					</NavLink>
 					<button
 						onClick={() => navigate('/products/:id')}
@@ -202,7 +200,7 @@ function ProductList() {
 										{product.category}
 									</td>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-										{product.price}
+										{product.price}đ
 									</td>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
 										{product.stock} chiếc
