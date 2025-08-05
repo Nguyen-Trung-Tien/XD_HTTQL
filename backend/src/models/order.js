@@ -1,31 +1,72 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      Order.hasMany(models.OrderItem, { foreignKey: "orderId", as: "items" });
     }
   }
-  Order.init({
-    orderNumber: DataTypes.STRING,
-    customerName: DataTypes.STRING,
-    customerPhone: DataTypes.STRING,
-    customerAddress: DataTypes.STRING,
-    status: DataTypes.STRING,
-    total: DataTypes.FLOAT,
-    shippedAt: DataTypes.DATE,
-    deliveredAt: DataTypes.DATE,
-    shipperId: DataTypes.INTEGER,
-  }, {
-    sequelize,
-    modelName: 'Order',
-  });
+
+  Order.init(
+    {
+      orderNumber: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      customerName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      customerPhone: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+     
+      shippingAddress: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      shippingLat: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      shippingLng: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      paymentMethod: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.STRING,
+        defaultValue: "pending",
+      },
+      total: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      shippedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      deliveredAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      shipperId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+    },
+    {
+      sequelize,
+      modelName: "Order",
+      tableName: "Orders", 
+    }
+  );
+
   return Order;
 };

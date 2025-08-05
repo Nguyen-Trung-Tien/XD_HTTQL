@@ -89,7 +89,7 @@ export default function AddShipperForm({ onSubmit, onClose }) {
               placeholder="Tên shipper"
               value={formData.name}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
             />
           </div>
 
@@ -100,7 +100,7 @@ export default function AddShipperForm({ onSubmit, onClose }) {
               placeholder="Số điện thoại"
               value={formData.phoneNumber}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
             />
           </div>
 
@@ -119,7 +119,7 @@ export default function AddShipperForm({ onSubmit, onClose }) {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full border p-2 rounded"
+              className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
             >
               <option value="available">Sẵn sàng</option>
               <option value="delivering">Đang giao</option>

@@ -8,9 +8,9 @@ module.exports = {
     host: process.env.DB_DEV_HOST,
     dialect: process.env.DB_DEV_DIALECT || "mysql",
     logging: false,
-    query: {
-      raw: true,
-    },
+    // query: {
+    //   raw: true,
+    // },
     timezone: "+07:00",
   },
   test: {

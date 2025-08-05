@@ -18,7 +18,16 @@ module.exports = {
       customerPhone: {
         type: Sequelize.STRING
       },
-      customerAddress: {
+      shippingAddress: {
+        type: Sequelize.STRING
+      },
+      shippingLat: {
+        type: Sequelize.FLOAT
+      },
+      shippingLng: {
+        type: Sequelize.FLOAT
+      },
+      paymentMethod: {
         type: Sequelize.STRING
       },
       status: {
@@ -46,6 +55,7 @@ module.exports = {
       }
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Orders');
   }

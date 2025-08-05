@@ -1,27 +1,76 @@
 const db = require("../models");
 
 const createOrder = async (req, res) => {
+  const t = await db.sequelize.transaction();
   try {
-    const { customerName, customerPhone, customerAddress, items, shipperId, warehouseId } = req.body;
-    const order = await db.Order.create({
-      orderNumber: "DH-" + Date.now(),
+    const {
       customerName,
       customerPhone,
-      customerAddress,
-      status: "pending",
-      total: 0, 
+      shippingAddress,
+      shippingLat,
+      shippingLng,
+      paymentMethod,
+      status,
+      total,
       shipperId,
-    });
+      items,
+    } = req.body;
+
+    const order = await db.Order.create(
+      {
+        orderNumber: "DH-" + Date.now(),
+        customerName,
+        customerPhone,
+        shippingAddress,
+        shippingLat,
+        shippingLng,
+        paymentMethod,
+        status,
+        total,
+        shipperId,
+      },
+      { transaction: t }
+    );
+
+    if (Array.isArray(items) && items.length > 0) {
+      for (const item of items) {
+        await db.OrderItem.create(
+          {
+            orderId: order.id,
+            productId: item.productId,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          },
+          { transaction: t }
+        );
+      }
+    }
+
+    await t.commit();
     res.status(201).json({ message: "Order created", data: order });
   } catch (err) {
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    await t.rollback();
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await db.Order.findAll();
-    res.json(orders);
+    const orders = await db.Order.findAll({
+      include: [
+        {
+          model: db.OrderItem,
+          as: "items",
+        },
+      ],
+    });
+
+    const plainOrders = orders.map((order) => order.get({ plain: true }));
+
+    res.json(plainOrders);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -31,7 +80,10 @@ const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, shipperId } = req.body;
-    const [updated] = await db.Order.update({ status, shipperId }, { where: { id } });
+    const [updated] = await db.Order.update(
+      { status, shipperId },
+      { where: { id } }
+    );
     if (updated) {
       const updatedOrder = await db.Order.findByPk(id);
       res.status(200).json({ message: "Order updated", data: updatedOrder });
@@ -39,7 +91,9 @@ const updateOrderStatus = async (req, res) => {
       res.status(404).json({ message: "Order not found" });
     }
   } catch (err) {
-    res.status(400).json({ message: "Failed to update order", error: err.message });
+    res
+      .status(400)
+      .json({ message: "Failed to update order", error: err.message });
   }
 };
 
