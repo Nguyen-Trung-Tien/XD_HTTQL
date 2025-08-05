@@ -51,7 +51,7 @@ function AddressAutocomplete({ value, onChange, onSelect }) {
           setHasSelected(false); 
         }}
         placeholder="Nhập địa chỉ"
-        className="w-full border p-2 rounded"
+        className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
       />
 
       {loading && (

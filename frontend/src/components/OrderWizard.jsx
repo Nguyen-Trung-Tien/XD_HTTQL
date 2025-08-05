@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { getAllProducts } from "../API/products/productsApi";
+import { createOrder } from "../API/orders/ordersApi";
 import OrderStep1 from "./OrderStep1";
 import OrderStep2 from "./OrderStep2";
 import OrderStep3 from "./OrderStep3";
-
+import { toast } from "react-toastify";
 function OrderWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   const [products, setProducts] = useState([]);
@@ -12,8 +13,11 @@ function OrderWizard() {
 
   const [orderData, setOrderData] = useState({
     products: [],
-    customer: { name: "", email: "", phone: "" },
-    shipping: { address: "", city: "", postalCode: "", country: "Việt Nam" },
+    customer: {
+      name: "",
+      phone: "",
+    },
+    shipping: { address: "", lat: null, lng: null },
     payment: "credit-card",
   });
   const addProductToOrder = (product) => {
@@ -59,15 +63,46 @@ function OrderWizard() {
     loadProducts();
   }, []);
 
-  const handleSubmit = () => {
-    alert("Đơn hàng đã được tạo thành công!");
-    setCurrentStep(1);
-    setOrderData({
-      products: [],
-      customer: { name: "", email: "", phone: "" },
-      shipping: { address: "", city: "", postalCode: "", country: "Việt Nam" },
-      payment: "credit-card",
-    });
+  const handleSubmit = async () => {
+    const subtotal = orderData.products.reduce(
+      (sum, item) =>
+        sum + (Number(item.price) || 0) * item.quantity,
+      0
+    );
+    const shippingFee = 30000;
+    const discount = 0;
+    const total = subtotal + shippingFee - discount;
+
+    const payload = {
+      customerName: orderData.customer.name,
+      customerPhone: orderData.customer.phone,
+      shippingAddress: orderData.shipping.address,
+      shippingLat: orderData.shipping.lat,
+      shippingLng: orderData.shipping.lng,
+      paymentMethod: orderData.payment,
+      status: "pending",
+      total,
+      items: orderData.products.map((p) => ({
+        productId: p.productId,
+        name: p.name,
+        price: Number(String(p.price).replace(/\D/g, "")),
+        quantity: p.quantity,
+      })),
+    };
+    try {
+      console.log(payload);
+      await createOrder(payload);
+      toast.success("Đơn hàng đã được tạo thành công!");
+      setCurrentStep(1);
+      setOrderData({
+        products: [],
+        customer: { name: "", phone: "" },
+        shipping: { address: "", lat: null, lng: null },
+        payment: "credit-card",
+      });
+    } catch (err) {
+      toast.error("Tạo đơn hàng thất bại!");
+    }
   };
 
   return (
