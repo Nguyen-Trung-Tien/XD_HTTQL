@@ -44,106 +44,102 @@ const Profile = () => {
   }, []);
 
   return (
-    <div>
-      <div class="my-5">
-        <div class="container mx-auto max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl shadow-md dark:shadow-white py-4 px-6 sm:px-10 bg-gray-100 dark:bg-gray-600 border-emerald-500 rounded-md">
-          <a
-            href="#"
-            class="px-4 py-2 bg-red-500 rounded-md text-white text-sm sm:text-lg shadow-md"
-          >
-            Go Back
-          </a>
+    <div class="flex justify-center items-center min-h-screen bg-gray-100 px-4">
+      <div class="w-full max-w-xl bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6">
+          My Profile
+        </h1>
 
-          <div class="my-3">
-            <h1 class="text-center text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-              My Profile
-            </h1>
-            <form action="" method="POST">
-              <div class="my-2">
-                <label
-                  for="email"
-                  class="text-sm sm:text-md font-bold text-gray-700 dark:text-gray-300"
-                >
-                  Email
-                </label>
-                <input
-                  type="text"
-                  name="class"
-                  class="block w-full border border-emerald-500 outline-emerald-800 px-2 py-2 text-sm sm:text-md rounded-md my-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  id="email"
-                  value={users?.email}
-                />
-              </div>
-              <div class="my-2">
-                <label
-                  for="first_name"
-                  class="text-sm sm:text-md font-bold text-gray-700 dark:text-gray-300"
-                >
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  name="first_name"
-                  class="block w-full border border-emerald-500 outline-emerald-800 px-2 py-2 text-sm sm:text-md rounded-md my-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  id="first_name"
-                  value={users?.firstName}
-                />
-              </div>
-
-              <div class="my-2">
-                <label
-                  for="lastName"
-                  class="text-sm sm:text-md font-bold text-gray-700 dark:text-gray-300"
-                >
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="class"
-                  class="block w-full border border-emerald-500 outline-emerald-800 px-2 py-2 text-sm sm:text-md rounded-md my-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  id="last-name"
-                  value={users?.lastName}
-                />
-              </div>
-
-              <div class="my-2">
-                <label
-                  for="lastName"
-                  class="text-sm sm:text-md font-bold text-gray-700 dark:text-gray-300"
-                >
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  name="class"
-                  class="block w-full border border-emerald-500 outline-emerald-800 px-2 py-2 text-sm sm:text-md rounded-md my-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  id="phoneNumber"
-                  value={users?.phoneNumber || "null"}
-                />
-              </div>
-
-              <div class="my-2">
-                <label
-                  for="lastName"
-                  class="text-sm sm:text-md font-bold text-gray-700 dark:text-gray-300"
-                >
-                  Role
-                </label>
-                <input
-                  type="text"
-                  name="class"
-                  class="block w-full border border-emerald-500 outline-emerald-800 px-2 py-2 text-sm sm:text-md rounded-md my-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  id="role"
-                  value={users?.role}
-                />
-              </div>
-
-              <button class="px-4 py-1 bg-emerald-500 rounded-md text-black text-sm sm:text-lg shadow-md">
-                Save
-              </button>
-            </form>
+        <form method="POST" class="space-y-5">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              for="email"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              class="w-full px-3 py-2 border border-emerald-500 rounded-md bg-white text-gray-900 outline-emerald-600"
+              value={users?.email}
+            />
           </div>
-        </div>
+
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              for="first_name"
+            >
+              First Name
+            </label>
+            <input
+              type="text"
+              name="first-name"
+              id="first-name"
+              class="w-full px-3 py-2 border border-emerald-500 rounded-md bg-white text-gray-900 outline-emerald-600"
+              value={users?.firstName}
+            />
+          </div>
+
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              for="last_name"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              name="last-name"
+              id="last-name"
+              class="w-full px-3 py-2 border border-emerald-500 rounded-md bg-white text-gray-900 outline-emerald-600"
+              value={users?.lastName}
+            />
+          </div>
+
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              for="phoneNumber"
+            >
+              Phone Number
+            </label>
+            <input
+              type="text"
+              name="phoneNumber"
+              id="phoneNumber"
+              class="w-full px-3 py-2 border border-emerald-500 rounded-md bg-white text-gray-900 outline-emerald-600"
+              value={users?.phoneNumber}
+            />
+          </div>
+
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              for="role"
+            >
+              Role
+            </label>
+            <input
+              type="text"
+              name="role"
+              id="role"
+              class="w-full px-3 py-2 border border-emerald-500 rounded-md bg-white text-gray-900 outline-emerald-600"
+              value={users?.role}
+            />
+          </div>
+
+          <div class="text-center">
+            <button
+              type="submit"
+              class="px-6 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 transition"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
