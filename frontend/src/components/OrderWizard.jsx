@@ -18,7 +18,7 @@ function OrderWizard() {
       phone: "",
     },
     shipping: { address: "", lat: null, lng: null },
-    payment: "credit-card",
+    payment: "cash",
   });
   const addProductToOrder = (product) => {
     const existingProductIndex = orderData.products.findIndex(
@@ -90,7 +90,7 @@ function OrderWizard() {
       })),
     };
     try {
-      console.log(payload);
+
       await createOrder(payload);
       toast.success("Đơn hàng đã được tạo thành công!");
       setCurrentStep(1);
@@ -98,7 +98,7 @@ function OrderWizard() {
         products: [],
         customer: { name: "", phone: "" },
         shipping: { address: "", lat: null, lng: null },
-        payment: "credit-card",
+        payment: "cash",
       });
     } catch (err) {
       toast.error("Tạo đơn hàng thất bại!");
