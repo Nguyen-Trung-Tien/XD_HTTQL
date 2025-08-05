@@ -163,39 +163,27 @@ const handleLogout = async (req, res) => {
     const refresh_token = req.cookies.refresh_token;
 
     if (!refresh_token) {
-      return res
-        .status(400)
-        .json({ message: "Missing refresh_token in cookie" });
-    }
-
-    const user = await db.User.findOne({ where: { refresh_token } });
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "Token không hợp lệ hoặc user không tồn tại" });
-    }
-
-    // 1. Xóa refresh_token trong database
-    const result = await db.User.update(
-      { refresh_token: null },
-      { where: { id: user.id } }
-    );
-
-    if (result[0] === 1) {
-      // 2. Nếu thành công thì xóa cookie
       res.clearCookie("refresh_token", {
         httpOnly: true,
         sameSite: "Lax",
         secure: false,
       });
-
-      return res.status(200).json({ message: "Logout successful" });
-    } else {
-      return res
-        .status(500)
-        .json({ message: "Failed to remove token from DB" });
+      return res.status(200).json({ message: "Logout successful (no token)" });
     }
+
+    const user = await db.User.findOne({ where: { refresh_token } });
+
+    if (user) {
+      await db.User.update({ refresh_token: null }, { where: { id: user.id } });
+    }
+
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      sameSite: "Lax",
+      secure: false,
+    });
+
+    return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error", error });

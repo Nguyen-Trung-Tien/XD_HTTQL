@@ -28,11 +28,14 @@ function Header() {
   const handleLogout = async () => {
     try {
       const result = await UserLogout();
-      if (result?.data?.message === "Logout successful") {
+
+      if (result?.status === 200) {
         localStorage.removeItem("user");
         dispatch(resetUser());
-        toast.success("Đăng xuất thành công!");
-        navigate("/sign-in");
+        const msg = result.data?.message.includes("successful")
+          ? "Đăng xuất thành công!"
+          : "Đăng xuất (phiên đã hết hạn)";
+        toast.success(msg);
       } else {
         toast.error("Đăng xuất thất bại");
       }
