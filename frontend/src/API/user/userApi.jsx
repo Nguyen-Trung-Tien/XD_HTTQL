@@ -61,6 +61,19 @@ const GetDetailUser = async (userId) => {
   }
 };
 
+const UpdateDetailUser = async (data) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/v1/user/update-user`,
+      data
+    );
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 const UserLogout = async () => {
   return await axios.post(`${API_URL}/api/v1/user/logout`, null, {
     withCredentials: true,
@@ -85,4 +98,11 @@ const RefreshToken = async () => {
   }
 };
 
-export { SignInUser, SignUpUser, RefreshToken, UserLogout, GetDetailUser };
+export {
+  SignInUser,
+  SignUpUser,
+  RefreshToken,
+  UserLogout,
+  GetDetailUser,
+  UpdateDetailUser,
+};

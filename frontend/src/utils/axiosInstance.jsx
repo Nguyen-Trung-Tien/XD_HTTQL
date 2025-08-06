@@ -11,7 +11,7 @@ const axiosJWT = axios.create({
 
 axiosJWT.interceptors.request.use(
   async (config) => {
-    const state = store.getState().user;
+    const state = store.getState().user || {};
     const token = state.access_token;
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -34,6 +34,10 @@ axiosJWT.interceptors.response.use(
       !originalRequest._retry &&
       originalRequest.url !== "/api/v1/user/refresh-token"
     ) {
+      const token = store.getState().user?.access_token;
+      if (!token) {
+        return Promise.reject(error);
+      }
       originalRequest._retry = true;
       try {
         const res = await axios.post(
