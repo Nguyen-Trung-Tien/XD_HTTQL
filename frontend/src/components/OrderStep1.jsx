@@ -197,7 +197,7 @@ function OrderStep1({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                         <button
-                          onClick={() => addProductToOrder(product)} // ĐÃ SỬA: Gọi lại hàm gốc
+                          onClick={() => addProductToOrder(product)} 
                           disabled={product.status === "Hết hàng" || isInOrder}
                           className={`p-1.5 rounded-full transition-all duration-300 ${
                             isInOrder
