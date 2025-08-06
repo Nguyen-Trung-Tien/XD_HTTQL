@@ -181,7 +181,7 @@ function OrderStep1({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-textPrimary">
-                          {product.price.toLocaleString("vi-VN")}
+                          {product.price.toLocaleString("vi-VN")}đ
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -286,7 +286,7 @@ function OrderStep1({
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center whitespace-nowrap">
-                        {item.price.toLocaleString("vi-VN")}
+                        {item.price.toLocaleString("vi-VN")}đ
                       </td>
                       <td className="px-6 py-4 text-center whitespace-nowrap">
                         <div className="inline-flex items-center space-x-2">
