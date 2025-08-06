@@ -1,5 +1,5 @@
 const db = require("../models");
-
+const { Op } = require("sequelize");
 const createOrder = async (req, res) => {
   const t = await db.sequelize.transaction();
   try {
@@ -61,10 +61,8 @@ const getAllOrders = async (req, res) => {
   try {
     const orders = await db.Order.findAll({
       include: [
-        {
-          model: db.OrderItem,
-          as: "items",
-        },
+        { model: db.OrderItem, as: "items" },
+        { model: db.Shipper, as: "shipper" }, 
       ],
     });
 
@@ -110,10 +108,55 @@ const deleteOrder = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+const findNearestShipper = async (req, res) => {
+  
+  try {
+    const { lat, lng } = req.query;
+
+    if (!lat || !lng) {
+      return res.status(400).json({ message: "Missing latitude or longitude" });
+    }
+
+    const shippers = await db.Shipper.findAll({
+      where: {
+        status: 'available',
+        lat: { [Op.ne]: null },
+        lng: { [Op.ne]: null },
+      },
+    });
+
+    if (shippers.length === 0) {
+      return res.status(404).json({ message: "No available shipper found" });
+    }
+
+    let nearestShipper = null;
+    let minDistance = Infinity;
+
+    for (const shipper of shippers) {
+      const distance = Math.sqrt(
+        Math.pow(shipper.lat - lat, 2) + Math.pow(shipper.lng - lng, 2)
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestShipper = shipper;
+      }
+    }
+
+    if (!nearestShipper) {
+      return res.status(404).json({ message: "No shipper found" });
+    }
+
+    return res.status(200).json(nearestShipper);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
 
 module.exports = {
   createOrder,
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
+  findNearestShipper,
 };

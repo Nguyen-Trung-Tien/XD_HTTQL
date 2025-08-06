@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import React from "react";
 
-function ShipperList({
+const statusClassMap = {
+  delivering: "bg-[#FFD700]/20 text-[#FFD700]",
+  available: "bg-green-100 text-green-800",
+};
+
+const ShipperList = ({
   shippers = [],
+  orders = [],
   onAddShipper,
   onDeleteShipper,
   onEditShipper,
   onFocusShipper,
   loading,
-}) {
-  const statusClassMap = {
-    delivering: "bg-[#FFD700]/20 text-[#FFD700]",
-    available: "bg-green-100 text-green-800",
+}) => {
+  const getStatusText = (status) => {
+    return status === "delivering" ? "Đang giao" : "Sẵn sàng";
   };
 
-  const statusTextMap = {
-    delivering: "Đang giao",
-    available: "Sẵn sàng",
+  const getCurrentOrderInfo = (shipper) => {
+    if (shipper.status === "delivering" && shipper.currentOrderId) {
+      const order = orders.find((o) => o.id === shipper.currentOrderId);
+      return order
+        ? `#${order.orderNumber}`
+        : `#${shipper.currentOrderId}`;
+    }
+    return "Không có đơn hàng";
   };
-  const getStatusClass = (status) =>
-    statusClassMap[status] || "bg-gray-100 text-gray-800";
-  const getStatusText = (status) => statusTextMap[status] || "Đang giao";
 
   if (loading) {
     return <div className="p-6 text-center">Đang tải danh sách shipper...</div>;
   }
-
-  // if (error) {
-  //   return <div className="p-6 text-center text-red-500">{error}</div>;
-  // }
 
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden">
@@ -49,34 +51,19 @@ function ShipperList({
           <table className="min-w-full divide-y divide-border">
             <thead className="bg-gray-50">
               <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
                   Shipper
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
                   Trạng thái
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
                   Đơn hàng hiện tại
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
                   Vị trí
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                >
+                <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
                   Thao tác
                 </th>
               </tr>
@@ -92,7 +79,6 @@ function ShipperList({
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
                             strokeLinecap="round"
@@ -114,16 +100,16 @@ function ShipperList({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 py-1 text-xs rounded-full ${getStatusClass(
-                        shipper.status
-                      )} font-medium`}
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        statusClassMap[shipper.status] || "bg-gray-100"
+                      } font-medium`}
                     >
                       {getStatusText(shipper.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-textSecondary">
-                      Không có đơn hàng
+                      {getCurrentOrderInfo(shipper)}
                     </div>
                   </td>
                   <td className="px-6 py-4 align-top">
@@ -133,7 +119,6 @@ function ShipperList({
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
                           strokeLinecap="round"
@@ -151,44 +136,64 @@ function ShipperList({
                       <span>{shipper.address || "Chưa cập nhật"}</span>
                     </div>
                   </td>
-
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex space-x-2">
                       <button
                         className="p-1 text-primary hover:text-accent transition-colors"
                         onClick={() => onFocusShipper(shipper.id)}
+                        title="Xem vị trí shipper trên bản đồ"
                       >
                         <svg
                           className="w-5 h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="2"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          ></path>
+                          />
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="2"
                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          ></path>
+                          />
                         </svg>
                       </button>
+
                       <button
-                        className="p-1 text-primary hover:text-red-500 transition-colors"
-                        onClick={() => onDeleteShipper(shipper.id)}
+                        className="p-1 text-primary hover:text-blue-500 transition-colors"
+                        onClick={() => onEditShipper(shipper)}
+                        title="Sửa thông tin shipper"
                       >
                         <svg
                           className="w-5 h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"
+                          />
+                        </svg>
+                      </button>
+
+                      <button
+                        className="p-1 text-primary hover:text-red-500 transition-colors"
+                        onClick={() => onDeleteShipper(shipper.id)}
+                        title="Xóa shipper"
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
                           <path
                             strokeLinecap="round"
@@ -196,25 +201,6 @@ function ShipperList({
                             strokeWidth="2"
                             d="M6 18L18 6M6 6l12 12"
                           />
-                        </svg>
-                      </button>
-                      <button
-                        className="p-1 text-primary hover:text-blue-500 transition-colors"
-                        onClick={() => onEditShipper(shipper)}
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"
-                          ></path>
                         </svg>
                       </button>
                     </div>
@@ -227,6 +213,6 @@ function ShipperList({
       </div>
     </div>
   );
-}
+};
 
 export default ShipperList;

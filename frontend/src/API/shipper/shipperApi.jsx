@@ -25,4 +25,16 @@ const updateShipper = async (shipperId, shipperData) => {
   );
   return response.data;
 };
-export { getAllShippers, addNewShipper, deleteShipper, updateShipper };
+
+
+const updateShipperStatus = async (shipperId, { status, currentOrderId, address, lat, lng }) => {
+  const response = await axios.put(`${API_URL}/api/v1/shipper/update-status/${shipperId}`, {
+    status,
+    currentOrderId,
+    address,
+    lat,
+    lng,
+  });
+  return response.data;
+};
+export { getAllShippers, addNewShipper, deleteShipper, updateShipper,updateShipperStatus};

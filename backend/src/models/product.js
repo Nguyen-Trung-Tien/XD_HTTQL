@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     unit: DataTypes.STRING,
     status: DataTypes.STRING,
     description: DataTypes.TEXT,
+    warehouseAddress: DataTypes.STRING,
+warehouseLat: DataTypes.FLOAT,
+warehouseLng: DataTypes.FLOAT,
     deleted: DataTypes.BOOLEAN
   }, {
     sequelize,

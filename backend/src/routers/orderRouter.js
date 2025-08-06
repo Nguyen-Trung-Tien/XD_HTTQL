@@ -7,5 +7,5 @@ router.get('/get-all', orderController.getAllOrders);
 router.post('/create', orderController.createOrder);
 router.put('/update/:id', orderController.updateOrderStatus);
 router.delete('/delete/:id', orderController.deleteOrder);
-
+router.get('/find-nearest-shipper', orderController.findNearestShipper);
 module.exports = router;

@@ -39,6 +39,18 @@ module.exports = {
       deleted: {
         type: Sequelize.BOOLEAN,
       },
+      warehouseAddress: {
+        type: Sequelize.STRING,
+        defaultValue: "70 Tô Ký, Quận 12, TP.HCM",
+      },
+      warehouseLat: {
+        type: Sequelize.FLOAT,
+        defaultValue: 10.8657,
+      },
+      warehouseLng: {
+        type: Sequelize.FLOAT,
+        defaultValue: 106.619,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
