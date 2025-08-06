@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       lat: DataTypes.FLOAT,
       lng: DataTypes.FLOAT,
       address: DataTypes.STRING,
+      currentOrderId: DataTypes.INTEGER,
     },
     {
       sequelize,

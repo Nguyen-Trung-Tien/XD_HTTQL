@@ -1,65 +1,79 @@
+
 import React, { useState, useEffect, useCallback } from "react";
-import ShipperMap from "./ShipperMap";
-import ShipperList from "./ShipperList";
-import AddShipperForm from "./AddShipperForm";
-import EditShipperForm from "./EditShipperForm";
+import ShipperMap from "../components/ShipperMap";
+import ShipperList from "../components/ShipperList";
+import AddShipperForm from "../components/AddShipperForm";
+import EditShipperForm from "../components/EditShipperForm";
 import {
   getAllShippers,
   addNewShipper,
   deleteShipper,
   updateShipper,
+  updateShipperStatus
 } from "../API/shipper/shipperApi";
+import { getAllOrders } from "../API/orders/ordersApi";
 import { toast } from "react-toastify";
 
 function Shippers() {
   const [shippers, setShippers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [focusId, setFocusId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingShipper, setEditingShipper] = useState(null);
 
-  const fetchShippers = useCallback(async () => {
-    setLoading(true);
+  const fetchData = useCallback(async () => {
     try {
-      const data = await getAllShippers();
-      setShippers(data);
+      
+      const [shippersData, ordersData] = await Promise.all([
+        getAllShippers(),
+        getAllOrders()
+      ]);
+      setShippers(shippersData);
+      setOrders(ordersData);
     } catch (err) {
-      console.error("Không thể tải danh sách shipper:", err);
-      toast.error("Không thể tải danh sách shipper!");
+      console.error("Không thể tải dữ liệu:", err);
+      toast.error("Không thể tải dữ liệu shipper và đơn hàng");
     } finally {
       setLoading(false);
     }
   }, []);
+
   useEffect(() => {
-    fetchShippers();
-  }, [fetchShippers]);
+    fetchData(); 
+    
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 10000);
+
+    return () => clearInterval(interval); 
+  }, [fetchData]);
 
   const handleAdd = async (newData) => {
     try {
       await addNewShipper(newData);
       toast.success("Thêm shipper thành công!");
       setShowAdd(false);
-
-      await fetchShippers();
+      await fetchData(); 
     } catch (err) {
       toast.error("Thêm shipper thất bại");
     }
   };
-  const handleDeleteShipper = async (id) => {
-    const confirm = window.confirm(
-      "🗑️ Bạn có chắc chắn muốn xoá shipper này không?"
-    );
 
+  const handleDeleteShipper = async (id) => {
+    const confirm = window.confirm("🗑️ Bạn có chắc chắn muốn xoá shipper này không?");
     if (!confirm) return;
 
     try {
       await deleteShipper(id);
-      setShippers((prev) => prev.filter((s) => s.id !== id));
       toast.success("Xóa shipper thành công!");
+      await fetchData(); 
     } catch (err) {
-      toast.error("Xóa shipper thất bại ");
+      toast.error("Xóa shipper thất bại");
     }
   };
+
   const handleEdit = async (formData) => {
     try {
       await updateShipper(formData.id, {
@@ -69,9 +83,19 @@ function Shippers() {
       });
       toast.success("Cập nhật shipper thành công!");
       setEditingShipper(null);
-      await fetchShippers();
+      await fetchData(); 
     } catch (err) {
       toast.error("Cập nhật shipper thất bại");
+    }
+  };
+  
+  const handleUpdateStatus = async (shipperId, newStatus) => {
+    try {
+      await updateShipperStatus(shipperId, { status: newStatus });
+      toast.success("Cập nhật trạng thái thành công!");
+      await fetchData(); 
+    } catch (err) {
+      toast.error("Cập nhật trạng thái thất bại");
     }
   };
 
@@ -83,10 +107,12 @@ function Shippers() {
 
       <ShipperList
         shippers={shippers}
+        orders={orders}
         onAddShipper={() => setShowAdd(true)}
         onDeleteShipper={handleDeleteShipper}
         onFocusShipper={setFocusId}
         onEditShipper={(shipper) => setEditingShipper(shipper)}
+        onUpdateStatus={handleUpdateStatus}
         loading={loading}
       />
 
@@ -99,12 +125,13 @@ function Shippers() {
       )}
       {editingShipper && (
         <EditShipperForm
-          shipper={editingShipper} 
-          onSubmit={handleEdit} 
-          onClose={() => setEditingShipper(null)} 
+          shipper={editingShipper}
+          onSubmit={handleEdit}
+          onClose={() => setEditingShipper(null)}
         />
       )}
     </div>
   );
 }
+
 export default Shippers;

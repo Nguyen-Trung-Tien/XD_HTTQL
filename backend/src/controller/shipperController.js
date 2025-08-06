@@ -83,9 +83,42 @@ const deleteShipper = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+const updateShipperStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, currentOrderId, address, lat, lng } = req.body;
+
+    const updateData = {
+      status,
+      currentOrderId: currentOrderId === undefined ? db.Sequelize.literal('currentOrderId') : currentOrderId,
+     
+      address: address || db.Sequelize.literal('address'),
+      lat: lat || db.Sequelize.literal('lat'),
+      lng: lng || db.Sequelize.literal('lng')
+    };
+
+    const [updated] = await db.Shipper.update(updateData, { where: { id } });
+
+    if (updated) {
+      const updatedShipper = await db.Shipper.findByPk(id);
+      res.status(200).json({
+        message: "Shipper status updated successfully.",
+        data: updatedShipper,
+      });
+    } else {
+      res.status(404).json({ message: "Shipper not found." });
+    }
+  } catch (err) {
+    res.status(400).json({
+      message: "Failed to update shipper status.",
+      error: err.message,
+    });
+  }
+};
 module.exports = {
   getAllShippers,
   createShipper,
   updateShipper,
   deleteShipper,
+  updateShipperStatus,
 };

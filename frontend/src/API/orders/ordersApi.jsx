@@ -23,5 +23,9 @@ const deleteOrder = async (orderId) => {
   const response = await axios.delete(`${API_URL}/api/v1/orders/delete/${orderId}`);
   return response.data;
 };
+const findNearestShipper = async (lat, lng) => {
+  const response = await axios.get(`${API_URL}/api/v1/orders/find-nearest-shipper?lat=${lat}&lng=${lng}`);
+  return response.data;
+};
 
-export { getAllOrders, createOrder, updateOrder, deleteOrder };
+export { getAllOrders, createOrder, updateOrder, deleteOrder,findNearestShipper };

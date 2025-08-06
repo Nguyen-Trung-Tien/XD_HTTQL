@@ -28,6 +28,10 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
+      currentOrderId:{
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
