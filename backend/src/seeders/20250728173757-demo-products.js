@@ -6,7 +6,8 @@ module.exports = {
     return queryInterface.bulkInsert("Products", [{
         name: 'Điện thoại Samsung Galaxy S23',
         type: 'Điện thoại',
-        price: '22.990.000đ',
+        price: '22.990.000',
+        stock: 12,
         image: '',
         category: 'Điện tử',
         unit: 'chiếc',
@@ -18,7 +19,8 @@ module.exports = {
       {
         name: 'Laptop Dell XPS 13',
         type: 'Laptop',
-        price: '34.990.000đ',
+        price: '34.990.000',
+        stock: 62,
         image: '',
         category: 'Điện tử',
         unit: 'chiếc',
@@ -30,7 +32,8 @@ module.exports = {
       {
         name: 'Tai nghe Bluetooth Sony WH-1000XM5',
         type: 'Tai nghe',
-        price: '8.490.000đ',
+        price: '8.490.000',
+        stock: 32,
         image: '',
         category: 'Điện tử',
         unit: 'chiếc',
@@ -42,7 +45,8 @@ module.exports = {
       {
         name: 'Máy ảnh Canon EOS M50 Mark II',
         type: 'Máy ảnh',
-        price: '17.500.000đ',
+        price: '17.500.000',
+        stock: 52,
         image: '',
         category: 'Điện tử',
         unit: 'chiếc',
@@ -54,7 +58,8 @@ module.exports = {
       {
         name: 'Tivi LG OLED 55 inch',
         type: 'Tivi',
-        price: '27.990.000đ',
+        price: '27.990.000',
+        stock: 33,
         image: '',
         category: 'Điện tử',
         unit: 'chiếc',
@@ -66,7 +71,8 @@ module.exports = {
       {
         name: 'Loa Bluetooth JBL Charge 5',
         type: 'Loa',
-        price: '3.690.000đ',
+        price: '3.690.000',
+        stock: 13,
         image: '',
         category: 'Điện tử',
         unit: 'chiếc',
