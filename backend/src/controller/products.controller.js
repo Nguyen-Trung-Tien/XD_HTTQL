@@ -4,7 +4,11 @@ const {
 
 module.exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.findAll();
+    const products = await Product.findAll({
+      where: {
+        deleted: false
+      }
+    });
     res.json(products);
   } catch (err) {
     console.error('Error fetching products:', err);
@@ -53,6 +57,34 @@ module.exports.editProduct = async (req, res) => {
     console.error('Error updating product:', error);
     res.status(500).json({
       error: error.message
+    });
+  }
+};
+
+module.exports.deleteProduct = async (req, res) => {
+  try {
+    const {
+      id
+    } = req.params;
+    const deleted = await Product.update({
+      deleted: true
+    }, {
+      where: {
+        id
+      }
+    });
+    if (deleted) {
+      res.json({
+        message: "Product deleted"
+      });
+    } else {
+      res.status(404).json({
+        error: "Product not found"
+      });
+    }
+  } catch (err) {
+    res.status(400).json({
+      error: err.message
     });
   }
 };
