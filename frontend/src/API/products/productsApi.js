@@ -18,8 +18,14 @@ const editProduct = async (id, productData) => {
   return response.data;
 };
 
+const deleteProduct = async (id) => {
+  const response = await axios.delete(`${API_URL}/api/v1/products/delete/${id}`);
+  return response.data;
+};
+
 export {
   getAllProducts,
   createProduct,
-  editProduct
+  editProduct,
+  deleteProduct
 };

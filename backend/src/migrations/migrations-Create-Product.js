@@ -38,6 +38,7 @@ module.exports = {
       },
       deleted: {
         type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       warehouseAddress: {
         type: Sequelize.STRING,

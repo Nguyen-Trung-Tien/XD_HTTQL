@@ -207,7 +207,7 @@ function ProductForm() {
 						}`}
 					/>
 					<p className='text-sm text-gray-500 mt-1'>
-						Tồn kho kho hàng:{' '}
+						Số lượng trong kho:{' '}
 						{inventoryItems.find((item) => item.name === form.name)?.stock ?? 0}
 					</p>
 					{stockError && (

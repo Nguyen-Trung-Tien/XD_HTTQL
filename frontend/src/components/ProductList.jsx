@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { getAllProducts } from '../API/products/productsApi';
+import { getAllProducts, deleteProduct } from '../API/products/productsApi';
+import { toast } from 'react-toastify';
 
 function ProductList() {
 	const navigate = useNavigate();
@@ -47,6 +48,20 @@ function ProductList() {
 	const handleAllChecked = () => {
 		if (isAllChecked) setChecked([]);
 		else setChecked(products.map((product) => product.id));
+	};
+
+	const handleDelete = async (id) => {
+		const confirm = window.confirm('Bạn có muốn xóa sản phẩm này?');
+		if (!confirm) return;
+
+		try {
+			await deleteProduct(id);
+			setProducts((prev) => prev.filter((product) => product.id !== id));
+			toast.success('Xóa sản phẩm thành công');
+			navigate('/products');
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	const filteredProducts = products
@@ -232,9 +247,7 @@ function ProductList() {
 												</svg>
 											</button>
 											<button
-												onClick={() =>
-													navigate(`/products/delete/${product.id}`)
-												}
+												onClick={() => handleDelete(product.id)}
 												className='p-1 text-red-500 hover:text-red-700 transition-colors'>
 												<svg
 													className='w-5 h-5'
