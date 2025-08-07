@@ -17,7 +17,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.STRING, // 'available', 'delivering', ...
+        type: Sequelize.STRING,
       },
       lat: {
         type: Sequelize.FLOAT,
@@ -28,7 +28,7 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
-      currentOrderId:{
+      currentOrderId: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
