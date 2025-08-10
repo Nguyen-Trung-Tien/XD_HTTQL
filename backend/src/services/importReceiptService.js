@@ -1,13 +1,13 @@
 const db = require("../models/index");
 
 const getAllImportReceipts = async () => {
-  return await db.ImportReceipt.findAll({
+  return await db.ImportReceipts.findAll({
     include: [
-      { model: db.Supplier, as: "supplierData" },
+      { model: db.Suppliers, as: "supplierData" },
       { model: db.User, as: "userData" },
       {
-        model: db.ImportDetail,
-        as: "importDetails",
+        model: db.ImportDetails,
+        as: "importDetailData",
         include: [{ model: db.Product, as: "productData" }],
       },
     ],
@@ -15,13 +15,13 @@ const getAllImportReceipts = async () => {
 };
 
 const getImportReceiptById = async (id) => {
-  return await db.ImportReceipt.findByPk(id, {
+  return await db.ImportReceipts.findByPk(id, {
     include: [
-      { model: db.Supplier, as: "supplierData" },
+      { model: db.Suppliers, as: "supplierData" },
       { model: db.User, as: "userData" },
       {
-        model: db.ImportDetail,
-        as: "importDetails",
+        model: db.ImportDetails,
+        as: "importDetailData",
         include: [{ model: db.Product, as: "productData" }],
       },
     ],
@@ -32,13 +32,13 @@ const createImportReceipt = async (data) => {
   const { details, ...receiptData } = data;
   const t = await db.sequelize.transaction();
   try {
-    const receipt = await db.ImportReceipt.create(receiptData, {
+    const receipt = await db.ImportReceipts.create(receiptData, {
       transaction: t,
     });
 
     if (details?.length) {
       for (const item of details) {
-        await db.ImportDetail.create(
+        await db.ImportDetails.create(
           {
             importId: receipt.id,
             ...item,
@@ -57,14 +57,14 @@ const createImportReceipt = async (data) => {
 };
 
 const updateImportReceipt = async (id, data) => {
-  return await db.ImportReceipt.update(data, { where: { id } });
+  return await db.ImportReceipts.update(data, { where: { id } });
 };
 
 const deleteImportReceipt = async (id) => {
   const t = await db.sequelize.transaction();
   try {
-    await db.ImportDetail.destroy({ where: { importId: id }, transaction: t });
-    await db.ImportReceipt.destroy({ where: { id }, transaction: t });
+    await db.ImportDetails.destroy({ where: { importId: id }, transaction: t });
+    await db.ImportReceipts.destroy({ where: { id }, transaction: t });
     await t.commit();
     return true;
   } catch (err) {

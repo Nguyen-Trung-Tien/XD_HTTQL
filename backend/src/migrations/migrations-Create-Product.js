@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       image: {
-        type: Sequelize.STRING,
+        type: Sequelize.BLOB("long"),
       },
       category: {
         type: Sequelize.STRING,
@@ -38,7 +38,7 @@ module.exports = {
       },
       deleted: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
       },
       warehouseAddress: {
         type: Sequelize.STRING,

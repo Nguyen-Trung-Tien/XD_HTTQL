@@ -32,7 +32,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       image: {
-        type: Sequelize.STRING,
+        type: Sequelize.BLOB("long"),
       },
       refresh_token: {
         type: Sequelize.TEXT,

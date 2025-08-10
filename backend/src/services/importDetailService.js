@@ -1,33 +1,33 @@
 const db = require("../models/index");
 
 const getAllImportDetails = async () => {
-  return await db.ImportDetail.findAll({
+  return await db.ImportDetails.findAll({
     include: [
-      { model: db.ImportReceipt, as: "importReceiptData" },
+      { model: db.ImportReceipts, as: "importReceiptData" },
       { model: db.Product, as: "productData" },
     ],
   });
 };
 
 const getImportDetailById = async (id) => {
-  return await db.ImportDetail.findByPk(id, {
+  return await db.ImportDetails.findByPk(id, {
     include: [
-      { model: db.ImportReceipt, as: "importReceiptData" },
+      { model: db.ImportReceipts, as: "importReceiptData" },
       { model: db.Product, as: "productData" },
     ],
   });
 };
 
 const createImportDetail = async (data) => {
-  return await db.ImportDetail.create(data);
+  return await db.ImportDetails.create(data);
 };
 
 const updateImportDetail = async (id, data) => {
-  return await db.ImportDetail.update(data, { where: { id } });
+  return await db.ImportDetails.update(data, { where: { id } });
 };
 
 const deleteImportDetail = async (id) => {
-  return await db.ImportDetail.destroy({ where: { id } });
+  return await db.ImportDetails.destroy({ where: { id } });
 };
 
 module.exports = {

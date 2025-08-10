@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Product.hasMany(models.ImportDetail, {
+      Product.hasMany(models.ImportDetails, {
         foreignKey: "productId",
-        as: "importDetails",
+        as: "importDetailData",
       });
     }
   }
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       price: DataTypes.STRING,
       stock: DataTypes.INTEGER,
-      image: DataTypes.STRING,
+      image: DataTypes.BLOB("long"),
       category: DataTypes.STRING,
       unit: DataTypes.STRING,
       status: DataTypes.STRING,

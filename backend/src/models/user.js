@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasMany(models.ImportReceipt, {
+      User.hasMany(models.ImportReceipts, {
         foreignKey: "userId",
-        as: "importReceipts",
+        as: "importReceiptData",
       });
     }
   }
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("admin", "staff"),
         defaultValue: "staff",
       },
-      image: DataTypes.STRING,
+      image: DataTypes.BLOB("long"),
       refresh_token: DataTypes.TEXT,
     },
     {
