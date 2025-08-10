@@ -10,15 +10,19 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       supplierId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       userId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       import_date: {
+        allowNull: false,
         type: Sequelize.DATE,
       },
       note: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       createdAt: {

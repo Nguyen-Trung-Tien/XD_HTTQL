@@ -8,7 +8,19 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      ImportReceipt.belongsTo(models.Supplier, {
+        foreignKey: "supplierId",
+        as: "supplierData",
+      });
+
+      ImportReceipt.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "userData",
+      });
+      ImportReceipt.hasMany(models.ImportDetail, {
+        foreignKey: "importId",
+        as: "importDetails",
+      });
     }
   }
   ImportReceipt.init(
