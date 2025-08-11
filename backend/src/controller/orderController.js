@@ -14,6 +14,8 @@ const createOrder = async (req, res) => {
       total,
       shipperId,
       items,
+      subtotal,
+      shippingFee,
     } = req.body;
 
     const order = await db.Order.create(
@@ -28,6 +30,8 @@ const createOrder = async (req, res) => {
         status,
         total,
         shipperId,
+        subtotal,
+        shippingFee,
       },
       { transaction: t }
     );
