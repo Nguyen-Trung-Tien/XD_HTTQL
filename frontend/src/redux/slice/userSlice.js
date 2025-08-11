@@ -9,6 +9,7 @@ const initialState = {
   phoneNumber: "",
   role: "",
   image: "",
+  avatarBase64: "",
   access_token: "",
   refresh_token: "",
   currentUser: null,
@@ -28,6 +29,7 @@ const userSlice = createSlice({
       state.phoneNumber = user.phoneNumber || "";
       state.role = user.role || "";
       state.image = user.image || "";
+      state.avatarBase64 = user.avatarBase64 || "";
       state.access_token = user.access_token || "";
       state.refresh_token = user.refresh_token || "";
       state.currentUser = user;
@@ -41,6 +43,7 @@ const userSlice = createSlice({
       state.phoneNumber = "";
       state.role = "";
       state.image = "";
+      state.avatarBase64 = "";
       state.access_token = "";
       state.refresh_token = "";
       state.currentUser = null;
@@ -55,6 +58,7 @@ const userSlice = createSlice({
       state.phoneNumber = user.phoneNumber || state.phoneNumber;
       state.role = user.role || state.role;
       state.image = user.image || state.image;
+      state.avatarBase64 = user.avatarBase64 || "";
       state.access_token = user.access_token || state.access_token;
       state.refresh_token = user.refresh_token || state.refresh_token;
       state.currentUser = { ...state.currentUser, ...user };
@@ -68,6 +72,7 @@ const userSlice = createSlice({
       state.phoneNumber = "";
       state.role = "";
       state.image = "";
+      state.avatarBase64 = "";
       state.access_token = "";
       state.refresh_token = "";
       state.currentUser = null;

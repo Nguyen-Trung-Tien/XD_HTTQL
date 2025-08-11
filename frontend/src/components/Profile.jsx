@@ -10,7 +10,7 @@ import {
   FiUpload,
   FiHome,
 } from "react-icons/fi";
-import arrayBufferToString from "../utils/arrayBufferToString";
+import { arrayBufferToString } from "../utils/arrayBufferToString";
 
 const InputField = ({ label, value, onChange, icon, disabled }) => (
   <div>

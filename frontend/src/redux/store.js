@@ -11,6 +11,7 @@ const preloadedState = {
     phoneNumber: "",
     role: "",
     image: "",
+    avatarBase64: "",
     access_token: "",
     refresh_token: "",
     currentUser: null,
