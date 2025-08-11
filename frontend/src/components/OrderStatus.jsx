@@ -3,11 +3,21 @@ import {
   getAllOrders,
   updateOrder,
   findNearestShipper,
+  deleteOrder,
 } from "../API/orders/ordersApi";
 import { updateShipperStatus } from "../API/shipper/shipperApi";
 import { toast } from "react-toastify";
+
 const WAREHOUSE_LAT = 10.8657;
 const WAREHOUSE_LNG = 106.619;
+
+const STATUS_FLOW = [
+  "pending",
+  "finding_shipper",
+  "shipping",
+  "delivered"
+];
+
 const ORDER_STATUS = {
   pending: {
     class: "bg-accent/20 text-accent",
@@ -19,11 +29,6 @@ const ORDER_STATUS = {
     text: "Đang tìm shipper...",
     description: "Hệ thống đang tìm shipper phù hợp",
   },
-  processing: {
-    class: "bg-blue-100 text-blue-800",
-    text: "Đang xử lý",
-    description: "Đơn hàng của bạn đang được chuẩn bị",
-  },
   shipping: {
     class: "bg-yellow-100 text-yellow-800",
     text: "Đang giao",
@@ -34,9 +39,14 @@ const ORDER_STATUS = {
     text: "Đã giao hàng",
     description: "Đã giao thành công",
   },
+  cancelled: {
+    class: "bg-red-100 text-red-800",
+    text: "Đã hủy",
+    description: "Đơn hàng đã bị hủy",
+  },
 };
 
-function OrderStatus({ currentUser = {} }) {
+function OrderStatus() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -46,14 +56,6 @@ function OrderStatus({ currentUser = {} }) {
     try {
       const data = await getAllOrders();
       setOrders(data);
-
-      data.forEach((order) => {
-        if (order.status === "pending") {
-          handleNewOrder(order);
-        } else if (order.status === "shipping") {
-          handleAutoCompleteOrder(order);
-        }
-      });
     } catch (err) {
       console.error("Error fetching orders:", err);
     } finally {
@@ -67,70 +69,63 @@ function OrderStatus({ currentUser = {} }) {
     return () => clearInterval(interval);
   }, []);
 
-  const handleNewOrder = async (order) => {
+  const handleCancelOrder = async (order) => {
+    if (!window.confirm("Bạn có chắc muốn hủy đơn này?")) return;
     try {
-      await updateOrder(order.id, { status: "finding_shipper" });
-      setTimeout(async () => {
-        const nearestShipper = await findNearestShipper(
-          WAREHOUSE_LAT,
-          WAREHOUSE_LNG
-        );
-        if (nearestShipper) {
-          await Promise.all([
-            updateOrder(order.id, {
-              status: "shipping",
-              shippedAt: new Date().toISOString(),
-              shipperId: nearestShipper.id,
-            }),
-            updateShipperStatus(nearestShipper.id, {
-              status: "delivering",
-              currentOrderId: order.id,
-              // address: order.shippingAddress,
-              // lat: order.shippingLat,
-              // lng: order.shippingLng,
-            }),
-          ]);
-          toast.success(
-            `Đã gán shipper ${nearestShipper.name} cho đơn hàng #${order.orderNumber}`
-          );
-        } else {
-          await updateOrder(order.id, { status: "pending" });
-          toast.warning(
-            "Không tìm thấy shipper nào sẵn sàng, đơn hàng quay lại hàng chờ."
-          );
-        }
-        fetchOrders();
-      }, 5000);
+      if (order.shipperId) {
+        await updateShipperStatus(order.shipperId, {
+          status: "available",
+          currentOrderId: null,
+          address: order.shippingAddress,
+          lat: order.shippingLat,
+          lng: order.shippingLng,
+        });
+      }
+      await deleteOrder(order.id);
+      toast.success("Đã hủy đơn hàng #" + order.orderNumber);
+      fetchOrders();
     } catch (error) {
-      console.error("Error processing order:", error);
-      await updateOrder(order.id, { status: "pending" });
+      console.error("Error cancelling order:", error);
+      toast.error("Có lỗi khi hủy đơn hàng");
     }
   };
 
-  const handleAutoCompleteOrder = async (order) => {
-    const shippedTime = new Date(order.shippedAt).getTime();
-    const currentTime = new Date().getTime();
-    if (currentTime - shippedTime > 30 * 60 * 1000) {
-      try {
+  const handleFindShipper = async (order) => {
+    try {
+      await updateOrder(order.id, { status: "finding_shipper" });
+      toast.info("Đang tìm shipper cho đơn #" + order.orderNumber);
+
+      const nearestShipper = await findNearestShipper(WAREHOUSE_LAT, WAREHOUSE_LNG);
+      if (nearestShipper) {
         await Promise.all([
           updateOrder(order.id, {
-            status: "delivered",
-            deliveredAt: new Date().toISOString(),
+            status: "shipping",
+            shippedAt: new Date().toISOString(),
+            shipperId: nearestShipper.id,
           }),
-          order.shipperId &&
-            updateShipperStatus(order.shipperId, {
-              status: "available",
-              currentOrderId: null,
-              address: order.shippingAddress,
-              lat: order.shippingLat,
-              lng: order.shippingLng,
-            }),
+          updateShipperStatus(nearestShipper.id, {
+            status: "delivering",
+            currentOrderId: order.id,
+            address: "Kho hàng",
+            lat: WAREHOUSE_LAT,
+            lng: WAREHOUSE_LNG,
+          }),
         ]);
-        toast.success(`Đơn hàng #${order.orderNumber} đã tự động hoàn thành`);
-        fetchOrders();
-      } catch (error) {
-        console.error("Error auto-completing order:", error);
+        toast.success(
+          `Đã gán shipper ${nearestShipper.name} cho đơn hàng #${order.orderNumber}`
+        );
+      } else {
+        await updateOrder(order.id, { status: "pending" });
+        toast.warning(
+          "Không tìm thấy shipper nào sẵn sàng, đơn hàng quay lại hàng chờ."
+        );
       }
+      fetchOrders();
+    } catch (error) {
+      console.error("Error finding shipper:", error);
+      toast.error("Có lỗi khi tìm shipper");
+      await updateOrder(order.id, { status: "pending" });
+      fetchOrders();
     }
   };
 
@@ -141,7 +136,6 @@ function OrderStatus({ currentUser = {} }) {
           status: "delivered",
           deliveredAt: new Date().toISOString(),
         }),
-
         order.shipperId &&
           updateShipperStatus(order.shipperId, {
             status: "available",
@@ -158,31 +152,6 @@ function OrderStatus({ currentUser = {} }) {
     } catch (error) {
       console.error("Error confirming delivery:", error);
       toast.error("Có lỗi xảy ra khi xác nhận giao hàng");
-    }
-  };
-
-  const handleAcceptOrder = async (order) => {
-    try {
-      if (!currentUser?.isAdmin && !currentUser?.isShipper) return;
-      const shipperId = currentUser?.isShipper ? currentUser.id : null;
-
-      await updateOrder(order.id, {
-        status: "shipping",
-        shippedAt: new Date().toISOString(),
-        shipperId: shipperId || undefined,
-      });
-      if (currentUser?.isShipper) {
-        await updateShipperStatus(currentUser.id, {
-          status: "delivering",
-          currentOrderId: order.id,
-        });
-      }
-
-      toast.success("Đã nhận đơn hàng thành công");
-      fetchOrders();
-    } catch (error) {
-      console.error("Error accepting order:", error);
-      toast.error("Có lỗi xảy ra khi nhận đơn hàng");
     }
   };
 
@@ -211,55 +180,46 @@ function OrderStatus({ currentUser = {} }) {
   };
 
   const renderActionButtons = (order) => {
-    const canTakeAction =
-      currentUser?.isAdmin ||
-      (currentUser?.isShipper && order.shipperId === currentUser.id);
-
-    if (!canTakeAction) return null;
-
-    if (
-      order.status === "pending" ||
-      order.status === "processing" ||
-      order.status === "finding_shipper"
-    ) {
-      return (
-        <button
-          onClick={() => handleAcceptOrder(order)}
-          className="px-4 py-1.5 gradient-bg rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-        >
-          Nhận đơn hàng
-        </button>
-      );
-    }
-
-    if (order.status === "shipping") {
-      return (
-        <button
-          onClick={() => handleConfirmDelivery(order)}
-          className="px-4 py-1.5 bg-green-600 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
-        >
-          Xác nhận giao hàng
-        </button>
-      );
-    }
-
-    return null;
+    const canCancel = ["pending", "finding_shipper"].includes(order.status);
+    return (
+      <>
+        {order.status === "pending" && (
+          <button
+            onClick={() => handleFindShipper(order)}
+            className="px-4 py-1.5 gradient-bg rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+          >
+            Tìm shipper
+          </button>
+        )}
+        {order.status === "shipping" && (
+          <button
+            onClick={() => handleConfirmDelivery(order)}
+            className="px-4 py-1.5 bg-green-600 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+          >
+            Xác nhận giao hàng
+          </button>
+        )}
+        {canCancel && (
+          <button
+            onClick={() => handleCancelOrder(order)}
+            className="px-4 py-1.5 bg-red-500 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+          >
+            Hủy đơn
+          </button>
+        )}
+      </>
+    );
   };
 
   const renderTimeline = (order) => {
+    const steps = ["pending", "finding_shipper", "shipping", "delivered"];
+    const currentIndex = steps.indexOf(order.status);
     return (
       <div className="relative">
         <div className="flex mb-4">
           <div className="flex flex-col items-center mr-4">
-            {["pending", "processing", "delivered"].map((step, index) => {
-              const isCompleted =
-                (step === "pending" && order.status !== "pending") ||
-                (step === "processing" &&
-                  (order.status === "processing" ||
-                    order.status === "shipping" ||
-                    order.status === "delivered")) ||
-                (step === "delivered" && order.status === "delivered");
-
+            {steps.map((step, index) => {
+              const isCompleted = index <= currentIndex;
               return (
                 <React.Fragment key={step}>
                   <div
@@ -267,7 +227,7 @@ function OrderStatus({ currentUser = {} }) {
                       isCompleted ? "bg-accent" : "bg-gray-200"
                     }`}
                   ></div>
-                  {index < 2 && (
+                  {index < steps.length - 1 && (
                     <div
                       className={`w-1 h-12 ${
                         isCompleted ? "bg-accent" : "bg-gray-200"
@@ -278,18 +238,10 @@ function OrderStatus({ currentUser = {} }) {
               );
             })}
           </div>
-
           <div className="flex-1">
-            {["pending", "processing", "delivered"].map((step) => {
+            {steps.map((step) => {
               const stepInfo = ORDER_STATUS[step] || {};
-              const isActive =
-                (step === "pending" && order.status !== "pending") ||
-                (step === "processing" &&
-                  (order.status === "processing" ||
-                    order.status === "shipping" ||
-                    order.status === "delivered")) ||
-                (step === "delivered" && order.status === "delivered");
-
+              const isActive = steps.indexOf(step) <= currentIndex;
               return (
                 <div key={step} className="mb-6 last:mb-0">
                   <h5
@@ -321,33 +273,25 @@ function OrderStatus({ currentUser = {} }) {
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-semibold text-textPrimary">
-            {currentUser?.isShipper ? "Đơn hàng của tôi" : "Đơn hàng gần đây"}
+            Quản lý đơn hàng
           </h3>
-          {!currentUser?.isShipper && (
-            <div className="flex space-x-2">
-              {[
-                "all",
-                "pending",
-                "finding_shipper",
-                "shipping",
-                "delivered",
-              ].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilter(status)}
-                  className={`px-3 py-1 text-sm rounded-md ${
-                    filter === status
-                      ? "gradient-bg text-white"
-                      : "bg-gray-100 text-textSecondary"
-                  } hover:opacity-90 transition-opacity`}
-                >
-                  {status === "all"
-                    ? "Tất cả"
-                    : ORDER_STATUS[status]?.text || status}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="flex space-x-2">
+            {["all", ...STATUS_FLOW, "cancelled"].map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-3 py-1 text-sm rounded-md ${
+                  filter === status
+                    ? "gradient-bg text-white"
+                    : "bg-gray-100 text-textSecondary"
+                } hover:opacity-90 transition-opacity`}
+              >
+                {status === "all"
+                  ? "Tất cả"
+                  : ORDER_STATUS[status]?.text || status}
+              </button>
+            ))}
+          </div>
         </div>
 
         {loading ? (
