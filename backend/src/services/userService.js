@@ -38,7 +38,16 @@ const handleLoginUser = (email, password) => {
       let isCheckEmail = await checkUserEmail(email);
       if (isCheckEmail) {
         let user = await db.User.findOne({
-          attributes: ["id", "email", "password", "role"],
+          attributes: [
+            "id",
+            "email",
+            "password",
+            "role",
+            "lastName",
+            "firstName",
+            "image",
+            "address",
+          ],
           where: { email: email },
           raw: true,
         });
@@ -53,7 +62,11 @@ const handleLoginUser = (email, password) => {
             userData.user = {
               id: user.id,
               email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
               role: user.role,
+              address: user.address,
+              image: user.image,
             };
           } else {
             userData.errCode = 3;
@@ -150,9 +163,7 @@ const UpdateUserData = (data) => {
         user.address = data.address;
         user.role = data.role;
         user.phoneNumber = data.phoneNumber;
-        if (data.avatarBase64) {
-          user.image = data.avatarBase64;
-        }
+        user.image = data.avatarBase64;
 
         await user.save();
 

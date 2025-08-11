@@ -10,6 +10,7 @@ import {
   FiUpload,
   FiHome,
 } from "react-icons/fi";
+import arrayBufferToString from "../utils/arrayBufferToString";
 
 const InputField = ({ label, value, onChange, icon, disabled }) => (
   <div>
@@ -37,7 +38,6 @@ const Profile = () => {
     lastName: "",
     phoneNumber: "",
     address: "",
-    image: "",
     role: "",
     avatarBase64: "",
   });
@@ -49,9 +49,14 @@ const Profile = () => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         const userId = storedUser?.id;
         if (!userId) return;
+
         const res = await GetDetailUser(userId);
         if (res.errCode === 0 && res.users.length > 0) {
           const data = res.users[0];
+          let avatarBase64 = "";
+          if (data.image && data.image.data && data.image.data.length > 0) {
+            avatarBase64 = arrayBufferToString(data.image.data);
+          }
           setUser({
             email: data.email || "",
             firstName: data.firstName || "",
@@ -59,17 +64,63 @@ const Profile = () => {
             phoneNumber: data.phoneNumber || "",
             address: data.address || "",
             role: data.role || "",
-            avatarBase64: data.avatarBase64 || "",
+            avatarBase64,
           });
-          setAvatarPreview(data.avatarBase64 || null);
+          setAvatarPreview(avatarBase64 || null);
+        } else {
+          toast.error(res.message || "Lấy thông tin người dùng thất bại!");
         }
       } catch (err) {
         console.error("Failed to fetch user:", err);
       }
     };
-    console.log("avatarPreview updated:", avatarPreview);
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    console.log("avatarPreview updated:", avatarPreview);
   }, [avatarPreview]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const userId = storedUser?.id;
+      if (!userId) return;
+
+      const res = await UpdateDetailUser({ id: userId, ...user });
+      if (res.errCode === 0) {
+        toast.success("Cập nhật thành công!");
+
+        const refreshed = await GetDetailUser(userId);
+        if (refreshed.errCode === 0 && refreshed.users.length > 0) {
+          const data = refreshed.users[0];
+          let avatarBase64 = "";
+          if (data.image && data.image.data && data.image.data.length > 0) {
+            avatarBase64 = arrayBufferToString(data.image.data);
+          }
+          setUser({
+            email: data.email || "",
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+            phoneNumber: data.phoneNumber || "",
+            address: data.address || "",
+            role: data.role || "",
+            avatarBase64,
+          });
+          setAvatarPreview(avatarBase64 || null);
+        }
+      } else {
+        toast.error(res.message || "Cập nhật thất bại!");
+      }
+    } catch (err) {
+      console.error("Update failed:", err);
+      toast.error("Lỗi khi cập nhật!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -86,30 +137,6 @@ const Profile = () => {
       setUser((prev) => ({ ...prev, avatarBase64: reader.result }));
     };
     reader.readAsDataURL(file);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      const userId = storedUser?.id;
-      if (!userId) return;
-
-      const res = await UpdateDetailUser({ id: userId, ...user });
-      if (res.errCode === 0) {
-        toast.success("Cập nhật thành công!");
-        const refreshed = await GetDetailUser(userId);
-        setUser(refreshed.users[0]);
-      } else {
-        toast.error(res.message || "Cập nhật thất bại!");
-      }
-    } catch (err) {
-      console.error("Update failed:", err);
-      toast.error("Lỗi khi cập nhật!");
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
