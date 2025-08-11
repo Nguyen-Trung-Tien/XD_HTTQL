@@ -6,17 +6,13 @@ import {
   deleteOrder,
 } from "../API/orders/ordersApi";
 import { updateShipperStatus } from "../API/shipper/shipperApi";
+import OrderDetail from "./OrderDetail";
 import { toast } from "react-toastify";
 
 const WAREHOUSE_LAT = 10.8657;
 const WAREHOUSE_LNG = 106.619;
 
-const STATUS_FLOW = [
-  "pending",
-  "finding_shipper",
-  "shipping",
-  "delivered"
-];
+const STATUS_FLOW = ["pending", "finding_shipper", "shipping", "delivered"];
 
 const ORDER_STATUS = {
   pending: {
@@ -50,6 +46,7 @@ function OrderStatus() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -65,9 +62,7 @@ function OrderStatus() {
 
   useEffect(() => {
     fetchOrders();
-    const interval = setInterval(fetchOrders, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  }, [filter]);
 
   const handleCancelOrder = async (order) => {
     if (!window.confirm("Bạn có chắc muốn hủy đơn này?")) return;
@@ -95,7 +90,10 @@ function OrderStatus() {
       await updateOrder(order.id, { status: "finding_shipper" });
       toast.info("Đang tìm shipper cho đơn #" + order.orderNumber);
 
-      const nearestShipper = await findNearestShipper(WAREHOUSE_LAT, WAREHOUSE_LNG);
+      const nearestShipper = await findNearestShipper(
+        WAREHOUSE_LAT,
+        WAREHOUSE_LNG
+      );
       if (nearestShipper) {
         await Promise.all([
           updateOrder(order.id, {
@@ -347,7 +345,8 @@ function OrderStatus() {
                   {renderTimeline(order)}
 
                   <div className="flex justify-end space-x-3 mt-4 pt-4 border-t border-border">
-                    <button className="px-4 py-1.5 border border-primary rounded-lg text-sm text-primary hover:bg-primary/5 transition-colors">
+                    <button className="px-4 py-1.5 border border-primary rounded-lg text-sm text-primary hover:bg-primary/5 transition-colors"
+                    onClick={() => setSelectedOrder(order)}>
                       Xem chi tiết
                     </button>
                     {renderActionButtons(order)}
@@ -356,6 +355,12 @@ function OrderStatus() {
               );
             })}
           </div>
+        )}
+         {selectedOrder && (
+          <OrderDetail
+            order={selectedOrder}
+            onClose={() => setSelectedOrder(null)}
+          />
         )}
       </div>
     </div>

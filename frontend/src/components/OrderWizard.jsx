@@ -66,12 +66,12 @@ function OrderWizard() {
   const handleSubmit = async () => {
     const subtotal = orderData.products.reduce(
       (sum, item) =>
-        sum + (Number(item.price) || 0) * item.quantity,
+        sum +
+        (parseInt(String(item.price).replace(/\D/g, "")) || 0) * item.quantity,
       0
     );
     const shippingFee = 30000;
-    const discount = 0;
-    const total = subtotal + shippingFee - discount;
+    const total = subtotal + shippingFee;
 
     const payload = {
       customerName: orderData.customer.name,
@@ -82,6 +82,8 @@ function OrderWizard() {
       paymentMethod: orderData.payment,
       status: "pending",
       total,
+      subtotal,
+      shippingFee,
       items: orderData.products.map((p) => ({
         productId: p.productId,
         name: p.name,
@@ -90,7 +92,6 @@ function OrderWizard() {
       })),
     };
     try {
-
       await createOrder(payload);
       toast.success("Đơn hàng đã được tạo thành công!");
       setCurrentStep(1);

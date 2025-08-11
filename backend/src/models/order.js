@@ -5,7 +5,10 @@ module.exports = (sequelize, DataTypes) => {
   class Order extends Model {
     static associate(models) {
       Order.hasMany(models.OrderItem, { foreignKey: "orderId", as: "items" });
-      Order.belongsTo(models.Shipper, { foreignKey: "shipperId", as: "shipper" });
+      Order.belongsTo(models.Shipper, {
+        foreignKey: "shipperId",
+        as: "shipper",
+      });
     }
   }
 
@@ -24,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-     
+
       shippingAddress: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -44,6 +47,15 @@ module.exports = (sequelize, DataTypes) => {
       status: {
         type: DataTypes.STRING,
         defaultValue: "pending",
+      },
+      subtotal: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      shippingFee: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 0,
       },
       total: {
         type: DataTypes.FLOAT,
@@ -65,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Order",
-      tableName: "Orders", 
+      tableName: "Orders",
     }
   );
 

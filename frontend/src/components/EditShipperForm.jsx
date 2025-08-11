@@ -119,7 +119,8 @@ function EditShipperForm({ shipper, onClose, onSubmit }) {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full border p-2 rounded "
+              disabled
+              className="w-full border p-2 rounded bg-gray-100 cursor-not-allowed"
             >
               <option value="available">Sẵn sàng</option>
               <option value="delivering">Đang giao</option>

@@ -36,6 +36,12 @@ module.exports = {
       total: {
         type: Sequelize.FLOAT
       },
+      subtotal:{
+        type : Sequelize.FLOAT
+      },
+      shippingFee:{
+        type: Sequelize.FLOAT
+      },
       shippedAt: {
         type: Sequelize.DATE
       },
@@ -45,6 +51,7 @@ module.exports = {
       shipperId: {
         type: Sequelize.INTEGER
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
