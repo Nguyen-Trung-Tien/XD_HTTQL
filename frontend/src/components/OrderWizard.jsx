@@ -5,7 +5,7 @@ import OrderStep1 from "./OrderStep1";
 import OrderStep2 from "./OrderStep2";
 import OrderStep3 from "./OrderStep3";
 import { toast } from "react-toastify";
-function OrderWizard() {
+function OrderWizard({ onOrderCreated }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [products, setProducts] = useState([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
@@ -101,6 +101,7 @@ function OrderWizard() {
         shipping: { address: "", lat: null, lng: null },
         payment: "cash",
       });
+      if (onOrderCreated) onOrderCreated(); 
     } catch (err) {
       toast.error("Tạo đơn hàng thất bại!");
     }

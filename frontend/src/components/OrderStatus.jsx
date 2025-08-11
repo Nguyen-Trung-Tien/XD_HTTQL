@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import {
   getAllOrders,
   updateOrder,
@@ -35,20 +35,15 @@ const ORDER_STATUS = {
     text: "Đã giao hàng",
     description: "Đã giao thành công",
   },
-  cancelled: {
-    class: "bg-red-100 text-red-800",
-    text: "Đã hủy",
-    description: "Đơn hàng đã bị hủy",
-  },
 };
 
-function OrderStatus() {
+const OrderStatus = forwardRef((props, ref) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const fetchOrders = async () => {
+   const fetchOrders = async () => {
     setLoading(true);
     try {
       const data = await getAllOrders();
@@ -60,9 +55,13 @@ function OrderStatus() {
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    fetchOrders,
+  }));
+
   useEffect(() => {
     fetchOrders();
-  }, [filter]);
+  }, []);
 
   const handleCancelOrder = async (order) => {
     if (!window.confirm("Bạn có chắc muốn hủy đơn này?")) return;
@@ -86,46 +85,56 @@ function OrderStatus() {
   };
 
   const handleFindShipper = async (order) => {
-    try {
-      await updateOrder(order.id, { status: "finding_shipper" });
-      toast.info("Đang tìm shipper cho đơn #" + order.orderNumber);
+  try {
+    setLoading(true); 
+    toast.info("Đang tìm shipper cho đơn #" + order.orderNumber);
 
-      const nearestShipper = await findNearestShipper(
-        WAREHOUSE_LAT,
-        WAREHOUSE_LNG
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+
+    await updateOrder(order.id, { status: "finding_shipper" });
+
+    const nearestShipper = await findNearestShipper(
+      WAREHOUSE_LAT,
+      WAREHOUSE_LNG
+    );
+
+    if (nearestShipper) {
+      await Promise.all([
+        updateOrder(order.id, {
+          status: "shipping",
+          shippedAt: new Date().toISOString(),
+          shipperId: nearestShipper.id,
+        }),
+        updateShipperStatus(nearestShipper.id, {
+          status: "delivering",
+          currentOrderId: order.id,
+          address: "Kho hàng",
+          lat: WAREHOUSE_LAT,
+          lng: WAREHOUSE_LNG,
+        }),
+      ]);
+
+      toast.success(
+        `Đã gán shipper ${nearestShipper.name} cho đơn hàng #${order.orderNumber}`
       );
-      if (nearestShipper) {
-        await Promise.all([
-          updateOrder(order.id, {
-            status: "shipping",
-            shippedAt: new Date().toISOString(),
-            shipperId: nearestShipper.id,
-          }),
-          updateShipperStatus(nearestShipper.id, {
-            status: "delivering",
-            currentOrderId: order.id,
-            address: "Kho hàng",
-            lat: WAREHOUSE_LAT,
-            lng: WAREHOUSE_LNG,
-          }),
-        ]);
-        toast.success(
-          `Đã gán shipper ${nearestShipper.name} cho đơn hàng #${order.orderNumber}`
-        );
-      } else {
-        await updateOrder(order.id, { status: "pending" });
-        toast.warning(
-          "Không tìm thấy shipper nào sẵn sàng, đơn hàng quay lại hàng chờ."
-        );
-      }
-      fetchOrders();
-    } catch (error) {
-      console.error("Error finding shipper:", error);
-      toast.error("Có lỗi khi tìm shipper");
+    } else {
       await updateOrder(order.id, { status: "pending" });
-      fetchOrders();
+      toast.warning(
+        "Không tìm thấy shipper nào sẵn sàng, đơn hàng quay lại hàng chờ."
+      );
     }
-  };
+
+    fetchOrders();
+  } catch (error) {
+    console.error("Error finding shipper:", error);
+    toast.error("Có lỗi khi tìm shipper");
+    await updateOrder(order.id, { status: "pending" });
+    fetchOrders();
+  } finally {
+    setLoading(false); 
+  }
+};
+
 
   const handleConfirmDelivery = async (order) => {
     try {
@@ -274,7 +283,7 @@ function OrderStatus() {
             Quản lý đơn hàng
           </h3>
           <div className="flex space-x-2">
-            {["all", ...STATUS_FLOW, "cancelled"].map((status) => (
+            {["all", ...STATUS_FLOW].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilter(status)}
@@ -366,5 +375,5 @@ function OrderStatus() {
     </div>
   );
 }
-
+)
 export default OrderStatus;
