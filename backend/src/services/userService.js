@@ -147,6 +147,7 @@ const UpdateUserData = (data) => {
         user.firstName = data.firstName;
         user.lastName = data.lastName;
         user.address = data.address;
+        user.role = data.role;
         user.phoneNumber = data.phoneNumber;
         user.image = data.image;
         await user.save();
