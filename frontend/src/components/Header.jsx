@@ -4,14 +4,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { resetUser } from "../redux/slice/userSlice";
 import { UserLogout } from "../API/user/userApi";
 import { toast } from "react-toastify";
+import { bufferToBase64 } from "../utils/arrayBufferToString";
 
 function Header() {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const userMenuRef = React.useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.user.currentUser);
-  const dispatch = useDispatch();
 
   React.useEffect(() => {
     const handleClickOutside = (event) => {
@@ -20,9 +21,7 @@ function Header() {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = async () => {
@@ -36,6 +35,7 @@ function Header() {
           ? "Đăng xuất thành công!"
           : "Đăng xuất (phiên đã hết hạn)";
         toast.success(msg);
+        navigate("/login");
       } else {
         toast.error("Đăng xuất thất bại");
       }
@@ -49,17 +49,23 @@ function Header() {
     navigate("/profile");
   };
 
+  const getInitials = (firstName, lastName) => {
+    return (firstName?.[0] || "") + (lastName?.[0] || "");
+  };
+
+  const avatarBase64 = currentUser?.image
+    ? bufferToBase64(currentUser.image)
+    : null;
+
   return (
     <header className="bg-card">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div
-            className="flex items-center justify-center h-16 px-4"
+            className="flex items-center justify-center h-16 px-4 cursor-pointer"
             onClick={() => navigate("/")}
           >
-            <h2 className="text-xl font-bold gradient-text cursor-pointer">
-              Hệ Thống Kho
-            </h2>
+            <h2 className="text-xl font-bold gradient-text">Hệ Thống Kho</h2>
           </div>
 
           {/* Search Bar */}
@@ -96,11 +102,22 @@ function Header() {
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary/30"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
-                    {currentUser?.initials || "U"}
-                  </div>
+                  {avatarBase64 ? (
+                    <img
+                      src={avatarBase64}
+                      alt="Avatar"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primaryLight flex items-center justify-center text-white font-medium">
+                      {getInitials(
+                        currentUser.firstName,
+                        currentUser.lastName
+                      ) || "U"}
+                    </div>
+                  )}
                   <span className="ml-2 hidden md:block">
-                    {currentUser?.email}
+                    {currentUser.email}
                   </span>
                   <svg
                     className="w-4 h-4 ml-1 text-textSecondary"
@@ -119,18 +136,18 @@ function Header() {
 
                 {userMenuOpen && (
                   <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-card bg-card ring-1 ring-black ring-opacity-5 py-1 z-50">
-                    <a
+                    <button
                       onClick={handleGetProfile}
-                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                      className="block w-full text-left px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
                     >
                       Hồ sơ
-                    </a>
-                    <a
-                      href="#settings"
-                      className="block px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
+                    </button>
+                    <button
+                      onClick={() => alert("Cài đặt chưa làm")}
+                      className="block w-full text-left px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
                     >
                       Cài đặt
-                    </a>
+                    </button>
                     <div className="border-t border-border my-1"></div>
                     <button
                       onClick={handleLogout}

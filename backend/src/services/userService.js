@@ -163,7 +163,9 @@ const UpdateUserData = (data) => {
         user.address = data.address;
         user.role = data.role;
         user.phoneNumber = data.phoneNumber;
-        user.image = data.avatarBase64;
+        if (data.avatarBase64) {
+          user.image = data.avatarBase64;
+        }
 
         await user.save();
 
