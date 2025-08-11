@@ -133,7 +133,7 @@ const UpdateUserData = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (!data.id) {
-        resolve({
+        return resolve({
           errCode: 2,
           errMessage: "Missing required parameter!",
         });
@@ -143,13 +143,17 @@ const UpdateUserData = (data) => {
         where: { id: data.id },
         raw: false,
       });
+
       if (user) {
         user.firstName = data.firstName;
         user.lastName = data.lastName;
         user.address = data.address;
         user.role = data.role;
         user.phoneNumber = data.phoneNumber;
-        user.image = data.image;
+        if (data.avatarBase64) {
+          user.image = data.avatarBase64;
+        }
+
         await user.save();
 
         resolve({
@@ -159,7 +163,7 @@ const UpdateUserData = (data) => {
       } else {
         resolve({
           errCode: 1,
-          errMessage: "User note found!",
+          errMessage: "User not found!",
         });
       }
     } catch (e) {
@@ -167,6 +171,7 @@ const UpdateUserData = (data) => {
     }
   });
 };
+
 const DeleteUserData = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
