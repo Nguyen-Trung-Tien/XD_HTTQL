@@ -16,7 +16,9 @@ import { login } from "./redux/slice/userSlice";
 import SignUp from "./components/SignUp";
 import RequireAuth from "./auth/RequireAuth";
 import Profile from "./components/Profile";
-
+import ImportReceiptsManager from "./components/ImportReceiptsManager";
+import Suppliers from "./components/Suppliers";
+import ImportDetails from "./components/ImportDetails";
 function App() {
   const dispatch = useDispatch();
 
@@ -35,6 +37,10 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/ImportReceipts" element={<ImportReceiptsManager />} />
+        <Route path="/Suppliers" element={<Suppliers />} />
+        <Route path="/ImportDetails" element={<ImportDetails />} />
+
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
