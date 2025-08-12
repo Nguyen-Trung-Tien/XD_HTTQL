@@ -42,15 +42,29 @@ let createCustomer = async (data) => {
   }
 };
 
-let getAllCustomers = async () => {
+let getAllCustomers = async (page, limit) => {
   try {
-    let customers = await db.Customers.findAll();
+    let offset = (page - 1) * limit;
+
+    let { rows: customers, count: total } = await db.Customers.findAndCountAll({
+      offset,
+      limit,
+      order: [["createdAt", "DESC"]],
+    });
+
     return {
       errCode: 0,
       errMessage: "Success",
       customers,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     };
   } catch (e) {
+    console.error("Error in getAllCustomers:", e);
     return { errCode: 1, errMessage: "Error getting customers", error: e };
   }
 };

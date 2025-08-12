@@ -14,11 +14,11 @@ import { arrayBufferToString } from "../utils/arrayBufferToString";
 
 const InputField = ({ label, value, onChange, icon, disabled }) => (
   <div>
-    <label className="block text-sm font-medium text-blue-700 mb-1">
+    <label className="block text-sm font-medium bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent mb-1">
       {label}
     </label>
-    <div className="flex items-center border border-blue-400 rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500">
-      <span className="text-blue-400 mr-2">{icon}</span>
+    <div className="flex items-center border border-blue-400 rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-[#00BFFF]">
+      <span className="text-[#00BFFF] mr-2">{icon}</span>
       <input
         type="text"
         className="flex-1 outline-none"
@@ -54,7 +54,7 @@ const Profile = () => {
         if (res.errCode === 0 && res.users.length > 0) {
           const data = res.users[0];
           let avatarBase64 = "";
-          if (data.image && data.image.data && data.image.data.length > 0) {
+          if (data.image?.data?.length > 0) {
             avatarBase64 = arrayBufferToString(data.image.data);
           }
           setUser({
@@ -77,10 +77,6 @@ const Profile = () => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    console.log("avatarPreview updated:", avatarPreview);
-  }, [avatarPreview]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -92,12 +88,11 @@ const Profile = () => {
       const res = await UpdateDetailUser({ id: userId, ...user });
       if (res.errCode === 0) {
         toast.success("Cập nhật thành công!");
-
         const refreshed = await GetDetailUser(userId);
         if (refreshed.errCode === 0 && refreshed.users.length > 0) {
           const data = refreshed.users[0];
           let avatarBase64 = "";
-          if (data.image && data.image.data && data.image.data.length > 0) {
+          if (data.image?.data?.length > 0) {
             avatarBase64 = arrayBufferToString(data.image.data);
           }
           setUser({
@@ -125,12 +120,10 @@ const Profile = () => {
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     if (!file.type.startsWith("image/")) {
       toast.error("Vui lòng chọn file ảnh hợp lệ!");
       return;
     }
-
     const reader = new FileReader();
     reader.onloadend = () => {
       setAvatarPreview(reader.result);
@@ -140,39 +133,34 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex justify-center items-center bg-blue-50 pt-8 px-4 pb-16 min-h-screen">
-      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 border border-blue-300">
-        <h1 className="text-3xl font-bold text-center text-blue-700 mb-8">
+    <div className="flex justify-center items-center bg-blue-50 pt-2 px-2 pb-4 min-h-screen">
+      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 border border-blue-300">
+        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent mb-2">
           Thông Tin Cá Nhân
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-blue-700 mb-2">
+            <label className="block text-sm font-medium bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent mb-2">
               Ảnh đại diện
             </label>
-            <div className="flex items-center space-x-4">
-              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-blue-400 bg-blue-100">
+            <div className="flex items-center space-x-5">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-[#00BFFF] bg-blue-100">
                 {avatarPreview ? (
                   <img
                     src={avatarPreview}
                     alt="avatar"
-                    style={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
+                    className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-blue-300">
-                    <FiUser size={40} />
+                  <div className="w-full h-full flex items-center justify-center text-[#00BFFF]">
+                    <FiUser size={30} />
                   </div>
                 )}
               </div>
               <label
                 htmlFor="avatarInput"
-                className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+                className="cursor-pointer inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white rounded-md hover:opacity-90 transition"
               >
                 <FiUpload className="mr-2" />
                 Chọn ảnh
@@ -191,44 +179,44 @@ const Profile = () => {
             label="Email"
             value={user.email}
             onChange={(e) => setUser({ ...user, email: e.target.value })}
-            icon={<FiMail size={18} />}
+            icon={<FiMail size={16} />}
             disabled
           />
           <InputField
             label="First Name"
             value={user.firstName}
             onChange={(e) => setUser({ ...user, firstName: e.target.value })}
-            icon={<FiUser size={18} />}
+            icon={<FiUser size={16} />}
           />
           <InputField
             label="Last Name"
             value={user.lastName}
             onChange={(e) => setUser({ ...user, lastName: e.target.value })}
-            icon={<FiUser size={18} />}
+            icon={<FiUser size={16} />}
           />
           <InputField
             label="Số điện thoại"
             value={user.phoneNumber}
             onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
-            icon={<FiPhone size={18} />}
+            icon={<FiPhone size={16} />}
           />
           <InputField
             label="Địa chỉ"
             value={user.address}
             onChange={(e) => setUser({ ...user, address: e.target.value })}
-            icon={<FiHome size={18} />}
+            icon={<FiHome size={16} />}
           />
           <InputField
             label="Vai trò"
             value={user.role}
             onChange={(e) => setUser({ ...user, role: e.target.value })}
-            icon={<FiShield size={18} />}
+            icon={<FiShield size={16} />}
           />
 
-          <div className="text-center pt-4">
+          <div className="text-center">
             <button
               type="submit"
-              className="inline-flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition"
+              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:from-[#009acd] hover:to-[#6cb6ff] text-white rounded-md font-medium transition"
               disabled={loading}
             >
               <FiSave className="mr-2" />

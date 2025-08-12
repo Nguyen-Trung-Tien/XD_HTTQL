@@ -6,7 +6,10 @@ let handleCreateCustomer = async (req, res) => {
 };
 
 let handleGetAllCustomers = async (req, res) => {
-  let response = await customerService.getAllCustomers();
+  let page = parseInt(req.query.page) || 1;
+  let limit = parseInt(req.query.limit) || 5;
+
+  let response = await customerService.getAllCustomers(page, limit);
   return res.status(200).json(response);
 };
 
