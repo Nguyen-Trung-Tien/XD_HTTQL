@@ -16,7 +16,7 @@ import { login } from "./redux/slice/userSlice";
 import SignUp from "./components/SignUp";
 import RequireAuth from "./auth/RequireAuth";
 import Profile from "./components/Profile";
-
+import Customer from "./components/Customer";
 function App() {
   const dispatch = useDispatch();
 
@@ -47,6 +47,7 @@ function App() {
             <Route path="orders" element={<Orders />} />
             <Route path="shippers" element={<Shippers />} />
             <Route path="stats" element={<Statistics />} />
+            <Route path="customer" element={<Customer />} />
           </Route>
         </Route>
       </Routes>

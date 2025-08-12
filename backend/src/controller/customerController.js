@@ -17,7 +17,7 @@ let handleUpdateCustomer = async (req, res) => {
 };
 
 let handleDeleteCustomer = async (req, res) => {
-  let id = req.query.id;
+  const id = req.query.id;
   if (!id) {
     return res.status(400).json({
       errCode: 1,

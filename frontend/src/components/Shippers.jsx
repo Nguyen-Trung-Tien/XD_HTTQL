@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import ShipperMap from "../components/ShipperMap";
 import ShipperList from "../components/ShipperList";
@@ -9,7 +8,7 @@ import {
   addNewShipper,
   deleteShipper,
   updateShipper,
-  updateShipperStatus
+  updateShipperStatus,
 } from "../API/shipper/shipperApi";
 import { getAllOrders } from "../API/orders/ordersApi";
 import { toast } from "react-toastify";
@@ -24,10 +23,9 @@ function Shippers() {
 
   const fetchData = useCallback(async () => {
     try {
-      
       const [shippersData, ordersData] = await Promise.all([
         getAllShippers(),
-        getAllOrders()
+        getAllOrders(),
       ]);
       setShippers(shippersData);
       setOrders(ordersData);
@@ -40,14 +38,13 @@ function Shippers() {
   }, []);
 
   useEffect(() => {
-    fetchData(); 
-    
+    fetchData();
 
     const interval = setInterval(() => {
       fetchData();
     }, 10000);
 
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, [fetchData]);
 
   const handleAdd = async (newData) => {
@@ -55,22 +52,24 @@ function Shippers() {
       await addNewShipper(newData);
       toast.success("Thêm shipper thành công!");
       setShowAdd(false);
-      await fetchData(); 
+      await fetchData();
     } catch (err) {
-      toast.error("Thêm shipper thất bại");
+      toast.error("Thêm shipper thất bại", err);
     }
   };
 
   const handleDeleteShipper = async (id) => {
-    const confirm = window.confirm("🗑️ Bạn có chắc chắn muốn xoá shipper này không?");
+    const confirm = window.confirm(
+      "🗑️ Bạn có chắc chắn muốn xoá shipper này không?"
+    );
     if (!confirm) return;
 
     try {
       await deleteShipper(id);
       toast.success("Xóa shipper thành công!");
-      await fetchData(); 
+      await fetchData();
     } catch (err) {
-      toast.error("Xóa shipper thất bại");
+      toast.error("Xóa shipper thất bại", err);
     }
   };
 
@@ -83,19 +82,19 @@ function Shippers() {
       });
       toast.success("Cập nhật shipper thành công!");
       setEditingShipper(null);
-      await fetchData(); 
+      await fetchData();
     } catch (err) {
-      toast.error("Cập nhật shipper thất bại");
+      toast.error("Cập nhật shipper thất bại", err);
     }
   };
-  
+
   const handleUpdateStatus = async (shipperId, newStatus) => {
     try {
       await updateShipperStatus(shipperId, { status: newStatus });
       toast.success("Cập nhật trạng thái thành công!");
-      await fetchData(); 
+      await fetchData();
     } catch (err) {
-      toast.error("Cập nhật trạng thái thất bại");
+      toast.error("Cập nhật trạng thái thất bại", err);
     }
   };
 
