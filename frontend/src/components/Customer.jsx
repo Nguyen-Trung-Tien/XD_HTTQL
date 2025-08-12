@@ -89,6 +89,7 @@ function Customer() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this customer?"))
       return;
+
     try {
       const res = await deleteCustomer(id);
       if (res && res.data && res.data.errCode === 0) {
@@ -100,11 +101,12 @@ function Customer() {
       }
     } catch (e) {
       setError("Error deleting customer: " + e.message);
+      toast.error("Xóa thất bại!");
     }
   };
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-md shadow-md mt-8">
-      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">
+      <h1 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent">
         Customer Management
       </h1>
 
@@ -172,7 +174,7 @@ function Customer() {
           )}
           <button
             type="submit"
-            className="px-6 py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
+            className="px-6 py-2 rounded bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:from-[#009acd] hover:to-[#6cb6ff] text-white font-semibold shadow-md transition-all duration-200"
           >
             {isEditing ? "Update Customer" : "Add Customer"}
           </button>
@@ -183,7 +185,12 @@ function Customer() {
         <p className="text-center text-gray-500">Loading customers...</p>
       ) : (
         <table className="w-full border-collapse border border-gray-300 rounded">
-          <thead className="bg-indigo-100">
+          <thead
+            style={{
+              background: "linear-gradient(to right, #00BFFF, #87CEFA)",
+              color: "white",
+            }}
+          >
             <tr>
               <th className="border border-gray-300 p-3 text-left">Name</th>
               <th className="border border-gray-300 p-3 text-left">Email</th>
