@@ -16,7 +16,7 @@ import { login } from "./redux/slice/userSlice";
 import SignUp from "./components/SignUp";
 import RequireAuth from "./auth/RequireAuth";
 import Profile from "./components/Profile";
-import Customer from "./components/Customer";
+import Customer from "./components/CustomerComponent/Customer";
 function App() {
   const dispatch = useDispatch();
 
