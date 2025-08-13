@@ -198,11 +198,30 @@ export default function Customer() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-xl shadow-2xl mt-6">
-      {/* Header */}
-      <h1 className="text-4xl font-extrabold mb-6 text-center bg-gradient-to-r from-[#00BFFF] via-[#40CFFF] to-[#87CEFA] bg-clip-text text-transparent drop-shadow-lg">
-        Quản lý khách hàng
-      </h1>
+    <div className="p-6">
+      {/* Header + action buttons */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-textPrimary">
+          Quản Lý Khách Hàng
+        </h1>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => handleOpenModal()}
+            className="flex items-center gap-2 px-6 py-2 rounded-lg gradient-bg text-white font-semibold shadow-card hover:opacity-90 transition-all"
+          >
+            Thêm khách hàng
+          </button>
+          <ExportExcel customers={customers} />
+          {selectedIds.length > 0 && (
+            <button
+              onClick={handleDeleteMultiple}
+              className="px-6 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-all duration-200"
+            >
+              Xóa {selectedIds.length} khách hàng
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Error */}
       {error && (
@@ -221,27 +240,6 @@ export default function Customer() {
         onStatusFilterChange={setStatusFilter}
         allCities={allCities}
       />
-
-      {/* Buttons */}
-      <div className="flex flex-wrap justify-start md:justify-end gap-3 mb-4">
-        <button
-          onClick={() => handleOpenModal()}
-          className="flex items-center gap-2 px-6 py-2 rounded-lg bg-gradient-to-r from-[#00BFFF] via-[#40CFFF] to-[#87CEFA] text-white font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300"
-        >
-          Add Customer
-        </button>
-
-        {selectedIds.length > 0 && (
-          <button
-            onClick={handleDeleteMultiple}
-            className="px-6 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-all duration-200"
-          >
-            Xóa {selectedIds.length} khách hàng
-          </button>
-        )}
-
-        <ExportExcel customers={customers} />
-      </div>
 
       {/* Modal */}
       {isModalOpen && (

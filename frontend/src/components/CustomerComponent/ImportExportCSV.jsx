@@ -22,10 +22,10 @@ export default function ExportExcel({ customers }) {
   return (
     <div
       onClick={handleExport}
-      className="flex items-center justify-center gap-3 cursor-pointer p-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 select-none"
+      className="flex items-center justify-center gap-3 cursor-pointer px-4 py-2 rounded-lg gradient-bg text-white font-bold shadow-card hover:opacity-90 transition select-none"
     >
-      <FiFileText size={28} />
-      <span className="text-lg">Export Excel</span>
+      <FiFileText size={18} />
+      <span className="text-sm md:text-lg">Export Excel</span>
     </div>
   );
 }

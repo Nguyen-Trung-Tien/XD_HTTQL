@@ -23,26 +23,25 @@ export default function CustomerCheckboxTable({
   };
 
   return (
-    <div className="max-w-full bg-white rounded shadow-md p-4">
+    <div className="bg-card rounded-lg shadow-card p-4 border border-border">
       {/* Header + action buttons */}
-      <div className="flex flex-wrap justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-700">
-          Customers ({customers.length})
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+        <h2 className="text-lg font-bold text-textPrimary">
+          Danh sách khách hàng ({customers.length})
         </h2>
-
         <button
           disabled={selectedIds.length === 0}
           onClick={() => handleDeleteMultiple(selectedIds)}
-          className="px-4 py-2 bg-red-600 text-white rounded shadow hover:bg-red-700 disabled:opacity-50 transition-all"
+          className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 disabled:opacity-50 transition-all"
         >
-          Delete Selected ({selectedIds.length})
+          Xóa đã chọn ({selectedIds.length})
         </button>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto max-h-[400px] border border-gray-200 rounded shadow-sm">
+      <div className="overflow-x-auto max-h-[400px] border border-border rounded-lg shadow-sm">
         <table className="min-w-full border-collapse">
-          <thead className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white sticky top-0">
+          <thead className="gradient-bg text-white sticky top-0">
             <tr>
               <th className="p-3">
                 <input
@@ -52,56 +51,55 @@ export default function CustomerCheckboxTable({
                     customers.length > 0
                   }
                   onChange={toggleSelectAll}
-                  className="w-4 h-4 accent-white"
+                  className="accent-primary"
                 />
               </th>
-              <th className="p-3 text-left">Name</th>
+              <th className="p-3 text-left">Tên</th>
               <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-left">Actions</th>
+              <th className="p-3 text-left">Thao tác</th>
             </tr>
           </thead>
-
           <tbody>
             {loading ? (
               <tr>
                 <td colSpan={4} className="text-center py-4">
-                  Loading...
+                  Đang tải...
                 </td>
               </tr>
             ) : customers.length === 0 ? (
               <tr>
                 <td colSpan={4} className="text-center py-4 text-gray-500">
-                  No customers found.
+                  Không có khách hàng.
                 </td>
               </tr>
             ) : (
               customers.map((c) => (
                 <tr
                   key={c.id}
-                  className="hover:bg-gray-50 transition-colors duration-200"
+                  className="hover:bg-primaryLight/10 transition-colors duration-200"
                 >
-                  <td className="border-t border-gray-200 p-2 text-center">
+                  <td className="border-t border-border p-2 text-center">
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(c.id)}
                       onChange={() => toggleSelect(c.id)}
-                      className="w-4 h-4 accent-indigo-600"
+                      className="accent-primary"
                     />
                   </td>
-                  <td className="border-t border-gray-200 p-2">{c.name}</td>
-                  <td className="border-t border-gray-200 p-2">{c.email}</td>
-                  <td className="border-t border-gray-200 p-2 flex gap-2">
+                  <td className="border-t border-border p-2">{c.name}</td>
+                  <td className="border-t border-border p-2">{c.email}</td>
+                  <td className="border-t border-border p-2 flex gap-2">
                     <button
                       onClick={() => handleEdit(c)}
-                      className="flex items-center gap-1 px-2 py-1 bg-indigo-100 text-indigo-600 rounded hover:bg-indigo-200 transition"
+                      className="flex items-center gap-1 gradient-bg text-white px-3 py-1 rounded-lg shadow transition hover:opacity-90"
                     >
-                      <FiEdit /> Edit
+                      <FiEdit /> Sửa
                     </button>
                     <button
                       onClick={() => handleDeleteMultiple([c.id])}
-                      className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition"
+                      className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shadow transition"
                     >
-                      <FiTrash2 /> Delete
+                      <FiTrash2 /> Xóa
                     </button>
                   </td>
                 </tr>

@@ -9,13 +9,13 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         className={`flex items-center gap-2 px-5 py-2 rounded-lg font-semibold transition-all duration-300 shadow-sm ${
           page === 1
             ? "bg-gray-300 cursor-not-allowed text-gray-500"
-            : "bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white hover:from-[#009acd] hover:to-[#6cb6ff]"
+            : "gradient-bg text-white hover:opacity-90"
         }`}
       >
-        <FiChevronLeft size={20} /> Previous
+        <FiChevronLeft size={20} /> Trước
       </button>
       <span className="px-3 py-1 rounded-md hover:bg-blue-100 transition">
-        Page {page} of {totalPages}
+        Trang {page} / {totalPages}
       </span>
       <button
         onClick={() => onPageChange(Math.min(totalPages, page + 1))}
@@ -23,10 +23,10 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         className={`flex items-center gap-2 px-5 py-2 rounded-lg font-semibold transition-all duration-300 shadow-sm ${
           page === totalPages
             ? "bg-gray-300 cursor-not-allowed text-gray-500"
-            : "bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white hover:from-[#009acd] hover:to-[#6cb6ff]"
+            : "gradient-bg text-white hover:opacity-90"
         }`}
       >
-        Next <FiChevronRight size={20} />
+        Tiếp <FiChevronRight size={20} />
       </button>
     </div>
   );

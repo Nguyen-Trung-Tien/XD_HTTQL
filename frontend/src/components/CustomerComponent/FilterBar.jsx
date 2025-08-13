@@ -13,24 +13,24 @@ export default function FilterBar({
   return (
     <div className="flex flex-col md:flex-row gap-3 mb-4">
       {/* Search */}
-      <div className="flex items-center flex-1 border border-gray-300 rounded shadow-sm px-3 focus-within:ring-2 focus-within:ring-indigo-400 transition">
-        <FiSearch className="text-gray-400 mr-2" />
+      <div className="flex items-center flex-1 border border-border rounded-lg px-3 focus-within:ring-2 focus-within:ring-primary/30 bg-card transition">
+        <FiSearch className="text-textSecondary mr-2" />
         <input
           type="text"
           placeholder="Tìm theo tên, email hoặc SĐT..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="flex-1 p-2 focus:outline-none"
+          className="flex-1 p-2 bg-transparent text-textPrimary focus:outline-none"
         />
       </div>
 
       {/* City filter */}
-      <div className="flex items-center border border-gray-300 rounded shadow-sm px-3 focus-within:ring-2 focus-within:ring-indigo-400 transition">
-        <FiMapPin className="text-gray-400 mr-2" />
+      <div className="flex items-center border border-border rounded-lg px-3 bg-card transition">
+        <FiMapPin className="text-textSecondary mr-2" />
         <select
           value={cityFilter}
           onChange={(e) => onCityFilterChange(e.target.value)}
-          className="p-2 focus:outline-none bg-transparent"
+          className="p-2 focus:outline-none bg-transparent text-textPrimary"
         >
           <option value="">-- Tất cả tỉnh/thành --</option>
           {allCities.map((city) => (
@@ -42,12 +42,12 @@ export default function FilterBar({
       </div>
 
       {/* Status filter */}
-      <div className="flex items-center border border-gray-300 rounded shadow-sm px-3 focus-within:ring-2 focus-within:ring-indigo-400 transition">
-        <FiActivity className="text-gray-400 mr-2" />
+      <div className="flex items-center border border-border rounded-lg px-3 bg-card transition">
+        <FiActivity className="text-textSecondary mr-2" />
         <select
           value={statusFilter}
           onChange={(e) => onStatusFilterChange(e.target.value)}
-          className="p-2 focus:outline-none bg-transparent"
+          className="p-2 focus:outline-none bg-transparent text-textPrimary"
         >
           <option value="">-- Tất cả trạng thái --</option>
           <option value="active">Đang hoạt động</option>
