@@ -113,35 +113,23 @@ export default function Customer() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    try {
-      const res = isEditing
-        ? await updateCustomer(form)
-        : await createCustomer(form);
-      if (res?.data?.errCode === 0) {
-        toast.success(`${isEditing ? "Cập nhật" : "Thêm"} thành công!`);
-        setForm({
-          id: null,
-          name: "",
-          email: "",
-          phoneNumber: "",
-          address: "",
-          status: "active",
-          city: "",
-        });
-        setIsEditing(false);
-        fetchCustomers(page);
-        handleCloseModal();
-      } else {
-        toast.error(`${isEditing ? "Cập nhật" : "Thêm"} thất bại!`);
-        setError(res?.data?.errMessage || "Unknown error");
-      }
-    } catch (e) {
-      setError("Error saving customer: " + e.message);
+ const handleSubmit = async (data) => {
+  setError(null);
+  try {
+    const res = isEditing
+      ? await updateCustomer(data)
+      : await createCustomer(data);
+    if (res?.data?.errCode === 0) {
+      toast.success(isEditing ? "Cập nhật thành công!" : "Thêm khách hàng thành công!");
+      setIsModalOpen(false);
+      fetchCustomers(page);
+    } else {
+      setError(res.data.message || "Lưu khách hàng thất bại!");
     }
-  };
+  } catch (e) {
+    setError("Error saving customer: " + e.message);
+  }
+};
 
   // Delete handlers
   const handleDelete = async (id) => {

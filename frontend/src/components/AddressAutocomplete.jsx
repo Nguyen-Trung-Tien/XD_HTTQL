@@ -8,13 +8,19 @@ function AddressAutocomplete({ value, onChange, onSelect }) {
   const debounceRef = useRef(null);
 
   useEffect(() => {
-    if (!value || value.length < 3) {
+    if (hasSelected) {
+      setSuggestions([]);
+      return;
+    }
+
+    if (!value || value.trim().length < 3) {
       setSuggestions([]);
       return;
     }
 
     setLoading(true);
     clearTimeout(debounceRef.current);
+
     debounceRef.current = setTimeout(async () => {
       try {
         const viewbox = [106.4, 10.6, 106.9, 10.9].join(",");
@@ -42,14 +48,22 @@ function AddressAutocomplete({ value, onChange, onSelect }) {
     return () => clearTimeout(debounceRef.current);
   }, [value, hasSelected]);
 
+  const handleChange = (e) => {
+    onChange(e.target.value);
+    setHasSelected(false); 
+  };
+
+  const handleSelect = (item) => {
+    onSelect(item); 
+    setSuggestions([]); 
+    setHasSelected(true); 
+  };
+
   return (
     <div className="relative">
       <input
         value={value}
-        onChange={(e) => {
-          onChange(e.target.value);
-          setHasSelected(false); 
-        }}
+        onChange={handleChange}
         placeholder="Nhập địa chỉ"
         className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
       />
@@ -57,17 +71,14 @@ function AddressAutocomplete({ value, onChange, onSelect }) {
       {loading && (
         <div className="absolute right-2 top-2 text-gray-500">...</div>
       )}
-      {suggestions.length > 0 && (
+
+      {!hasSelected && suggestions.length > 0 && (
         <ul className="absolute z-10 w-full bg-white border rounded mt-1 max-h-60 overflow-auto shadow-lg">
           {suggestions.map((s) => (
             <li
               key={s.place_id}
               className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-              onClick={() => {
-                onSelect(s);
-                setSuggestions([]);
-                setHasSelected(true);
-              }}
+              onClick={() => handleSelect(s)}
             >
               {s.display_name}
             </li>
@@ -77,4 +88,5 @@ function AddressAutocomplete({ value, onChange, onSelect }) {
     </div>
   );
 }
+
 export default AddressAutocomplete;
