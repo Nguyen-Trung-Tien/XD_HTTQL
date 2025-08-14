@@ -9,8 +9,6 @@ export default function ExportExcel({ customers }) {
       Email: c.email,
       Phone: c.phoneNumber,
       Address: c.address,
-      City: c.city,
-      Status: c.status,
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(data);

@@ -1,13 +1,11 @@
 import React from "react";
 import { FiSearch, FiMapPin, FiActivity } from "react-icons/fi";
 
-export default function FilterBar({
+function FilterBar({
   search,
   onSearchChange,
   cityFilter,
   onCityFilterChange,
-  statusFilter,
-  onStatusFilterChange,
   allCities,
 }) {
   return (
@@ -22,21 +20,8 @@ export default function FilterBar({
           onChange={(e) => onSearchChange(e.target.value)}
           className="flex-1 p-2 bg-transparent text-textPrimary focus:outline-none"
         />
-      </div>
-
-      {/* Status filter */}
-      <div className="flex items-center border border-border rounded-lg px-3 bg-card transition">
-        <FiActivity className="text-textSecondary mr-2" />
-        <select
-          value={statusFilter}
-          onChange={(e) => onStatusFilterChange(e.target.value)}
-          className="p-2 focus:outline-none bg-transparent text-textPrimary"
-        >
-          <option value="">-- Tất cả trạng thái --</option>
-          <option value="active">Đang hoạt động</option>
-          <option value="inactive">Ngừng hoạt động</option>
-        </select>
-      </div>
+      </div> 
     </div>
   );
 }
+export default FilterBar;

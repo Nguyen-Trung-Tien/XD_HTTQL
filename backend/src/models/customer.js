@@ -15,14 +15,18 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { isEmail: true }
+        validate: { isEmail: true },
       },
       name: DataTypes.STRING,
       phoneNumber: DataTypes.STRING,
       address: DataTypes.STRING,
-      status: DataTypes.STRING,
       lat: DataTypes.FLOAT,
-      lng:DataTypes.FLOAT,
+      lng: DataTypes.FLOAT,
+      orderCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+      },
     },
     {
       sequelize,

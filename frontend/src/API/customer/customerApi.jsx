@@ -6,11 +6,9 @@ const fetchAllCustomers = async (
   page = 1,
   limit = 1000,
   search = "",
-  status = "",
-  city = ""
 ) => {
   return axios.get(`${API_URL}/api/v1/customer/get-all-customers`, {
-    params: { page, limit, search, status, city },
+    params: { page, limit, search, },
   });
 };
 const createCustomer = async (data) => {

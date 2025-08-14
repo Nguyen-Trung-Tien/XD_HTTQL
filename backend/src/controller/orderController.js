@@ -39,7 +39,13 @@ const createOrder = async (req, res) => {
       },
       { transaction: t }
     );
-
+    if (order.customerId) {
+      await db.Customers.increment("orderCount", {
+        by: 1,
+        where: { id: order.customerId },
+        transaction: t,
+      });
+    }
     if (Array.isArray(items) && items.length > 0) {
       for (const item of items) {
         await db.OrderItem.create(
@@ -107,8 +113,20 @@ const updateOrderStatus = async (req, res) => {
 const deleteOrder = async (req, res) => {
   try {
     const { id } = req.params;
+    const order = await db.Order.findByPk(id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
     const deleted = await db.Order.destroy({ where: { id } });
     if (deleted) {
+    
+      if (order.customerId) {
+        await db.Customers.decrement("orderCount", {
+          by: 1,
+          where: { id: order.customerId },
+        });
+      }
       res.json({ message: "Order deleted" });
     } else {
       res.status(404).json({ error: "Order not found" });

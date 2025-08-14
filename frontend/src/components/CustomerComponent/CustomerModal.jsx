@@ -110,20 +110,7 @@ export default function CustomerModal({
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Trạng thái
-            </label>
-            <select
-              name="status"
-              value={form.status}
-              onChange={onChange}
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-            >
-              <option value="active">Đang hoạt động</option>
-              <option value="inactive">Ngừng hoạt động</option>
-            </select>
-          </div>
+          
 
           <div className="flex justify-end gap-3 pt-2">
             <button

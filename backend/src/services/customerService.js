@@ -33,7 +33,7 @@ let createCustomer = async (data) => {
       address: data.address,
       lat:data.lat,
       lng:data.lng,
-      status: data.status,
+    
     });
     return {
       errCode: 0,
@@ -49,8 +49,7 @@ let getAllCustomers = async (
   page = 1,
   limit = 5,
   search = "",
-  status = "",
-  city = ""
+
 ) => {
   try {
     const offset = (page - 1) * limit;
@@ -77,13 +76,7 @@ let getAllCustomers = async (
       ];
     }
 
-    if (status) {
-      where.status = status;
-    }
-
-    if (city) {
-      where.city = city;
-    }
+  
 
     const { rows: customers, count: total } =
       await db.Customers.findAndCountAll({
@@ -133,9 +126,7 @@ let updateCustomer = async (data) => {
       customer.phoneNumber = data.phoneNumber;
       customer.address = data.address;
       customer.city = data.city;
-      if (data.status !== undefined) {
-        customer.status = data.status;
-      }
+     
       if (data.lat !== undefined) {
         customer.lat = data.lat;
       }

@@ -12,8 +12,7 @@ import ExportExcel from "./ImportExportCSV";
 import CustomerModal from "./CustomerModal";
 import CustomerTable from "./CustomerTable";
 import Pagination from "./Pagination";
-
-export default function Customer() {
+function Customer() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -24,7 +23,6 @@ export default function Customer() {
     email: "",
     phoneNumber: "",
     address: "",
-    status: "active",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [page, setPage] = useState(1);
@@ -96,7 +94,7 @@ export default function Customer() {
 
   const handleOpenModal = (customer = null) => {
     if (customer) {
-      setForm({ ...customer, status: customer.status || "active" });
+      setForm({ ...customer });
       setIsEditing(true);
     } else {
       setForm({
@@ -105,7 +103,6 @@ export default function Customer() {
         email: "",
         phoneNumber: "",
         address: "",
-        status: "active",
         lat:null,
         lng:null,
       });
@@ -257,3 +254,4 @@ export default function Customer() {
     </div>
   );
 }
+export default Customer;
