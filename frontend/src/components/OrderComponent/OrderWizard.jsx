@@ -67,7 +67,8 @@ function OrderWizard({ onOrderCreated }) {
     loadProducts();
   }, []);
   const handleSubmit = async () => {
-  let customerId = null;
+  let customerId = orderData.customer.id || null;
+    if (!customerId) {
   try {
     const customerRes = await createCustomer({
       name: orderData.customer.name,
@@ -76,6 +77,8 @@ function OrderWizard({ onOrderCreated }) {
       address: orderData.shipping.address,
       city: orderData.shipping.city || "",
       status: "active",
+      lat:orderData.shipping.lat,
+      lng:orderData.shipping.lng,
     });
     if (customerRes?.data?.errCode === 0) {
       customerId = customerRes.data.customer?.id || customerRes.data.data?.id;
@@ -87,6 +90,7 @@ function OrderWizard({ onOrderCreated }) {
     toast.error("Tạo khách hàng thất bại!");
     return;
   }
+}
 
 
  const subtotal = orderData.products.reduce(
@@ -105,6 +109,7 @@ function OrderWizard({ onOrderCreated }) {
     shippingAddress: orderData.shipping.address,
     shippingLat: orderData.shipping.lat,
     shippingLng: orderData.shipping.lng,
+    
     paymentMethod: orderData.payment,
     status: "pending",
     total,

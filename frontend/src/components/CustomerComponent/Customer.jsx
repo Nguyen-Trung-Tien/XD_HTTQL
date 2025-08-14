@@ -106,28 +106,34 @@ export default function Customer() {
         phoneNumber: "",
         address: "",
         status: "active",
-        city: "",
+        lat:null,
+        lng:null,
       });
       setIsEditing(false);
     }
     setIsModalOpen(true);
   };
 
- const handleSubmit = async (data) => {
-  setError(null);
+ const handleSubmit = async () => {
   try {
-    const res = isEditing
-      ? await updateCustomer(data)
-      : await createCustomer(data);
-    if (res?.data?.errCode === 0) {
-      toast.success(isEditing ? "Cập nhật thành công!" : "Thêm khách hàng thành công!");
-      setIsModalOpen(false);
-      fetchCustomers(page);
+    const data = {
+      ...form,
+      lat: form.lat, 
+      lng: form.lng, 
+    };
+
+    if (isEditing) {
+      await updateCustomer(data);
+      toast.success("Cập nhật khách hàng thành công!");
     } else {
-      setError(res.data.message || "Lưu khách hàng thất bại!");
+      await createCustomer(data);
+      toast.success("Tạo khách hàng thành công!");
     }
-  } catch (e) {
-    setError("Error saving customer: " + e.message);
+
+    fetchCustomers();
+    handleCloseModal();
+  } catch (err) {
+    toast.error("Lỗi khi lưu khách hàng!");
   }
 };
 

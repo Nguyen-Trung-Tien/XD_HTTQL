@@ -16,6 +16,12 @@ export default function CustomerModal({
       onChange({
         target: { name: "address", value: suggest.display_name },
       });
+      onChange({
+        target: { name: "lat", value: parseFloat(suggest.lat) },
+      });
+      onChange({
+        target: { name: "lng", value: parseFloat(suggest.lon) },
+      });
       setCoords({ lat: parseFloat(suggest.lat), lng: parseFloat(suggest.lon) });
     }
   };
@@ -23,7 +29,6 @@ export default function CustomerModal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
       <div className="max-w-lg w-full bg-white p-6 rounded-lg shadow-lg relative">
-      
         <button
           type="button"
           onClick={onClose}
@@ -32,20 +37,21 @@ export default function CustomerModal({
           ×
         </button>
 
-      
         <h2 className="text-xl font-bold mb-4 text-center">
           {isEditing ? "Cập nhật khách hàng" : "Thêm khách hàng"}
         </h2>
 
-        
         <form
           className="space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            onSubmit({ ...form });
+            onSubmit({
+              ...form,
+              lat: form.lat,
+              lng: form.lng,
+            });
           }}
         >
-          
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Tên khách hàng
@@ -77,7 +83,6 @@ export default function CustomerModal({
             />
           </div>
 
-        
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Số điện thoại
@@ -92,7 +97,6 @@ export default function CustomerModal({
             />
           </div>
 
-      
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Địa chỉ
@@ -105,7 +109,6 @@ export default function CustomerModal({
               onSelect={handleSelect}
             />
           </div>
-
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">

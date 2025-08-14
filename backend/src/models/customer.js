@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       phoneNumber: DataTypes.STRING,
       address: DataTypes.STRING,
       status: DataTypes.STRING,
+      lat: DataTypes.FLOAT,
+      lng:DataTypes.FLOAT,
     },
     {
       sequelize,
