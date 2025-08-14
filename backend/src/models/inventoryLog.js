@@ -1,27 +1,63 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class InventoryLog extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
-      // define association here
+      
+      InventoryLog.belongsTo(models.Stock, {
+        foreignKey: "stockId",
+        as: "stock"
+      });
+
+      InventoryLog.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "user"
+      });
     }
   }
+
   InventoryLog.init(
     {
-      productId: DataTypes.INTEGER,
-      userId: DataTypes.INTEGER,
-      change_type: DataTypes.STRING,
-      quantity: DataTypes.STRING,
+      stockId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Stocks",
+          key: "id"
+        },
+        onDelete: "CASCADE"
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Users",
+          key: "id"
+        },
+        onDelete: "SET NULL"
+      },
+      change_type: {
+        type: DataTypes.ENUM("create", "update", "delete", "import", "export"),
+        allowNull: false
+      },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      note: {
+        type: DataTypes.STRING,
+        allowNull: true
+      }
     },
     {
       sequelize,
       modelName: "InventoryLog",
+      tableName: "inventory_logs",
+      timestamps: true
     }
   );
+
   return InventoryLog;
 };

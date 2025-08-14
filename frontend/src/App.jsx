@@ -33,7 +33,7 @@ function App() {
       <ToastContainer position="top-right" autoClose={3000} />
 
       <Routes>
-        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-in" element={<Inventory />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
         <Route element={<RequireAuth />}>
