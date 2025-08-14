@@ -15,6 +15,8 @@ module.exports = {
       phoneNumber: { type: Sequelize.STRING },
       address: { type: Sequelize.STRING },
       status: { type: Sequelize.STRING, defaultValue: "active" },
+       lat: { type: Sequelize.FLOAT },
+      lng: { type: Sequelize.FLOAT }, 
       createdAt: { allowNull: false, type: Sequelize.DATE },
       updatedAt: { allowNull: false, type: Sequelize.DATE },
     });

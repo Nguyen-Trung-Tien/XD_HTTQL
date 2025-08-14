@@ -48,10 +48,14 @@ function OrderStep2({ orderData, setOrderData, setCurrentStep }) {
         email: customer.email,
         phone: customer.phoneNumber,
         address: customer.address,
+        lat: customer.lat,
+        lng: customer.lng,
       },
       shipping: {
         ...orderData.shipping,
         address: customer.address,
+        lat: customer.lat,     
+      lng: customer.lng,
       },
     });
     setShowCustomerModal(false);
@@ -247,7 +251,6 @@ function OrderStep2({ orderData, setOrderData, setCurrentStep }) {
             className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[80vh] flex flex-col overflow-hidden animate-fadeIn"
             onClick={(e) => e.stopPropagation()}
           >
-           
             <div className="flex justify-between items-center p-4 border-b flex-shrink-0">
               <h3 className="text-lg font-semibold">Chọn khách hàng</h3>
               <button
@@ -258,9 +261,7 @@ function OrderStep2({ orderData, setOrderData, setCurrentStep }) {
               </button>
             </div>
 
-       
             <div className="p-4 overflow-y-auto flex-1">
-      
               <div className="mb-4 flex gap-2">
                 <div className="relative flex-1">
                   <input

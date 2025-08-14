@@ -31,7 +31,8 @@ let createCustomer = async (data) => {
       name: data.name,
       phoneNumber: data.phoneNumber,
       address: data.address,
-      city: data.city,
+      lat:data.lat,
+      lng:data.lng,
       status: data.status,
     });
     return {
@@ -134,6 +135,12 @@ let updateCustomer = async (data) => {
       customer.city = data.city;
       if (data.status !== undefined) {
         customer.status = data.status;
+      }
+      if (data.lat !== undefined) {
+        customer.lat = data.lat;
+      }
+      if (data.lng !== undefined) {
+        customer.lng = data.lng;
       }
 
       await customer.save();
