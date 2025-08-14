@@ -14,7 +14,6 @@ module.exports = {
       name: { type: Sequelize.STRING },
       phoneNumber: { type: Sequelize.STRING },
       address: { type: Sequelize.STRING },
-      city: { type: Sequelize.STRING },
       status: { type: Sequelize.STRING, defaultValue: "active" },
       createdAt: { allowNull: false, type: Sequelize.DATE },
       updatedAt: { allowNull: false, type: Sequelize.DATE },

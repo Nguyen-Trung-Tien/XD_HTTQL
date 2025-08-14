@@ -4,7 +4,9 @@ const createOrder = async (req, res) => {
   const t = await db.sequelize.transaction();
   try {
     const {
+      customerId,
       customerName,
+      customerEmail,
       customerPhone,
       shippingAddress,
       shippingLat,
@@ -21,7 +23,9 @@ const createOrder = async (req, res) => {
     const order = await db.Order.create(
       {
         orderNumber: "DH-" + Date.now(),
+        customerId,
         customerName,
+        customerEmail,
         customerPhone,
         shippingAddress,
         shippingLat,
@@ -67,6 +71,7 @@ const getAllOrders = async (req, res) => {
       include: [
         { model: db.OrderItem, as: "items" },
         { model: db.Shipper, as: "shipper" }, 
+        { model: db.Customers, as: "customer" }
       ],
     });
 

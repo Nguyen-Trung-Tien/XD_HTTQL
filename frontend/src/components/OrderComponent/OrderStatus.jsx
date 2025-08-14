@@ -1,11 +1,16 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from "react";
 import {
   getAllOrders,
   updateOrder,
   findNearestShipper,
   deleteOrder,
-} from "../API/orders/ordersApi";
-import { updateShipperStatus } from "../API/shipper/shipperApi";
+} from "../../API/orders/ordersApi";
+import { updateShipperStatus } from "../../API/shipper/shipperApi";
 import OrderDetail from "./OrderDetail";
 import { toast } from "react-toastify";
 
@@ -43,7 +48,7 @@ const OrderStatus = forwardRef((props, ref) => {
   const [filter, setFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-   const fetchOrders = async () => {
+  const fetchOrders = async () => {
     setLoading(true);
     try {
       const data = await getAllOrders();
@@ -85,56 +90,55 @@ const OrderStatus = forwardRef((props, ref) => {
   };
 
   const handleFindShipper = async (order) => {
-  try {
-    setLoading(true); 
-    toast.info("Đang tìm shipper cho đơn #" + order.orderNumber);
+    try {
+      setLoading(true);
+      toast.info("Đang tìm shipper cho đơn #" + order.orderNumber);
 
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+      await new Promise((resolve) => setTimeout(resolve, 2500));
 
-    await updateOrder(order.id, { status: "finding_shipper" });
+      await updateOrder(order.id, { status: "finding_shipper" });
 
-    const nearestShipper = await findNearestShipper(
-      WAREHOUSE_LAT,
-      WAREHOUSE_LNG
-    );
-
-    if (nearestShipper) {
-      await Promise.all([
-        updateOrder(order.id, {
-          status: "shipping",
-          shippedAt: new Date().toISOString(),
-          shipperId: nearestShipper.id,
-        }),
-        updateShipperStatus(nearestShipper.id, {
-          status: "delivering",
-          currentOrderId: order.id,
-          address: "Kho hàng",
-          lat: WAREHOUSE_LAT,
-          lng: WAREHOUSE_LNG,
-        }),
-      ]);
-
-      toast.success(
-        `Đã gán shipper ${nearestShipper.name} cho đơn hàng #${order.orderNumber}`
+      const nearestShipper = await findNearestShipper(
+        WAREHOUSE_LAT,
+        WAREHOUSE_LNG
       );
-    } else {
+
+      if (nearestShipper) {
+        await Promise.all([
+          updateOrder(order.id, {
+            status: "shipping",
+            shippedAt: new Date().toISOString(),
+            shipperId: nearestShipper.id,
+          }),
+          updateShipperStatus(nearestShipper.id, {
+            status: "delivering",
+            currentOrderId: order.id,
+            address: "Kho hàng",
+            lat: WAREHOUSE_LAT,
+            lng: WAREHOUSE_LNG,
+          }),
+        ]);
+
+        toast.success(
+          `Đã gán shipper ${nearestShipper.name} cho đơn hàng #${order.orderNumber}`
+        );
+      } else {
+        await updateOrder(order.id, { status: "pending" });
+        toast.warning(
+          "Không tìm thấy shipper nào sẵn sàng, đơn hàng quay lại hàng chờ."
+        );
+      }
+
+      fetchOrders();
+    } catch (error) {
+      console.error("Error finding shipper:", error);
+      toast.error("Có lỗi khi tìm shipper");
       await updateOrder(order.id, { status: "pending" });
-      toast.warning(
-        "Không tìm thấy shipper nào sẵn sàng, đơn hàng quay lại hàng chờ."
-      );
+      fetchOrders();
+    } finally {
+      setLoading(false);
     }
-
-    fetchOrders();
-  } catch (error) {
-    console.error("Error finding shipper:", error);
-    toast.error("Có lỗi khi tìm shipper");
-    await updateOrder(order.id, { status: "pending" });
-    fetchOrders();
-  } finally {
-    setLoading(false); 
-  }
-};
-
+  };
 
   const handleConfirmDelivery = async (order) => {
     try {
@@ -354,8 +358,10 @@ const OrderStatus = forwardRef((props, ref) => {
                   {renderTimeline(order)}
 
                   <div className="flex justify-end space-x-3 mt-4 pt-4 border-t border-border">
-                    <button className="px-4 py-1.5 border border-primary rounded-lg text-sm text-primary hover:bg-primary/5 transition-colors"
-                    onClick={() => setSelectedOrder(order)}>
+                    <button
+                      className="px-4 py-1.5 border border-primary rounded-lg text-sm text-primary hover:bg-primary/5 transition-colors"
+                      onClick={() => setSelectedOrder(order)}
+                    >
                       Xem chi tiết
                     </button>
                     {renderActionButtons(order)}
@@ -365,7 +371,7 @@ const OrderStatus = forwardRef((props, ref) => {
             })}
           </div>
         )}
-         {selectedOrder && (
+        {selectedOrder && (
           <OrderDetail
             order={selectedOrder}
             onClose={() => setSelectedOrder(null)}
@@ -374,6 +380,5 @@ const OrderStatus = forwardRef((props, ref) => {
       </div>
     </div>
   );
-}
-)
+});
 export default OrderStatus;

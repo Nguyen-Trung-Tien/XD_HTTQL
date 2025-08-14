@@ -13,7 +13,7 @@ export default function FilterBar({
   return (
     <div className="flex flex-col md:flex-row gap-3 mb-4">
       {/* Search */}
-      <div className="flex items-center flex-1 border border-border rounded-lg px-3 focus-within:ring-2 focus-within:ring-primary/30 bg-card transition">
+      <div className="flex items-center flex-1 border border-border rounded-lg px-3 focus-within:ring-2 focus-within:ring-primary/30 bg-card transition w-full md:w-96">
         <FiSearch className="text-textSecondary mr-2" />
         <input
           type="text"
@@ -22,23 +22,6 @@ export default function FilterBar({
           onChange={(e) => onSearchChange(e.target.value)}
           className="flex-1 p-2 bg-transparent text-textPrimary focus:outline-none"
         />
-      </div>
-
-      {/* City filter */}
-      <div className="flex items-center border border-border rounded-lg px-3 bg-card transition">
-        <FiMapPin className="text-textSecondary mr-2" />
-        <select
-          value={cityFilter}
-          onChange={(e) => onCityFilterChange(e.target.value)}
-          className="p-2 focus:outline-none bg-transparent text-textPrimary"
-        >
-          <option value="">-- Tất cả tỉnh/thành --</option>
-          {allCities.map((city) => (
-            <option key={city} value={city}>
-              {city}
-            </option>
-          ))}
-        </select>
       </div>
 
       {/* Status filter */}

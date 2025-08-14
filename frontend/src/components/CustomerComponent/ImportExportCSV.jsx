@@ -28,4 +28,4 @@ export default function ExportExcel({ customers }) {
       <span className="text-sm md:text-lg">Export Excel</span>
     </div>
   );
-}
+} 

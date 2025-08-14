@@ -41,9 +41,6 @@ export default function CustomerTable({
                   Địa chỉ
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
-                  Thành phố
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
                   Trạng thái
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
@@ -55,19 +52,28 @@ export default function CustomerTable({
             <tbody className="bg-white divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-6 text-center text-textSecondary">
+                  <td
+                    colSpan={8}
+                    className="px-6 py-6 text-center text-textSecondary"
+                  >
                     Đang tải...
                   </td>
                 </tr>
               ) : customers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-6 text-center text-textSecondary">
+                  <td
+                    colSpan={8}
+                    className="px-6 py-6 text-center text-textSecondary"
+                  >
                     Không tìm thấy khách hàng.
                   </td>
                 </tr>
               ) : (
                 customers.map((c) => (
-                  <tr key={c.id} className="hover:bg-primaryLight/10 transition-colors duration-200">
+                  <tr
+                    key={c.id}
+                    className="hover:bg-primaryLight/10 transition-colors duration-200"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
                         type="checkbox"
@@ -93,15 +99,12 @@ export default function CustomerTable({
                       </div>
                     </td>
 
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-normal break-words max-w-[400px]">
                       <div className="text-sm text-textPrimary">
                         {c.address || "-"}
                       </div>
                     </td>
 
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-textPrimary">{c.city || "-"}</div>
-                    </td>
 
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -111,7 +114,9 @@ export default function CustomerTable({
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {c.status === "active" ? "Đang hoạt động" : "Ngừng hoạt động"}
+                        {c.status === "active"
+                          ? "Đang hoạt động"
+                          : "Ngừng hoạt động"}
                       </span>
                     </td>
 

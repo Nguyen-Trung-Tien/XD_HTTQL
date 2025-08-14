@@ -25,14 +25,12 @@ export default function Customer() {
     phoneNumber: "",
     address: "",
     status: "active",
-    city: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-  const [cityFilter, setCityFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [allCities, setAllCities] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -46,7 +44,6 @@ export default function Customer() {
         limit,
         search,
         statusFilter,
-        cityFilter
       );
       if (res?.data?.errCode === 0) {
         setCustomers(res.data.customers || []);
@@ -89,7 +86,7 @@ export default function Customer() {
   useEffect(() => {
     const delay = setTimeout(() => fetchCustomers(1), 500);
     return () => clearTimeout(delay);
-  }, [search, cityFilter, statusFilter]);
+  }, [search, statusFilter]);
 
   // Modal handlers
   const handleChange = (e) =>
@@ -234,8 +231,6 @@ export default function Customer() {
       <FilterBar
         search={search}
         onSearchChange={setSearch}
-        cityFilter={cityFilter}
-        onCityFilterChange={setCityFilter}
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
         allCities={allCities}

@@ -15,6 +15,18 @@ module.exports = {
       customerName: {
         type: Sequelize.STRING
       },
+      customerEmail: {
+         type: Sequelize.STRING 
+      },
+      customerId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: 'Customers',
+      key: 'id'
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  },
       customerPhone: {
         type: Sequelize.STRING
       },

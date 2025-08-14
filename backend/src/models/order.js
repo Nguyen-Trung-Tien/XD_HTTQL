@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "shipperId",
         as: "shipper",
       });
+      Order.belongsTo(models.Customers, {
+        foreignKey: "customerId",
+        as: "customer",
+      });
     }
   }
 
@@ -22,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
       customerName: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+       customerEmail: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { isEmail: true }
       },
       customerPhone: {
         type: DataTypes.STRING,
@@ -70,6 +79,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       shipperId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+       customerId: { 
         type: DataTypes.INTEGER,
         allowNull: true,
       },
