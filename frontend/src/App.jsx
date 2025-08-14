@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Dashboard from "./components/Dashboard";
-import Orders from "./components/Orders";
+import Orders from "./components/OrderComponent/Orders";
 import Shippers from "./components/Shippers";
 import Inventory from "./components/Inventory";
 import Statistics from "./components/Statistics";
@@ -17,6 +17,7 @@ import SignUp from "./components/SignUp";
 import RequireAuth from "./auth/RequireAuth";
 import Profile from "./components/Profile";
 import Customer from "./components/CustomerComponent/Customer";
+
 function App() {
   const dispatch = useDispatch();
 

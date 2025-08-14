@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { getAllProducts } from "../API/products/productsApi";
-import { createOrder } from "../API/orders/ordersApi";
+import { getAllProducts } from "../../API/products/productsApi";
+import { createOrder } from "../../API/orders/ordersApi";
+import { createCustomer } from "../../API/customer/customerApi";
 import OrderStep1 from "./OrderStep1";
 import OrderStep2 from "./OrderStep2";
 import OrderStep3 from "./OrderStep3";
@@ -16,6 +17,8 @@ function OrderWizard({ onOrderCreated }) {
     customer: {
       name: "",
       phone: "",
+      email: "",
+      address: "",
     },
     shipping: { address: "", lat: null, lng: null },
     payment: "cash",
@@ -62,9 +65,30 @@ function OrderWizard({ onOrderCreated }) {
     };
     loadProducts();
   }, []);
-
   const handleSubmit = async () => {
-    const subtotal = orderData.products.reduce(
+  let customerId = null;
+  try {
+    const customerRes = await createCustomer({
+      name: orderData.customer.name,
+      email: orderData.customer.email,
+      phoneNumber: orderData.customer.phone,
+      address: orderData.shipping.address,
+      city: orderData.shipping.city || "",
+      status: "active",
+    });
+    if (customerRes?.data?.errCode === 0) {
+      customerId = customerRes.data.customer?.id || customerRes.data.data?.id;
+    } else {
+      toast.error("Tạo khách hàng thất bại!");
+      return;
+    }
+  } catch (err) {
+    toast.error("Tạo khách hàng thất bại!");
+    return;
+  }
+
+
+ const subtotal = orderData.products.reduce(
       (sum, item) =>
         sum +
         (parseInt(String(item.price).replace(/\D/g, "")) || 0) * item.quantity,
@@ -72,40 +96,42 @@ function OrderWizard({ onOrderCreated }) {
     );
     const shippingFee = 30000;
     const total = subtotal + shippingFee;
-
-    const payload = {
-      customerName: orderData.customer.name,
-      customerPhone: orderData.customer.phone,
-      shippingAddress: orderData.shipping.address,
-      shippingLat: orderData.shipping.lat,
-      shippingLng: orderData.shipping.lng,
-      paymentMethod: orderData.payment,
-      status: "pending",
-      total,
-      subtotal,
-      shippingFee,
-      items: orderData.products.map((p) => ({
-        productId: p.productId,
-        name: p.name,
-        price: Number(String(p.price).replace(/\D/g, "")),
-        quantity: p.quantity,
-      })),
-    };
-    try {
-      await createOrder(payload);
-      toast.success("Đơn hàng đã được tạo thành công!");
-      setCurrentStep(1);
+  const payload = {
+    customerId,
+    customerName: orderData.customer.name,
+    customerEmail: orderData.customer.email,
+    customerPhone: orderData.customer.phone,
+    shippingAddress: orderData.shipping.address,
+    shippingLat: orderData.shipping.lat,
+    shippingLng: orderData.shipping.lng,
+    paymentMethod: orderData.payment,
+    status: "pending",
+    total,
+    subtotal,
+    shippingFee,
+    items: orderData.products.map((p) => ({
+      productId: p.productId,
+      name: p.name,
+      price: Number(String(p.price).replace(/\D/g, "")),
+      quantity: p.quantity,
+    })),
+  };
+  try {
+    await createOrder(payload);
+    toast.success("Đơn hàng đã được tạo thành công!");
+    setCurrentStep(1);
       setOrderData({
         products: [],
-        customer: { name: "", phone: "" },
+        customer: { name: "", phone: "" , email: "" , address: "" },
         shipping: { address: "", lat: null, lng: null },
         payment: "cash",
       });
-      if (onOrderCreated) onOrderCreated(); 
-    } catch (err) {
-      toast.error("Tạo đơn hàng thất bại!");
-    }
-  };
+    if (onOrderCreated) onOrderCreated();
+  } catch (err) {
+    toast.error("Tạo đơn hàng thất bại!");
+  }
+};
+  
 
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden">
