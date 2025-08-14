@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { getAllProducts } from "../../API/products/productsApi";
 import { createOrder } from "../../API/orders/ordersApi";
-import { createCustomer } from "../../API/customer/customerApi";
+import { createCustomer, fetchAllCustomers} from "../../API/customer/customerApi";
+
 import OrderStep1 from "./OrderStep1";
 import OrderStep2 from "./OrderStep2";
 import OrderStep3 from "./OrderStep3";

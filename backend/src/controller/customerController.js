@@ -7,7 +7,7 @@ let handleCreateCustomer = async (req, res) => {
 
 let handleGetAllCustomers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 1000;
   const search = req.query.search || "";
   const status = req.query.status || "";
   const city = req.query.city || "";

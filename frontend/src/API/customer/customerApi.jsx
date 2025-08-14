@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const fetchAllCustomers = async (
   page = 1,
-  limit = 5,
+  limit = 1000,
   search = "",
   status = "",
   city = ""
@@ -27,10 +27,16 @@ const deleteCustomer = async (id) => {
   );
 };
 const deleteManyCustomer = async (ids) => {
-  if (!ids || !ids.length) throw new Error("Missing ids"); 
+  if (!ids || !ids.length) throw new Error("Missing ids");
   return await axios.post(`${API_URL}/api/v1/customer/delete-many-customers`, {
     ids,
   });
 };
 
-export {fetchAllCustomers,createCustomer,updateCustomer,deleteCustomer,deleteManyCustomer}
+export {
+  fetchAllCustomers,
+  createCustomer,
+  updateCustomer,
+  deleteCustomer,
+  deleteManyCustomer,
+};
