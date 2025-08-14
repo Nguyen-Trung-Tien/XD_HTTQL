@@ -14,9 +14,9 @@ module.exports = {
       name: { type: Sequelize.STRING },
       phoneNumber: { type: Sequelize.STRING },
       address: { type: Sequelize.STRING },
-      status: { type: Sequelize.STRING, defaultValue: "active" },
        lat: { type: Sequelize.FLOAT },
       lng: { type: Sequelize.FLOAT }, 
+      orderCount: { type: Sequelize.INTEGER, defaultValue: 0, allowNull: false },
       createdAt: { allowNull: false, type: Sequelize.DATE },
       updatedAt: { allowNull: false, type: Sequelize.DATE },
     });

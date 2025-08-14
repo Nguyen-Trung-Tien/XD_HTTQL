@@ -1,5 +1,6 @@
-import React from "react";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import React, { useState } from "react";
+import { FiEdit, FiTrash2, FiList } from "react-icons/fi";
+import CustomerOrderHistory from "./CustomerOrderHistory";
 
 export default function CustomerTable({
   customers,
@@ -10,6 +11,14 @@ export default function CustomerTable({
   onDelete,
   loading,
 }) {
+  const [showOrderHistory, setShowOrderHistory] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  const handleShowOrderHistory = (customer) => {
+    setSelectedCustomer(customer);
+    setShowOrderHistory(true);
+  };
+
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden">
       <div className="p-6">
@@ -41,7 +50,7 @@ export default function CustomerTable({
                   Địa chỉ
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
-                  Trạng thái
+                  Đơn hàng
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">
                   Thao tác
@@ -53,7 +62,7 @@ export default function CustomerTable({
               {loading ? (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={7}
                     className="px-6 py-6 text-center text-textSecondary"
                   >
                     Đang tải...
@@ -62,7 +71,7 @@ export default function CustomerTable({
               ) : customers.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={7}
                     className="px-6 py-6 text-center text-textSecondary"
                   >
                     Không tìm thấy khách hàng.
@@ -105,19 +114,14 @@ export default function CustomerTable({
                       </div>
                     </td>
 
-
+                    {/* Cột Đơn hàng */}
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full font-medium ${
-                          c.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
+                      <button
+                        className="flex items-center gap-1 text-primary hover:underline"
+                        onClick={() => handleShowOrderHistory(c)}
                       >
-                        {c.status === "active"
-                          ? "Đang hoạt động"
-                          : "Ngừng hoạt động"}
-                      </span>
+                       {c.orderCount || 0} đơn hàng
+                      </button>
                     </td>
 
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -146,6 +150,14 @@ export default function CustomerTable({
           </table>
         </div>
       </div>
+
+      {/* Modal lịch sử đơn hàng */}
+      {showOrderHistory && selectedCustomer && (
+        <CustomerOrderHistory
+          customerId={selectedCustomer.id}
+          onClose={() => setShowOrderHistory(false)}
+        />
+      )}
     </div>
   );
 }
