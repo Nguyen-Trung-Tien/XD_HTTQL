@@ -3,28 +3,33 @@ const importDetailService = require("../services/importDetailService");
 const getAll = async (req, res) => {
   try {
     const details = await importDetailService.getAllImportDetails();
-    res.json(details);
+    res.status(200).json({ success: true, data: details });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
 const getById = async (req, res) => {
   try {
     const detail = await importDetailService.getImportDetailById(req.params.id);
-    if (!detail) return res.status(404).json({ error: "Not found" });
-    res.json(detail);
+    res.status(200).json({ success: true, data: detail });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (err.message.includes("not found")) {
+      return res.status(404).json({ success: false, error: err.message });
+    }
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
 const create = async (req, res) => {
   try {
     const detail = await importDetailService.createImportDetail(req.body);
-    res.status(201).json(detail);
+    res.status(201).json({ success: true, data: detail });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (err.message.includes("not found") || err.message.includes("required")) {
+      return res.status(400).json({ success: false, error: err.message });
+    }
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
@@ -34,18 +39,24 @@ const update = async (req, res) => {
       req.params.id,
       req.body
     );
-    res.json({ updated });
+    res.status(200).json({ success: true, updated });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (err.message.includes("not found")) {
+      return res.status(404).json({ success: false, error: err.message });
+    }
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
 const remove = async (req, res) => {
   try {
     await importDetailService.deleteImportDetail(req.params.id);
-    res.json({ message: "Deleted successfully" });
+    res.status(200).json({ success: true, message: "Deleted successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (err.message.includes("not found")) {
+      return res.status(404).json({ success: false, error: err.message });
+    }
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 

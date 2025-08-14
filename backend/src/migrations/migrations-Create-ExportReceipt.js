@@ -12,7 +12,6 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
       },
-
       export_date: {
         type: Sequelize.DATE,
       },
@@ -25,13 +24,16 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("ExportReceipts");
   },

@@ -7,12 +7,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "supplierId",
         as: "supplierData",
       });
-
       ImportReceipts.belongsTo(models.User, {
         foreignKey: "userId",
         as: "userData",
       });
-
       ImportReceipts.hasMany(models.ImportDetails, {
         foreignKey: "importId",
         as: "importDetailData",

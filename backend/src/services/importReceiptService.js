@@ -11,11 +11,12 @@ const getAllImportReceipts = async () => {
         include: [{ model: db.Product, as: "productData" }],
       },
     ],
+    order: [["id", "DESC"]],
   });
 };
 
 const getImportReceiptById = async (id) => {
-  return await db.ImportReceipts.findByPk(id, {
+  const receipt = await db.ImportReceipts.findByPk(id, {
     include: [
       { model: db.Suppliers, as: "supplierData" },
       { model: db.User, as: "userData" },
@@ -26,6 +27,10 @@ const getImportReceiptById = async (id) => {
       },
     ],
   });
+  if (!receipt) {
+    throw new Error(`Import receipt with ID ${id} not found`);
+  }
+  return receipt;
 };
 
 const createImportReceipt = async (data) => {
@@ -37,15 +42,11 @@ const createImportReceipt = async (data) => {
     });
 
     if (details?.length) {
-      for (const item of details) {
-        await db.ImportDetails.create(
-          {
-            importId: receipt.id,
-            ...item,
-          },
-          { transaction: t }
-        );
-      }
+      const detailData = details.map((item) => ({
+        importId: receipt.id,
+        ...item,
+      }));
+      await db.ImportDetails.bulkCreate(detailData, { transaction: t });
     }
 
     await t.commit();
@@ -57,7 +58,29 @@ const createImportReceipt = async (data) => {
 };
 
 const updateImportReceipt = async (id, data) => {
-  return await db.ImportReceipts.update(data, { where: { id } });
+  const { details, ...receiptData } = data;
+  const t = await db.sequelize.transaction();
+  try {
+    await db.ImportReceipts.update(receiptData, {
+      where: { id },
+      transaction: t,
+    });
+
+    if (details) {
+      await db.ImportDetails.destroy({
+        where: { importId: id },
+        transaction: t,
+      });
+      const newDetails = details.map((item) => ({ importId: id, ...item }));
+      await db.ImportDetails.bulkCreate(newDetails, { transaction: t });
+    }
+
+    await t.commit();
+    return true;
+  } catch (err) {
+    await t.rollback();
+    throw err;
+  }
 };
 
 const deleteImportReceipt = async (id) => {

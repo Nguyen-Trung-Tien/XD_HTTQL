@@ -6,6 +6,8 @@ const customerRouter = require("./customerRouter");
 const importReceiptRoute = require("./importReceiptRoute");
 const importDetailRoutes = require("./importDetailRoutes");
 const suppliersRouter = require("./importDetailRoutes");
+const exportDetailRoutes = require("./exportDetailRoutes");
+const exportReceiptRoutes = require("./exportReceiptRoutes");
 
 const routes = (app) => {
   app.use("/api/v1/user", UserRouter);
@@ -16,5 +18,7 @@ const routes = (app) => {
   app.use("/api/v1/import-receipt", importReceiptRoute);
   app.use("/api/v1/import-detail", importDetailRoutes);
   app.use("/api/v1/suppliers", suppliersRouter);
+  app.use("/api/v1/export-detail", exportDetailRoutes);
+  app.use("/api/v1/export-receipt", exportReceiptRoutes);
 };
 module.exports = routes;
