@@ -1,78 +1,135 @@
 const db = require("../models/index");
+const { Op } = require("sequelize");
 
-const getAllSuppliers = async () => {
-  return await db.Suppliers.findAll({
+const supplierInclude = [
+  {
+    model: db.ImportReceipts,
+    as: "importReceiptData",
     include: [
       {
-        model: db.ImportReceipts,
-        as: "importReceiptData",
+        model: db.ImportDetails,
+        as: "importDetailData",
         include: [
           {
-            model: db.ImportDetails,
-            as: "importDetailData",
-            include: [{ model: db.Product, as: "productData" }],
+            model: db.Product,
+            as: "productData",
           },
         ],
       },
     ],
-    order: [["id", "DESC"]],
-  });
+  },
+];
+
+const getAllSuppliers = async ({ page = 1, limit = 10, search = "" }) => {
+  try {
+    const offset = (page - 1) * limit;
+
+    const whereCondition = search
+      ? {
+          [Op.or]: [
+            { name: { [Op.like]: `%${search}%` } },
+            { phoneNumber: { [Op.like]: `%${search}%` } },
+            { address: { [Op.like]: `%${search}%` } },
+          ],
+        }
+      : {};
+
+    const { count, rows } = await db.Suppliers.findAndCountAll({
+      attributes: [
+        "id",
+        "name",
+        "phoneNumber",
+        "address",
+        "image",
+        "description",
+      ],
+      include: supplierInclude,
+      where: whereCondition,
+      order: [["id", "DESC"]],
+      limit: parseInt(limit),
+      offset,
+    });
+
+    return {
+      totalItems: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      suppliers: rows,
+    };
+  } catch (error) {
+    throw new Error(error.message || "Failed to get suppliers");
+  }
 };
 
 const getSupplierById = async (id) => {
-  const supplier = await db.Suppliers.findByPk(id, {
-    include: [
-      {
-        model: db.ImportReceipts,
-        as: "importReceiptData",
-        include: [
-          {
-            model: db.ImportDetails,
-            as: "importDetailData",
-            include: [{ model: db.Product, as: "productData" }],
-          },
-        ],
-      },
-    ],
-  });
+  try {
+    const supplier = await db.Suppliers.findByPk(id, {
+      attributes: [
+        "id",
+        "name",
+        "phoneNumber",
+        "address",
+        "image",
+        "description",
+      ],
+      include: supplierInclude,
+    });
 
-  if (!supplier) {
-    throw new Error(`Supplier with ID ${id} not found`);
+    if (!supplier) {
+      throw new Error(`Supplier with ID ${id} not found`);
+    }
+
+    return supplier;
+  } catch (error) {
+    throw new Error(error.message || "Failed to get supplier");
   }
-  return supplier;
 };
 
 const createSupplier = async (data) => {
-  if (!data.name) {
-    throw new Error("Supplier name is required");
+  try {
+    if (!data.name) throw new Error("Supplier name is required");
+
+    const newSupplier = await db.Suppliers.create(data);
+    return newSupplier;
+  } catch (error) {
+    throw new Error(error.message || "Failed to create supplier");
   }
-  return await db.Suppliers.create(data);
 };
 
 const updateSupplier = async (id, data) => {
-  const supplier = await db.Suppliers.findByPk(id);
-  if (!supplier) {
-    throw new Error(`Supplier with ID ${id} not found`);
+  try {
+    const supplier = await db.Suppliers.findByPk(id);
+    if (!supplier) return null;
+
+    const validFields = {
+      name: data.name,
+      phoneNumber: data.phoneNumber,
+      address: data.address,
+      description: data.description,
+    };
+
+    await supplier.update(validFields);
+    return supplier;
+  } catch (error) {
+    throw new Error(error.message || "Failed to update supplier");
   }
-  await db.Suppliers.update(data, { where: { id } });
-  return true;
 };
 
 const deleteSupplier = async (id) => {
-  const supplier = await db.Suppliers.findByPk(id, {
-    include: [{ model: db.ImportReceipts, as: "importReceiptData" }],
-  });
+  try {
+    const supplier = await db.Suppliers.findByPk(id, {
+      include: [{ model: db.ImportReceipts, as: "importReceiptData" }],
+    });
 
-  if (!supplier) {
-    throw new Error(`Supplier with ID ${id} not found`);
+    if (!supplier) throw new Error(`Supplier with ID ${id} not found`);
+    if (supplier.importReceiptData.length > 0)
+      throw new Error("Cannot delete supplier with existing import receipts");
+
+    await db.Suppliers.destroy({ where: { id } });
+    return { message: "Supplier deleted successfully" };
+  } catch (error) {
+    throw new Error(error.message || "Failed to delete supplier");
   }
-
-  if (supplier.importReceiptData.length > 0) {
-    throw new Error("Cannot delete supplier with existing import receipts");
-  }
-
-  await db.Suppliers.destroy({ where: { id } });
-  return true;
 };
 
 module.exports = {

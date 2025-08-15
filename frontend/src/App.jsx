@@ -19,6 +19,7 @@ import Profile from "./components/Profile";
 import Customer from "./components/CustomerComponent/Customer";
 import ExportDetails from "./components/ExportDetails/ExportDetails";
 import ExportReceipts from "./components/ExportReceiptsList/ExportReceipts";
+import Suppliers from "./components/SuppliersComponent/Suppliers";
 
 function App() {
   const dispatch = useDispatch();
@@ -53,6 +54,7 @@ function App() {
             <Route path="shippers" element={<Shippers />} />
             <Route path="stats" element={<Statistics />} />
             <Route path="customer" element={<Customer />} />
+            <Route path="suppliers" element={<Suppliers />} />
           </Route>
         </Route>
       </Routes>

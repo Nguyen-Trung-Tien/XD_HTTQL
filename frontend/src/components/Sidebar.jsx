@@ -62,6 +62,26 @@ function Sidebar() {
       ),
     },
     {
+      id: "suppliers",
+      name: "Nhà cung cấp",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M3 7h18M3 7l2 14h14l2-14M5 7V5a2 2 0 012-2h10a2 2 0 012 2v2"
+          />
+        </svg>
+      ),
+    },
+    {
       id: "orders",
       name: "Đơn hàng",
       icon: (

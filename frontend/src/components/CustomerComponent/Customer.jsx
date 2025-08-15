@@ -41,7 +41,7 @@ function Customer() {
         pageNumber,
         limit,
         search,
-        statusFilter,
+        statusFilter
       );
       if (res?.data?.errCode === 0) {
         setCustomers(res.data.customers || []);
@@ -103,36 +103,36 @@ function Customer() {
         email: "",
         phoneNumber: "",
         address: "",
-        lat:null,
-        lng:null,
+        lat: null,
+        lng: null,
       });
       setIsEditing(false);
     }
     setIsModalOpen(true);
   };
 
- const handleSubmit = async () => {
-  try {
-    const data = {
-      ...form,
-      lat: form.lat, 
-      lng: form.lng, 
-    };
+  const handleSubmit = async () => {
+    try {
+      const data = {
+        ...form,
+        lat: form.lat,
+        lng: form.lng,
+      };
 
-    if (isEditing) {
-      await updateCustomer(data);
-      toast.success("Cập nhật khách hàng thành công!");
-    } else {
-      await createCustomer(data);
-      toast.success("Tạo khách hàng thành công!");
+      if (isEditing) {
+        await updateCustomer(data);
+        toast.success("Cập nhật khách hàng thành công!");
+      } else {
+        await createCustomer(data);
+        toast.success("Tạo khách hàng thành công!");
+      }
+
+      fetchCustomers();
+      handleCloseModal();
+    } catch (e) {
+      toast.error("Lỗi khi lưu khách hàng!", e);
     }
-
-    fetchCustomers();
-    handleCloseModal();
-  } catch (err) {
-    toast.error("Lỗi khi lưu khách hàng!");
-  }
-};
+  };
 
   // Delete handlers
   const handleDelete = async (id) => {

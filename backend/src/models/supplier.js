@@ -12,9 +12,9 @@ module.exports = (sequelize, DataTypes) => {
   Suppliers.init(
     {
       name: DataTypes.STRING,
-      phone: DataTypes.STRING,
+      phoneNumber: DataTypes.STRING,
       address: DataTypes.STRING,
-      image: DataTypes.STRING,
+      image: DataTypes.BLOB("long"),
       description: DataTypes.TEXT,
     },
     {
