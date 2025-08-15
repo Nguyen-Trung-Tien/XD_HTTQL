@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
-import ShipperMap from "../components/ShipperMap";
-import ShipperList from "../components/ShipperList";
-import AddShipperForm from "../components/AddShipperForm";
-import EditShipperForm from "../components/EditShipperForm";
+import ShipperMap from "./ShipperMap";
+import ShipperList from "./ShipperList";
+import AddShipperForm from "./AddShipperForm";
+import EditShipperForm from "./EditShipperForm";
 import {
   getAllShippers,
   addNewShipper,
   deleteShipper,
   updateShipper,
   updateShipperStatus,
-} from "../API/shipper/shipperApi";
-import { getAllOrders } from "../API/orders/ordersApi";
+} from "../../API/shipper/shipperApi";
+import { getAllOrders } from "../../API/orders/ordersApi";
 import { toast } from "react-toastify";
 
 function Shippers() {
