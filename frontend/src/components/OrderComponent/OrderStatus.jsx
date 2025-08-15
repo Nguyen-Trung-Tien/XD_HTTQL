@@ -23,7 +23,7 @@ const ORDER_STATUS = {
   pending: {
     class: "bg-accent/20 text-accent",
     text: "Chờ xác nhận",
-    description: "Đơn hàng của bạn đã được tiếp nhận",
+    description: "Đơn hàng  đã được tiếp nhận",
   },
   finding_shipper: {
     class: "bg-purple-100 text-purple-800",
@@ -33,7 +33,7 @@ const ORDER_STATUS = {
   shipping: {
     class: "bg-yellow-100 text-yellow-800",
     text: "Đang giao",
-    description: "Đơn hàng đang trên đường giao đến bạn",
+    description: "Đơn hàng đang trên đường giao",
   },
   delivered: {
     class: "bg-green-100 text-green-800",
