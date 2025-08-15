@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import AddressAutocomplete from "./AddressAutocomplete";
+import AddressAutocomplete from "../AddressAutocomplete";
 
 export default function AddShipperForm({ onSubmit, onClose }) {
   const [formData, setFormData] = useState({
