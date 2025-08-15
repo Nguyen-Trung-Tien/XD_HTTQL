@@ -18,6 +18,8 @@ import RequireAuth from "./auth/RequireAuth";
 import Profile from "./components/Profile";
 import Customer from "./components/CustomerComponent/Customer";
 import ExportDetails from "./components/ExportDetails/ExportDetails";
+import ExportReceipts from "./components/ExportReceiptsList/ExportReceipts";
+
 function App() {
   const dispatch = useDispatch();
 
@@ -37,6 +39,7 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/ExportDetails" element={<ExportDetails />} />
+        <Route path="/ExportReceipts" element={<ExportReceipts />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />

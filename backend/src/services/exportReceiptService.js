@@ -29,19 +29,52 @@ const getExportReceiptById = async (id) => {
 };
 
 const createExportReceipt = async (data) => {
-  return await db.ExportReceipts.create(data);
+  const { exportDetailData, ...receiptData } = data;
+
+  const receipt = await db.ExportReceipts.create(receiptData);
+
+  if (exportDetailData && exportDetailData.length > 0) {
+    for (const d of exportDetailData) {
+      await db.ExportDetails.create({
+        exportId: receipt.id,
+        productId: d.productId,
+        quantity: d.quantity,
+      });
+    }
+  }
+
+  return await getExportReceiptById(receipt.id);
 };
 
 const updateExportReceipt = async (id, data) => {
+  const { exportDetailData, ...receiptData } = data;
+
   const receipt = await db.ExportReceipts.findByPk(id);
   if (!receipt) throw new Error("Export receipt not found");
-  await receipt.update(data);
-  return receipt;
+
+  await receipt.update(receiptData);
+
+  await db.ExportDetails.destroy({ where: { exportId: id } });
+
+  if (exportDetailData && exportDetailData.length > 0) {
+    for (const d of exportDetailData) {
+      await db.ExportDetails.create({
+        exportId: id,
+        productId: d.productId,
+        quantity: d.quantity,
+      });
+    }
+  }
+
+  return await getExportReceiptById(id);
 };
 
 const deleteExportReceipt = async (id) => {
   const receipt = await db.ExportReceipts.findByPk(id);
   if (!receipt) throw new Error("Export receipt not found");
+
+  await db.ExportDetails.destroy({ where: { exportId: id } });
+
   await receipt.destroy();
   return true;
 };
