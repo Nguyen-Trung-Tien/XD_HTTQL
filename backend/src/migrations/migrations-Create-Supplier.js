@@ -12,14 +12,14 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      phone: {
+      phoneNumber: {
         type: Sequelize.STRING,
       },
       address: {
         type: Sequelize.STRING,
       },
       image: {
-        type: Sequelize.STRING,
+        type: Sequelize.BLOB("long"),
       },
       description: {
         type: Sequelize.TEXT,
