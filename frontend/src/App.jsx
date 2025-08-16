@@ -20,6 +20,8 @@ import Customer from "./components/CustomerComponent/Customer";
 import ExportDetails from "./components/ExportDetails/ExportDetails";
 import ExportReceipts from "./components/ExportReceiptsList/ExportReceipts";
 import Suppliers from "./components/SuppliersComponent/Suppliers";
+import ImportDetails from "./components/ImportDetailComponent/ImportDetails";
+import ImportReceipts from "./components/ImportReceiptComponent/importReceipt";
 
 function App() {
   const dispatch = useDispatch();
@@ -41,6 +43,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/ExportDetails" element={<ExportDetails />} />
         <Route path="/ExportReceipts" element={<ExportReceipts />} />
+
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
@@ -55,6 +58,8 @@ function App() {
             <Route path="stats" element={<Statistics />} />
             <Route path="customer" element={<Customer />} />
             <Route path="suppliers" element={<Suppliers />} />
+            <Route path="ImportDetails" element={<ImportDetails />} />
+            <Route path="ImportReceipts" element={<ImportReceipts />} />
           </Route>
         </Route>
       </Routes>

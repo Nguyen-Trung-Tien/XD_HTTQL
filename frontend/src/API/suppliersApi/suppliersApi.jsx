@@ -2,20 +2,35 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const getAllSuppliers = async (page = 1, limit = 8, search = "") => {
+const getAllSuppliers = async ({ page = 1, limit = 10, search = "" }) => {
   try {
+    const pageNumber = parseInt(page, 10) || 1;
+    const pageSize = parseInt(limit, 10) || 10;
+    const query = search ? search.toString() : "";
+
     const res = await axios.get(`${API_URL}/api/v1/suppliers/get-all`, {
-      params: { page, limit, search },
+      params: {
+        page: pageNumber,
+        limit: pageSize,
+        search: query,
+      },
     });
+
     return res.data;
   } catch (error) {
     console.error(
       "Failed to fetch suppliers:",
       error.response?.data || error.message
     );
-    throw error.response?.data || error;
+    throw (
+      error.response?.data || {
+        message: error.message || "Failed to fetch suppliers",
+      }
+    );
   }
 };
+
+export default getAllSuppliers;
 
 const getSupplierById = async (id) => {
   try {

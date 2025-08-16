@@ -5,7 +5,7 @@ const orderRouter = require("./orderRouter");
 const customerRouter = require("./customerRouter");
 const importReceiptRoute = require("./importReceiptRoute");
 const importDetailRoutes = require("./importDetailRoutes");
-const suppliersRouter = require("./importDetailRoutes");
+const suppliersRouter = require("./supplierRouter");
 const exportDetailRoutes = require("./exportDetailRoutes");
 const exportReceiptRoutes = require("./exportReceiptRoutes");
 

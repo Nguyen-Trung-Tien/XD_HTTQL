@@ -2,17 +2,32 @@ const supplierService = require("../services/supplierService");
 
 const getAll = async (req, res) => {
   try {
-    const { page, limit, search } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search ? req.query.search.toString() : "";
+
     const suppliers = await supplierService.getAllSuppliers({
       page,
       limit,
       search,
     });
-    res.status(200).json({ success: true, ...suppliers });
+
+    res.status(200).json({
+      success: true,
+      totalItems: suppliers.totalItems,
+      totalPages: suppliers.totalPages,
+      currentPage: suppliers.currentPage,
+      suppliers: suppliers.suppliers,
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error("Error fetching suppliers:", err);
+    res
+      .status(500)
+      .json({ success: false, message: err.message || "Server error" });
   }
 };
+
+module.exports = { getAll };
 
 const getById = async (req, res) => {
   try {

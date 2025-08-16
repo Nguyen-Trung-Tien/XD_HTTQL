@@ -22,17 +22,21 @@ const supplierInclude = [
 
 const getAllSuppliers = async ({ page = 1, limit = 10, search = "" }) => {
   try {
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
     const offset = (page - 1) * limit;
 
-    const whereCondition = search
-      ? {
-          [Op.or]: [
-            { name: { [Op.like]: `%${search}%` } },
-            { phoneNumber: { [Op.like]: `%${search}%` } },
-            { address: { [Op.like]: `%${search}%` } },
-          ],
-        }
-      : {};
+    const whereCondition = {
+      ...(search
+        ? {
+            [Op.or]: [
+              { name: { [Op.like]: `%${search}%` } },
+              { phoneNumber: { [Op.like]: `%${search}%` } },
+              { address: { [Op.like]: `%${search}%` } },
+            ],
+          }
+        : {}),
+    };
 
     const { count, rows } = await db.Suppliers.findAndCountAll({
       attributes: [
@@ -46,14 +50,15 @@ const getAllSuppliers = async ({ page = 1, limit = 10, search = "" }) => {
       include: supplierInclude,
       where: whereCondition,
       order: [["id", "DESC"]],
-      limit: parseInt(limit),
+      limit,
       offset,
+      distinct: true,
     });
 
     return {
       totalItems: count,
       totalPages: Math.ceil(count / limit),
-      currentPage: parseInt(page),
+      currentPage: page,
       suppliers: rows,
     };
   } catch (error) {
