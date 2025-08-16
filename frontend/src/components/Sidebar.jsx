@@ -82,6 +82,32 @@ function Sidebar() {
       ),
     },
     {
+      id: "WarehouseManagement",
+      name: "Nhập/xuất hóa đơn",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M4 4h16v4H4zM4 12h16v8H4z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M8 8v4m8-4v4M8 16v4m8-4v4"
+          />
+        </svg>
+      ),
+    },
+    {
       id: "orders",
       name: "Đơn hàng",
       icon: (

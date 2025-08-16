@@ -105,15 +105,8 @@ export default function ImportDetails() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-100 min-h-screen">
-      <button
-        onClick={() => window.history.back()}
-        className="flex items-center gap-1 mb-4 text-gray-600 hover:text-gray-800 transition"
-      >
-        <FiArrowLeft /> Quay lại
-      </button>
-
-      <h1 className="text-2xl font-bold p-4">
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold ">
         {editingId
           ? "Cập nhật chi tiết nhập hàng"
           : "Quản lý chi tiết nhập hàng"}
@@ -125,7 +118,7 @@ export default function ImportDetails() {
       >
         <input
           type="number"
-          placeholder="Import ID"
+          placeholder="Mã hóa đơn"
           className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
           value={form.importId}
           onChange={(e) => setForm({ ...form, importId: e.target.value })}
@@ -133,7 +126,7 @@ export default function ImportDetails() {
         />
         <input
           type="number"
-          placeholder="Product ID"
+          placeholder="Mã sản phẩm"
           className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
           value={form.productId}
           onChange={(e) => setForm({ ...form, productId: e.target.value })}
@@ -169,12 +162,12 @@ export default function ImportDetails() {
         </div>
       ) : (
         <div className="overflow-x-auto bg-white rounded-xl shadow">
-          <table className="w-full text-sm text-left border-collapse border border-gray-200">
-            <thead className="bg-white text-gray-700 border-b">
+          <table className="w-full text-base text-left border-collapse border border-gray-200">
+            <thead className="bg-white text-gray-700 border-b text-lg">
               <tr>
                 <th className="border p-3">ID</th>
-                <th className="border p-3">Import ID</th>
-                <th className="border p-3">Product</th>
+                <th className="border p-3">Mã sản phẩm</th>
+                <th className="border p-3">Tên sản phẩm</th>
                 <th className="border p-3">Số lượng</th>
                 <th className="border p-3">Giá</th>
                 <th className="border p-3 text-center">Hành động</th>
@@ -185,7 +178,7 @@ export default function ImportDetails() {
                 details.map((item) => (
                   <tr
                     key={item.id}
-                    className="hover:bg-[#E6F7FF] transition-colors duration-200"
+                    className="hover:bg-[#E6F7FF] transition-colors duration-200 text-base"
                   >
                     <td className="border p-3">{item.id}</td>
                     <td className="border p-3">{item.importId}</td>
@@ -212,7 +205,10 @@ export default function ImportDetails() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center p-6 text-gray-400">
+                  <td
+                    colSpan="6"
+                    className="text-center p-6 text-gray-400 text-base"
+                  >
                     Không có dữ liệu
                   </td>
                 </tr>

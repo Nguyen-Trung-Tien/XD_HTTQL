@@ -154,13 +154,6 @@ export default function ImportReceipts() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <button
-        onClick={() => window.history.back()}
-        className="flex items-center gap-1 mb-4 text-gray-600 hover:text-gray-800 transition"
-      >
-        <FiArrowLeft /> Quay lại
-      </button>
-
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold ">Danh sách phiếu nhập</h1>
         <button

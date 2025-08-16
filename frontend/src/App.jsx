@@ -22,6 +22,7 @@ import ExportReceipts from "./components/ExportReceiptsList/ExportReceipts";
 import Suppliers from "./components/SuppliersComponent/Suppliers";
 import ImportDetails from "./components/ImportDetailComponent/ImportDetails";
 import ImportReceipts from "./components/ImportReceiptComponent/importReceipt";
+import WarehouseManagement from "./components/WarehouseManagement/WarehouseManagement";
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +61,10 @@ function App() {
             <Route path="suppliers" element={<Suppliers />} />
             <Route path="ImportDetails" element={<ImportDetails />} />
             <Route path="ImportReceipts" element={<ImportReceipts />} />
+            <Route
+              path="WarehouseManagement"
+              element={<WarehouseManagement />}
+            />
           </Route>
         </Route>
       </Routes>

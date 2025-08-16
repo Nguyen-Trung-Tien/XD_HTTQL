@@ -102,12 +102,11 @@ function ExportDetails() {
     : [];
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-100 min-h-screen">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
-        <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00BFFF] to-[#87CEFA]">
-          Quản lý phiếu xuất
-        </h2>
+        <h2 className="text-2xl font-bold text-black">Quản lý phiếu xuất</h2>
+
         <div className="flex gap-2 w-full md:w-auto">
           <div className="relative flex-1">
             <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -141,18 +140,28 @@ function ExportDetails() {
         </span>
       </div>
       {/* Table */}
-      <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white">
+      <div className="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 text-base">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-center">ID</th>
-              <th className="px-4 py-3 text-left">Phiếu xuất</th>
-              <th className="px-4 py-3 text-left">Sản phẩm</th>
-              <th className="px-4 py-3 text-center">Số lượng</th>
-              <th className="px-4 py-3 text-center">Hành động</th>
+              <th className="px-4 py-3 text-center font-semibold text-gray-900 border-b">
+                ID
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-900 border-b">
+                Phiếu xuất
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-gray-900 border-b">
+                Sản phẩm
+              </th>
+              <th className="px-4 py-3 text-center font-semibold text-gray-900 border-b">
+                Số lượng
+              </th>
+              <th className="px-4 py-3 text-center font-semibold text-gray-900 border-b">
+                Hành động
+              </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 text-gray-900">
             {loading ? (
               <tr>
                 <td colSpan="5" className="text-center py-6 text-gray-500">
@@ -169,14 +178,14 @@ function ExportDetails() {
               filteredData.map((item) => (
                 <tr
                   key={item.id}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:bg-gray-100 transition-colors"
                 >
                   <td className="px-4 py-3 text-center">{item.id}</td>
                   <td className="px-4 py-3">
-                    <div className="font-medium">
+                    <div className="font-medium text-gray-900">
                       ID: {item.exportReceiptData?.id || "—"}
                     </div>
-                    <div className="text-gray-500 text-sm">
+                    <div className="text-gray-600 text-sm">
                       Ngày:{" "}
                       {item.exportReceiptData?.export_date
                         ? new Date(
@@ -184,10 +193,10 @@ function ExportDetails() {
                           ).toLocaleDateString("vi-VN")
                         : "—"}
                     </div>
-                    <div className="text-gray-500 text-sm">
+                    <div className="text-gray-600 text-sm">
                       Lý do: {item.exportReceiptData?.reason || "—"}
                     </div>
-                    <div className="text-gray-400 text-xs">
+                    <div className="text-gray-500 text-xs">
                       Ghi chú: {item.exportReceiptData?.note || "—"}
                     </div>
                   </td>
@@ -206,15 +215,15 @@ function ExportDetails() {
                       </div>
                     )}
                     <div className="flex flex-col">
-                      <span className="font-semibold">
+                      <span className="font-semibold text-gray-900">
                         {item.productData?.name || "—"}
                       </span>
-                      <span className="text-gray-500 text-sm">
+                      <span className="text-gray-600 text-sm">
                         Loại: {item.productData?.type || "—"} | Giá:{" "}
                         {Number(item.productData?.price || 0).toLocaleString()}
                         ₫/{item.productData?.unit || "—"}
                       </span>
-                      <span className="text-gray-400 text-xs">
+                      <span className="text-gray-500 text-xs">
                         Tồn kho: {item.productData?.stock || 0} | Kho:{" "}
                         {item.productData?.warehouseAddress || "—"}
                       </span>
@@ -233,7 +242,7 @@ function ExportDetails() {
                     </button>
                     <button
                       onClick={() => handleDelete(item.id)}
-                      className="w-10 h-10 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-full transition"
+                      className="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full transition hover:brightness-90"
                       title="Xóa chi tiết"
                     >
                       <FiTrash2 className="w-5 h-5" />

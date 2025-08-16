@@ -29,7 +29,6 @@ export default function ExportReceiptsTable() {
       .then((res) => {
         const arr = Array.isArray(res.data) ? res.data : res.data.data;
         setReceipts(arr || []);
-        toast.success("Tải dữ liệu thành công!");
       })
       .catch((err) => {
         console.error("Lỗi tải dữ liệu:", err);
@@ -122,7 +121,7 @@ export default function ExportReceiptsTable() {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-[#00BFFF]">
+        <h2 className="text-2xl font-bold text-gray-900">
           Danh sách phiếu xuất
         </h2>
         <button
@@ -134,121 +133,127 @@ export default function ExportReceiptsTable() {
       </div>
 
       <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="w-full table-auto border-collapse">
-          <thead className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white">
-            <tr>
-              <th className="px-4 py-2 border">ID</th>
-              <th className="px-4 py-2 border">Người xuất</th>
-              <th className="px-4 py-2 border">Ngày xuất</th>
-              <th className="px-4 py-2 border">Lý do</th>
-              <th className="px-4 py-2 border">Ghi chú</th>
-              <th className="px-4 py-2 border">Chi tiết sản phẩm</th>
-              <th className="px-4 py-2 border">Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {receipts.map((r) => (
-              <tr
-                key={r.id}
-                className="hover:bg-blue-50 align-top transition-colors"
-              >
-                <td className="px-4 py-2 border text-center">{r.id}</td>
-                <td className="px-4 py-2 border">
-                  {r.userData?.firstName ||
-                    r.userData?.email ||
-                    `User ID: ${r.userId}`}
-                </td>
-                <td className="px-4 py-2 border">
-                  {new Date(r.export_date).toLocaleDateString("vi-VN")}
-                </td>
-                <td className="px-4 py-2 border">{r.reason}</td>
-                <td className="px-4 py-2 border">{r.note}</td>
-                <td className="px-4 py-2 border max-w-md">
-                  {r.exportDetailData?.length > 0 ? (
-                    <ul className="list-disc pl-4 max-h-60 overflow-y-auto">
-                      {r.exportDetailData.map((d) => (
-                        <li key={d.id} className="mb-3 border-b pb-2">
-                          <div>
-                            <strong>Tên SP:</strong>{" "}
-                            {d.productData?.name || d.productId}
-                          </div>
-                          <div>
-                            <strong>Loại:</strong> {d.productData?.type}
-                          </div>
-                          <div>
-                            <strong>Danh mục:</strong> {d.productData?.category}
-                          </div>
-                          <div>
-                            <strong>Mô tả:</strong> {d.productData?.description}
-                          </div>
-                          <div>
-                            <strong>Đơn vị:</strong> {d.productData?.unit}
-                          </div>
-                          <div>
-                            <strong>Giá:</strong> {d.productData?.price} đ
-                          </div>
-                          <div>
-                            <strong>Tồn kho:</strong> {d.productData?.stock}
-                          </div>
-                          <div>
-                            <strong>Kho:</strong>{" "}
-                            {d.productData?.warehouseAddress}
-                          </div>
-                          <div>
-                            <strong>Tọa độ:</strong>{" "}
-                            {d.productData?.warehouseLat},{" "}
-                            {d.productData?.warehouseLng}
-                          </div>
-                          <div>
-                            <strong>Trạng thái:</strong> {d.productData?.status}
-                          </div>
-                          <div>
-                            <strong>Ngày tạo SP:</strong>{" "}
-                            {new Date(d.productData?.createdAt).toLocaleString(
-                              "vi-VN"
-                            )}
-                          </div>
-                          <div>
-                            <strong>Ngày cập nhật SP:</strong>{" "}
-                            {new Date(d.productData?.updatedAt).toLocaleString(
-                              "vi-VN"
-                            )}
-                          </div>
-                          <div>
-                            <strong>Số lượng xuất:</strong> {d.quantity}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <span className="text-gray-400">Không có sản phẩm</span>
-                  )}
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  <div className="flex justify-center items-center gap-2">
-                    <button
-                      onClick={() => handleEdit(r)}
-                      className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white p-2 rounded-full flex items-center justify-center hover:from-[#009acd] hover:to-[#6cb6ff] transition"
-                      title="Sửa phiếu xuất"
-                    >
-                      <FiEdit size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(r.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full flex items-center justify-center transition"
-                      title="Xóa phiếu xuất"
-                    >
-                      <FiTrash2 size={18} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto shadow-md rounded-lg">
+          <div className="overflow-x-auto shadow-md rounded-lg bg-white">
+            <table className="w-full table-auto border border-gray-200 text-black bg-white">
+              <thead className="bg-gray-50 text-black sticky top-0 z-10">
+                <tr>
+                  <th className="px-4 py-3 border text-center">ID</th>
+                  <th className="px-4 py-3 border">Người xuất</th>
+                  <th className="px-4 py-3 border">Ngày xuất</th>
+                  <th className="px-4 py-3 border">Lý do</th>
+                  <th className="px-4 py-3 border">Ghi chú</th>
+                  <th className="px-4 py-3 border">Chi tiết sản phẩm</th>
+                  <th className="px-4 py-3 border text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {receipts.map((r) => (
+                  <tr key={r.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-2 border text-center">{r.id}</td>
+                    <td className="px-4 py-2 border">
+                      {r.userData?.firstName ||
+                        r.userData?.email ||
+                        `User ID: ${r.userId}`}
+                    </td>
+                    <td className="px-4 py-2 border">
+                      {new Date(r.export_date).toLocaleDateString("vi-VN")}
+                    </td>
+                    <td className="px-4 py-2 border">{r.reason}</td>
+                    <td className="px-4 py-2 border">{r.note}</td>
+                    <td className="px-4 py-2 border max-w-md">
+                      {r.exportDetailData?.length > 0 ? (
+                        <ul className="list-disc pl-4 max-h-60 overflow-y-auto space-y-2 text-black">
+                          {r.exportDetailData.map((d) => (
+                            <li
+                              key={d.id}
+                              className="pb-2 border-b last:border-b-0"
+                            >
+                              <div>
+                                <strong>Tên SP:</strong>{" "}
+                                {d.productData?.name || d.productId}
+                              </div>
+                              <div>
+                                <strong>Loại:</strong> {d.productData?.type}
+                              </div>
+                              <div>
+                                <strong>Danh mục:</strong>{" "}
+                                {d.productData?.category}
+                              </div>
+                              <div>
+                                <strong>Mô tả:</strong>{" "}
+                                {d.productData?.description}
+                              </div>
+                              <div>
+                                <strong>Đơn vị:</strong> {d.productData?.unit}
+                              </div>
+                              <div>
+                                <strong>Giá:</strong> {d.productData?.price} đ
+                              </div>
+                              <div>
+                                <strong>Tồn kho:</strong> {d.productData?.stock}
+                              </div>
+                              <div>
+                                <strong>Kho:</strong>{" "}
+                                {d.productData?.warehouseAddress}
+                              </div>
+                              <div>
+                                <strong>Tọa độ:</strong>{" "}
+                                {d.productData?.warehouseLat},{" "}
+                                {d.productData?.warehouseLng}
+                              </div>
+                              <div>
+                                <strong>Trạng thái:</strong>{" "}
+                                {d.productData?.status}
+                              </div>
+                              <div>
+                                <strong>Ngày tạo SP:</strong>{" "}
+                                {new Date(
+                                  d.productData?.createdAt
+                                ).toLocaleString("vi-VN")}
+                              </div>
+                              <div>
+                                <strong>Ngày cập nhật SP:</strong>{" "}
+                                {new Date(
+                                  d.productData?.updatedAt
+                                ).toLocaleString("vi-VN")}
+                              </div>
+                              <div>
+                                <strong>Số lượng xuất:</strong> {d.quantity}
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className="text-gray-500">Không có sản phẩm</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => handleEdit(r)}
+                          className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white p-2 rounded-full hover:brightness-90 transition"
+                          title="Sửa phiếu xuất"
+                        >
+                          <FiEdit size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(r.id)}
+                          className="bg-gradient-to-r from-red-500 to-red-600 text-white p-2 rounded-full hover:brightness-90 transition"
+                          title="Xóa phiếu xuất"
+                        >
+                          <FiTrash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      {/* Modal thêm/sửa */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-start pt-10 z-50 overflow-auto">
           <div className="bg-white p-6 rounded shadow w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -263,6 +268,7 @@ export default function ExportReceiptsTable() {
                   placeholder="User ID"
                   value={form.userId}
                   onChange={handleChange}
+                  min={1}
                   className="w-full border p-2 rounded"
                   required
                 />
@@ -292,7 +298,6 @@ export default function ExportReceiptsTable() {
                 className="w-full border p-2 rounded"
               />
 
-              {/* Chi tiết sản phẩm */}
               <div className="space-y-2">
                 <h4 className="font-semibold">Chi tiết sản phẩm</h4>
                 <div className="max-h-60 overflow-y-auto border rounded p-2 space-y-2">
@@ -302,7 +307,7 @@ export default function ExportReceiptsTable() {
                         type="number"
                         placeholder="Product ID"
                         value={d.productId}
-                        min="1"
+                        min={1}
                         onChange={(e) =>
                           handleDetailChange(i, "productId", e.target.value)
                         }
@@ -317,7 +322,7 @@ export default function ExportReceiptsTable() {
                           handleDetailChange(i, "quantity", e.target.value)
                         }
                         className="border p-2 rounded w-1/4"
-                        min="1"
+                        min={1}
                         required
                       />
                       <button
