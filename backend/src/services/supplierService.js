@@ -66,27 +66,16 @@ const getAllSuppliers = async ({ page = 1, limit = 10, search = "" }) => {
   }
 };
 
-const getSupplierById = async (id) => {
+const getManySuppliers = async () => {
   try {
-    const supplier = await db.Suppliers.findByPk(id, {
-      attributes: [
-        "id",
-        "name",
-        "phoneNumber",
-        "address",
-        "image",
-        "description",
-      ],
-      include: supplierInclude,
+    const suppliers = await db.Suppliers.findAll({
+      attributes: ["id", "name", "phoneNumber", "address"],
+      order: [["name", "ASC"]],
     });
 
-    if (!supplier) {
-      throw new Error(`Supplier with ID ${id} not found`);
-    }
-
-    return supplier;
+    return suppliers;
   } catch (error) {
-    throw new Error(error.message || "Failed to get supplier");
+    throw new Error(error.message || "Failed to get all suppliers");
   }
 };
 
@@ -139,7 +128,7 @@ const deleteSupplier = async (id) => {
 
 module.exports = {
   getAllSuppliers,
-  getSupplierById,
+  getManySuppliers,
   createSupplier,
   updateSupplier,
   deleteSupplier,

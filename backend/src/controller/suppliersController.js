@@ -27,15 +27,12 @@ const getAll = async (req, res) => {
   }
 };
 
-module.exports = { getAll };
-
-const getById = async (req, res) => {
+const getMany = async (req, res) => {
   try {
-    const supplier = await supplierService.getSupplierById(req.params.id);
-    if (!supplier) return res.status(404).json({ error: "Supplier not found" });
-    res.json(supplier);
+    const suppliers = await supplierService.getManySuppliers();
+    res.status(200).json(suppliers);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message || "Failed to get suppliers" });
   }
 };
 
@@ -74,4 +71,4 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getMany, create, update, remove };

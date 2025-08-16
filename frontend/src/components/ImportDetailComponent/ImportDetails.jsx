@@ -106,7 +106,7 @@ export default function ImportDetails() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold ">
+      <h1 className="text-2xl font-bold pb-2 ">
         {editingId
           ? "Cập nhật chi tiết nhập hàng"
           : "Quản lý chi tiết nhập hàng"}
@@ -114,46 +114,68 @@ export default function ImportDetails() {
 
       <form
         onSubmit={handleSubmit}
-        className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3 bg-white p-4 rounded-lg shadow"
+        className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3 bg-white p-4 rounded-lg shadow items-end"
       >
-        <input
-          type="number"
-          placeholder="Mã hóa đơn"
-          className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-          value={form.importId}
-          onChange={(e) => setForm({ ...form, importId: e.target.value })}
-          min={1}
-        />
-        <input
-          type="number"
-          placeholder="Mã sản phẩm"
-          className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-          value={form.productId}
-          onChange={(e) => setForm({ ...form, productId: e.target.value })}
-          min={1}
-        />
-        <input
-          type="number"
-          placeholder="Số lượng"
-          className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-          value={form.quantity}
-          min={1}
-          onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Giá"
-          className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-          value={form.price}
-          min={1}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
-        />
-        <button
-          type="submit"
-          className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white rounded p-2 flex items-center justify-center gap-1 hover:scale-105 hover:shadow transition-transform duration-200 text-base font-medium"
-        >
-          <FiPlus /> {editingId ? "Cập nhật" : "Thêm"}
-        </button>
+        <div className="flex flex-col">
+          <small className="text-gray-500 text-xs mb-1">
+            Nhập ID của phiếu nhập
+          </small>
+          <input
+            type="number"
+            placeholder="Mã hóa đơn"
+            className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
+            value={form.importId}
+            onChange={(e) => setForm({ ...form, importId: e.target.value })}
+            min={1}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <small className="text-gray-500 text-xs mb-1">Nhập ID sản phẩm</small>
+          <input
+            type="number"
+            placeholder="Mã sản phẩm"
+            className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
+            value={form.productId}
+            onChange={(e) => setForm({ ...form, productId: e.target.value })}
+            min={1}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <small className="text-gray-500 text-xs mb-1">
+            Số lượng sản phẩm
+          </small>
+          <input
+            type="number"
+            placeholder="Số lượng"
+            className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
+            value={form.quantity}
+            min={1}
+            onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <small className="text-gray-500 text-xs mb-1">Giá sản phẩm</small>
+          <input
+            type="text"
+            placeholder="Giá"
+            className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
+            value={form.price}
+            min={1}
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white rounded-lg p-2 flex items-center justify-center gap-2 hover:scale-105 hover:shadow-lg transition-transform duration-200 text-base font-medium"
+          >
+            <FiPlus /> {editingId ? "Cập nhật chi tiết" : "Thêm chi tiết"}
+          </button>
+        </div>
       </form>
 
       {loading ? (

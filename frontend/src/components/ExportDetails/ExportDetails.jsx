@@ -103,7 +103,6 @@ function ExportDetails() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
         <h2 className="text-2xl font-bold text-black">Quản lý phiếu xuất</h2>
 
@@ -130,16 +129,15 @@ function ExportDetails() {
           </button>
         </div>
       </div>
-      {/* Thống kê */}
-      <div className="mb-4 flex gap-6">
-        <span className="font-semibold bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent">
-          Tổng số lượng: {totalQuantity}
+      <div className="mb-4 flex flex-col gap-2">
+        <span className="font-semibold bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
+          Tổng số lượng: {totalQuantity.toLocaleString()} sản phẩm
         </span>
-        <span className="font-semibold bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent">
+        <span className="font-semibold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
           Tổng doanh thu: {totalRevenue.toLocaleString()} ₫
         </span>
       </div>
-      {/* Table */}
+
       <div className="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200 text-base">
           <thead className="bg-gray-50">

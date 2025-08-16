@@ -30,17 +30,11 @@ const getAllSuppliers = async ({ page = 1, limit = 10, search = "" }) => {
   }
 };
 
-export default getAllSuppliers;
-
-const getSupplierById = async (id) => {
+const getManySupplier = async () => {
   try {
-    const res = await axios.get(`${API_URL}/api/v1/suppliers/get-by/${id}`);
+    const res = await axios.get(`${API_URL}/api/v1/suppliers/get-many`);
     return res.data;
   } catch (error) {
-    console.error(
-      `Failed to fetch supplier ${id}:`,
-      error.response?.data || error.message
-    );
     throw error.response?.data || error;
   }
 };
@@ -89,7 +83,7 @@ const deleteSupplier = async (id) => {
 
 export {
   getAllSuppliers,
-  getSupplierById,
+  getManySupplier,
   createSupplier,
   updateSupplier,
   deleteSupplier,

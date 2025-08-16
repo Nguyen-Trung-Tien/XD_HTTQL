@@ -39,8 +39,8 @@ export default function WarehouseManagement() {
       <div className="flex-1 p-4 overflow-auto bg-gray-50">
         {activeTab === "importReceipts" && <ImportReceipts />}
         {activeTab === "importDetails" && <ImportDetails />}
-        {activeTab === "exportReceipts" && <ExportReceipts />}
         {activeTab === "exportDetails" && <ExportDetails />}
+        {activeTab === "exportReceipts" && <ExportReceipts />}
       </div>
     </div>
   );

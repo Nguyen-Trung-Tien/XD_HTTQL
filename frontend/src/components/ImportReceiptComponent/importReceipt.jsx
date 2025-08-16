@@ -7,9 +7,11 @@ import {
   getAllImportReceipts,
   updateImportReceipt,
 } from "../../API/importReceiptApi/importReceiptApi";
+import { getManySupplier } from "../../API/suppliersApi/suppliersApi";
 
 export default function ImportReceipts() {
   const [receipts, setReceipts] = useState([]);
+  const [supplierOptions, setSupplierOptions] = useState([]); // state riêng cho supplier
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,7 +22,6 @@ export default function ImportReceipts() {
     details: [],
   });
 
-  // Fetch data
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -28,17 +29,31 @@ export default function ImportReceipts() {
       setReceipts(res.data || res);
     } catch (e) {
       console.error(e);
-      toast.error("Lỗi khi tải dữ liệu");
+      toast.error("Lỗi khi tải dữ liệu phiếu nhập");
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchSuppliers = async () => {
+    try {
+      const data = await getManySupplier();
+      // Loại bỏ trùng tên
+      const uniqueSuppliers = [
+        ...new Map(data.map((s) => [s.name, s])).values(),
+      ];
+      setSupplierOptions(uniqueSuppliers);
+    } catch (e) {
+      console.error(e);
+      toast.error("Lỗi khi tải danh sách nhà cung cấp");
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchSuppliers(); // gọi API lấy tất cả nhà cung cấp
   }, []);
 
-  // Delete receipt
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa phiếu nhập này?")) return;
     try {
@@ -51,7 +66,6 @@ export default function ImportReceipts() {
     }
   };
 
-  // Open form for add or edit
   const openForm = (receipt = null) => {
     if (receipt) {
       setFormData({
@@ -79,12 +93,10 @@ export default function ImportReceipts() {
     setShowForm(true);
   };
 
-  // Handle form changes
   const handleFormChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  // Handle detail changes
   const handleDetailChange = (index, field, value) => {
     const newDetails = [...formData.details];
     if (field === "quantity" || field === "price") value = Number(value);
@@ -109,7 +121,6 @@ export default function ImportReceipts() {
     setFormData({ ...formData, details: newDetails });
   };
 
-  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.supplierData || !formData.import_date) {
@@ -143,14 +154,6 @@ export default function ImportReceipts() {
       toast.error("Lỗi khi lưu phiếu nhập");
     }
   };
-
-  const supplierOptions = [
-    ...new Map(
-      receipts
-        .filter((r) => r.supplierData)
-        .map((r) => [r.supplierData.id, r.supplierData])
-    ).values(),
-  ];
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -250,7 +253,10 @@ export default function ImportReceipts() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="flex flex-col">
+                  <small className="text-gray-500 text-xs mb-1">
+                    Chọn nhà cung cấp cho phiếu nhập
+                  </small>
                   <label className="block mb-1 font-medium text-gray-700">
                     Nhà cung cấp
                   </label>
@@ -258,7 +264,7 @@ export default function ImportReceipts() {
                     value={formData.supplierData?.id || ""}
                     onChange={(e) => {
                       const selected = supplierOptions.find(
-                        (s) => s?.id === parseInt(e.target.value)
+                        (s) => s.id === parseInt(e.target.value)
                       );
                       handleFormChange("supplierData", selected || null);
                     }}
@@ -272,7 +278,11 @@ export default function ImportReceipts() {
                     ))}
                   </select>
                 </div>
-                <div>
+
+                <div className="flex flex-col">
+                  <small className="text-gray-500 text-xs mb-1">
+                    Chọn ngày nhập hàng
+                  </small>
                   <label className="block mb-1 font-medium text-gray-700">
                     Ngày nhập
                   </label>
@@ -287,7 +297,10 @@ export default function ImportReceipts() {
                 </div>
               </div>
 
-              <div>
+              <div className="flex flex-col">
+                <small className="text-gray-500 text-xs mb-1">
+                  Nhập ghi chú liên quan đến phiếu nhập
+                </small>
                 <label className="block mb-1 font-medium text-gray-700">
                   Ghi chú
                 </label>
@@ -298,53 +311,73 @@ export default function ImportReceipts() {
                 />
               </div>
 
-              <div>
+              <div className="flex flex-col">
+                <small className="text-gray-500 text-xs mb-1">
+                  Nhập chi tiết sản phẩm: tên, số lượng và giá
+                </small>
                 <label className="block mb-2 font-medium text-gray-700">
                   Chi tiết sản phẩm
                 </label>
                 <div className="max-h-80 overflow-y-auto space-y-2">
                   {formData.details.map((d, i) => (
                     <div key={i} className="flex gap-2 items-center">
-                      <input
-                        type="text"
-                        value={d.productData?.name || ""}
-                        onChange={(e) =>
-                          handleDetailChange(i, "productData", {
-                            name: e.target.value,
-                          })
-                        }
-                        className="border rounded px-2 py-1 flex-1 focus:ring-2 focus:ring-blue-300 outline-none"
-                      />
-                      <input
-                        type="number"
-                        min="1"
-                        placeholder="SL"
-                        value={d.quantity}
-                        onChange={(e) =>
-                          handleDetailChange(i, "quantity", e.target.value)
-                        }
-                        className="border rounded px-2 py-1 w-20 focus:ring-2 focus:ring-blue-300 outline-none"
-                      />
-                      <input
-                        type="number"
-                        min="0"
-                        placeholder="Giá"
-                        value={d.price}
-                        onChange={(e) =>
-                          handleDetailChange(i, "price", e.target.value)
-                        }
-                        className="border rounded px-2 py-1 w-28 focus:ring-2 focus:ring-blue-300 outline-none"
-                      />
+                      <div className="flex-1 flex flex-col">
+                        <small className="text-gray-500 text-xs mb-1">
+                          Tên sản phẩm
+                        </small>
+                        <input
+                          type="text"
+                          value={d.productData?.name || ""}
+                          onChange={(e) =>
+                            handleDetailChange(i, "productData", {
+                              name: e.target.value,
+                            })
+                          }
+                          className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-300 outline-none"
+                        />
+                      </div>
+
+                      <div className="flex flex-col w-20">
+                        <small className="text-gray-500 text-xs mb-1">SL</small>
+                        <input
+                          type="number"
+                          min="1"
+                          placeholder="SL"
+                          value={d.quantity}
+                          onChange={(e) =>
+                            handleDetailChange(i, "quantity", e.target.value)
+                          }
+                          className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-300 outline-none"
+                        />
+                      </div>
+
+                      <div className="flex flex-col w-28">
+                        <small className="text-gray-500 text-xs mb-1">
+                          Giá
+                        </small>
+                        <input
+                          type="number"
+                          min="0"
+                          placeholder="Giá"
+                          value={d.price}
+                          onChange={(e) =>
+                            handleDetailChange(i, "price", e.target.value)
+                          }
+                          className="border rounded px-2 py-1 w-full focus:ring-2 focus:ring-blue-300 outline-none"
+                        />
+                      </div>
+
                       <button
                         type="button"
                         onClick={() => removeDetail(i)}
-                        className="text-red-500 hover:text-red-700 transition"
+                        className="text-red-500 hover:text-red-700 transition self-end mt-5"
                       >
                         Xóa
                       </button>
                     </div>
                   ))}
                 </div>
+
                 <button
                   type="button"
                   onClick={addDetail}

@@ -262,73 +262,105 @@ export default function ExportReceiptsTable() {
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <small className="text-gray-500 text-xs mb-1">
+                    ID người dùng thực hiện xuất kho
+                  </small>
+                  <input
+                    type="number"
+                    name="userId"
+                    placeholder="User ID"
+                    value={form.userId}
+                    onChange={handleChange}
+                    min={1}
+                    className="w-full border p-2 rounded"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <small className="text-gray-500 text-xs mb-1">
+                    Ngày thực hiện xuất kho
+                  </small>
+                  <input
+                    type="date"
+                    name="export_date"
+                    value={form.export_date}
+                    onChange={handleChange}
+                    className="w-full border p-2 rounded"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <small className="text-gray-500 text-xs mb-1">
+                  Lý do xuất kho (ví dụ: bán hàng, trả hàng)
+                </small>
                 <input
-                  type="number"
-                  name="userId"
-                  placeholder="User ID"
-                  value={form.userId}
-                  onChange={handleChange}
-                  min={1}
-                  className="w-full border p-2 rounded"
-                  required
-                />
-                <input
-                  type="date"
-                  name="export_date"
-                  value={form.export_date}
+                  type="text"
+                  name="reason"
+                  placeholder="Lý do"
+                  value={form.reason}
                   onChange={handleChange}
                   className="w-full border p-2 rounded"
-                  required
                 />
               </div>
-              <input
-                type="text"
-                name="reason"
-                placeholder="Lý do"
-                value={form.reason}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
-              <input
-                type="text"
-                name="note"
-                placeholder="Ghi chú"
-                value={form.note}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              />
+
+              <div className="flex flex-col">
+                <small className="text-gray-500 text-xs mb-1">
+                  Ghi chú thêm (nếu cần)
+                </small>
+                <input
+                  type="text"
+                  name="note"
+                  placeholder="Ghi chú"
+                  value={form.note}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded"
+                />
+              </div>
 
               <div className="space-y-2">
                 <h4 className="font-semibold">Chi tiết sản phẩm</h4>
                 <div className="max-h-60 overflow-y-auto border rounded p-2 space-y-2">
                   {details.map((d, i) => (
                     <div key={i} className="flex gap-2 items-center">
-                      <input
-                        type="number"
-                        placeholder="Product ID"
-                        value={d.productId}
-                        min={1}
-                        onChange={(e) =>
-                          handleDetailChange(i, "productId", e.target.value)
-                        }
-                        className="border p-2 rounded w-1/2"
-                        required
-                      />
-                      <input
-                        type="number"
-                        placeholder="Số lượng"
-                        value={d.quantity}
-                        onChange={(e) =>
-                          handleDetailChange(i, "quantity", e.target.value)
-                        }
-                        className="border p-2 rounded w-1/4"
-                        min={1}
-                        required
-                      />
+                      <div className="flex flex-col w-1/2">
+                        <small className="text-gray-500 text-xs mb-1">
+                          Mã sản phẩm
+                        </small>
+                        <input
+                          type="number"
+                          placeholder="Product ID"
+                          value={d.productId}
+                          min={1}
+                          onChange={(e) =>
+                            handleDetailChange(i, "productId", e.target.value)
+                          }
+                          className="border p-2 rounded w-full"
+                          required
+                        />
+                      </div>
+                      <div className="flex flex-col w-1/4">
+                        <small className="text-gray-500 text-xs mb-1">
+                          Số lượng
+                        </small>
+                        <input
+                          type="number"
+                          placeholder="Số lượng"
+                          value={d.quantity}
+                          min={1}
+                          onChange={(e) =>
+                            handleDetailChange(i, "quantity", e.target.value)
+                          }
+                          className="border p-2 rounded w-full"
+                          required
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={() => removeDetail(i)}
-                        className="bg-red-500 text-white px-2 py-1 rounded"
+                        className="bg-red-500 text-white px-2 py-1 rounded mt-5"
                       >
                         Xóa
                       </button>
