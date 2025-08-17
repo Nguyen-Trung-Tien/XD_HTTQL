@@ -8,6 +8,7 @@ const importDetailRoutes = require("./importDetailRoutes");
 const suppliersRouter = require("./supplierRouter");
 const exportDetailRoutes = require("./exportDetailRoutes");
 const exportReceiptRoutes = require("./exportReceiptRoutes");
+const inventoryRouter = require("./inventoryRouter");
 
 const routes = (app) => {
   app.use("/api/v1/user", UserRouter);
@@ -20,5 +21,6 @@ const routes = (app) => {
   app.use("/api/v1/suppliers", suppliersRouter);
   app.use("/api/v1/export-detail", exportDetailRoutes);
   app.use("/api/v1/export-receipt", exportReceiptRoutes);
+  app.use("/api/v1/inventory", inventoryRouter);
 };
 module.exports = routes;
