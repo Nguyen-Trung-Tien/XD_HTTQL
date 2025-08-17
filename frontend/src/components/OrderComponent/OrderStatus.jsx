@@ -1,11 +1,9 @@
 import React, {
-  forwardRef,
-  useImperativeHandle,
+
   useState,
   useEffect,
 } from "react";
 import {
-  getAllOrders,
   updateOrder,
   findNearestShipper,
   deleteOrder,
@@ -42,32 +40,14 @@ const ORDER_STATUS = {
   },
 };
 
-const OrderStatus = forwardRef((props, ref) => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+const OrderStatus = ({ orders, loading, onOrderChanged }) => {
+
   const [filter, setFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    try {
-      const data = await getAllOrders();
-      setOrders(data);
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
-  useImperativeHandle(ref, () => ({
-    fetchOrders,
-  }));
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
+  
   const handleCancelOrder = async (order) => {
     if (!window.confirm("Bạn có chắc muốn hủy đơn này?")) return;
     try {
@@ -81,8 +61,9 @@ const OrderStatus = forwardRef((props, ref) => {
         });
       }
       await deleteOrder(order.id);
+      if (onOrderChanged) onOrderChanged()
       toast.success("Đã hủy đơn hàng #" + order.orderNumber);
-      fetchOrders();
+     
     } catch (error) {
       console.error("Error cancelling order:", error);
       toast.error("Có lỗi khi hủy đơn hàng");
@@ -91,7 +72,7 @@ const OrderStatus = forwardRef((props, ref) => {
 
   const handleFindShipper = async (order) => {
     try {
-      setLoading(true);
+      //setLoading(true);
       toast.info("Đang tìm shipper cho đơn #" + order.orderNumber);
 
       await new Promise((resolve) => setTimeout(resolve, 2500));
@@ -122,21 +103,22 @@ const OrderStatus = forwardRef((props, ref) => {
         toast.success(
           `Đã gán shipper ${nearestShipper.name} cho đơn hàng #${order.orderNumber}`
         );
+        if (onOrderChanged) onOrderChanged();
       } else {
         await updateOrder(order.id, { status: "pending" });
         toast.warning(
           "Không tìm thấy shipper nào sẵn sàng, đơn hàng quay lại hàng chờ."
         );
+        if (onOrderChanged) onOrderChanged();
       }
 
-      fetchOrders();
     } catch (error) {
       console.error("Error finding shipper:", error);
       toast.error("Có lỗi khi tìm shipper");
       await updateOrder(order.id, { status: "pending" });
-      fetchOrders();
+       if (onOrderChanged) onOrderChanged();
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -159,7 +141,7 @@ const OrderStatus = forwardRef((props, ref) => {
       toast.success(
         `Đã xác nhận giao hàng thành công cho đơn #${order.orderNumber}`
       );
-      fetchOrders();
+      if (onOrderChanged) onOrderChanged();
     } catch (error) {
       console.error("Error confirming delivery:", error);
       toast.error("Có lỗi xảy ra khi xác nhận giao hàng");
@@ -274,10 +256,17 @@ const OrderStatus = forwardRef((props, ref) => {
     );
   };
 
-  const filteredOrders =
+ const filteredOrders =
     filter === "all"
-      ? orders
-      : orders.filter((order) => order.status === filter);
+      ? orders.filter(
+          (order) => order.status !== "delivered" && order.status !== "cancelled"
+        )
+      : orders.filter(
+          (order) =>
+            order.status === filter &&
+            order.status !== "delivered" &&
+            order.status !== "cancelled"
+        );
 
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden">
@@ -380,5 +369,5 @@ const OrderStatus = forwardRef((props, ref) => {
       </div>
     </div>
   );
-});
+};
 export default OrderStatus;
