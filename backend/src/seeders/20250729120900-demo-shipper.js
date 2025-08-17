@@ -8,7 +8,7 @@ module.exports = {
         {
           name: "Thinh",
           phoneNumber: "0123456789",
-          status: "delivering",
+          status: "available",
           lat: 10.8657,
           lng: 106.619,
           address:
@@ -52,7 +52,7 @@ module.exports = {
         {
           name: "Minh",
           phoneNumber: "0123456987",
-          status: "delivering",
+          status: "available",
           lat: 10.8243,
           lng: 106.686,
           address:
