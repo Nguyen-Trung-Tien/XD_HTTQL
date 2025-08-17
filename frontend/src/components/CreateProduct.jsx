@@ -1,63 +1,24 @@
-import { useState } from 'react';
-import { createProduct } from '../API/products/productsApi';
+import { useEffect, useState } from 'react';
+import { getAllProducts, createProduct } from '../API/products/productsApi';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 
 function ProductForm({ onCreate }) {
-	const inventoryItems = [
-		{
-			id: 'SP001',
-			name: 'Điện thoại X Pro',
-			category: 'Điện tử',
-			stock: 45,
-			price: 23000000,
-			status: 'in-stock',
-			location: 'Kho A',
-			lastUpdated: '2023-10-15',
-		},
-		{
-			id: 'SP002',
-			name: 'Laptop Ultra Pro',
-			category: 'Điện tử',
-			stock: 12,
-			price: 35000000,
-			status: 'in-stock',
-			location: 'Kho B',
-			lastUpdated: '2023-10-18',
-		},
-		{
-			id: 'SP003',
-			name: 'Tai nghe không dây',
-			category: 'Phụ kiện',
-			stock: 78,
-			price: 3000000,
-			status: 'in-stock',
-			location: 'Kho A',
-			lastUpdated: '2023-10-20',
-		},
-		{
-			id: 'SP004',
-			name: 'Đồng hồ thông minh',
-			category: 'Thiết bị đeo',
-			stock: 5,
-			price: 7000000,
-			status: 'low-stock',
-			location: 'Kho C',
-			lastUpdated: '2023-10-22',
-		},
-		{
-			id: 'SP005',
-			name: 'Máy ảnh DSLR',
-			category: 'Điện tử',
-			stock: 0,
-			price: 18000000,
-			status: 'out-of-stock',
-			location: 'Kho B',
-			lastUpdated: '2023-10-10',
-		},
-	];
-
 	const navigate = useNavigate();
+
+	const [products, setProducts] = useState([]);
+
+	useEffect(() => {
+		const fetchProduct = async () => {
+			try {
+				const { allProducts } = await getAllProducts();
+				setProducts(allProducts);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		fetchProduct();
+	}, []);
 
 	const [form, setForm] = useState({
 		price: '',
@@ -68,11 +29,9 @@ function ProductForm({ onCreate }) {
 	const [stock, setStock] = useState('');
 	const [stockError, setStockError] = useState('');
 
-	const uniqueCategories = [
-		...new Set(inventoryItems.map((item) => item.category)),
-	];
+	const uniqueCategories = [...new Set(products.map((item) => item.category))];
 
-	const inventory = inventoryItems
+	const inventory = products
 		.filter((item) => item.name === name)
 		.map((product) => product.stock);
 
@@ -153,7 +112,7 @@ function ProductForm({ onCreate }) {
 						<option selected disabled>
 							-- Chọn sản phẩm --
 						</option>
-						{inventoryItems.map((product, index) => {
+						{products.map((product, index) => {
 							return (
 								<option key={index} value={product.name}>
 									{product.name}

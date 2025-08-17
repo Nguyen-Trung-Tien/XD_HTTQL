@@ -4,58 +4,19 @@ import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 
 function ProductForm() {
-	const inventoryItems = [
-		{
-			id: 'SP001',
-			name: 'Điện thoại X Pro',
-			category: 'Điện tử',
-			stock: 45,
-			price: 23000000,
-			status: 'in-stock',
-			location: 'Kho A',
-			lastUpdated: '2023-10-15',
-		},
-		{
-			id: 'SP002',
-			name: 'Laptop Ultra Pro',
-			category: 'Điện tử',
-			stock: 12,
-			price: 35000000,
-			status: 'in-stock',
-			location: 'Kho B',
-			lastUpdated: '2023-10-18',
-		},
-		{
-			id: 'SP003',
-			name: 'Tai nghe không dây',
-			category: 'Phụ kiện',
-			stock: 78,
-			price: 3000000,
-			status: 'in-stock',
-			location: 'Kho A',
-			lastUpdated: '2023-10-20',
-		},
-		{
-			id: 'SP004',
-			name: 'Đồng hồ thông minh',
-			category: 'Thiết bị đeo',
-			stock: 5,
-			price: 7000000,
-			status: 'low-stock',
-			location: 'Kho C',
-			lastUpdated: '2023-10-22',
-		},
-		{
-			id: 'SP005',
-			name: 'Máy ảnh DSLR',
-			category: 'Điện tử',
-			stock: 0,
-			price: 18000000,
-			status: 'out-of-stock',
-			location: 'Kho B',
-			lastUpdated: '2023-10-10',
-		},
-	];
+	const [products, setProducts] = useState([]);
+
+	useEffect(() => {
+		const fetchProduct = async () => {
+			try {
+				const { products } = await getAllProducts();
+				setProducts(products);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		fetchProduct();
+	}, []);
 
 	const navigate = useNavigate();
 	const { id } = useParams();
@@ -73,8 +34,8 @@ function ProductForm() {
 	useEffect(() => {
 		const fetchProduct = async () => {
 			try {
-				const data = await getAllProducts();
-				const selectedProduct = data.find((p) => p.id === parseInt(id)); // lấy đúng sản phẩm theo ID
+				const { products } = await getAllProducts();
+				const selectedProduct = products.find((p) => p.id === parseInt(id)); // lấy đúng sản phẩm theo ID
 				setForm({
 					name: selectedProduct.name,
 					category: selectedProduct.category,
@@ -96,7 +57,7 @@ function ProductForm() {
 		if (name === 'stock') {
 			const change = parseInt(value);
 			const inventory =
-				inventoryItems.find((item) => item.name === form.name)?.stock || 0;
+				products.find((item) => item.name === form.name)?.stock || 0;
 
 			if (change > inventory) {
 				setStockError('Số lượng nhập vào vượt quá hàng tồn kho!');
@@ -123,9 +84,7 @@ function ProductForm() {
 			return;
 		}
 
-		const productInventory = inventoryItems.find(
-			(item) => item.name === form.name
-		);
+		const productInventory = products.find((item) => item.name === form.name);
 		const availableStock = productInventory?.stock || 0;
 
 		const newStock = originalStock + change;
@@ -208,7 +167,7 @@ function ProductForm() {
 					/>
 					<p className='text-sm text-gray-500 mt-1'>
 						Số lượng trong kho:{' '}
-						{inventoryItems.find((item) => item.name === form.name)?.stock ?? 0}
+						{products.find((item) => item.name === form.name)?.stock ?? 0}
 					</p>
 					{stockError && (
 						<p className='text-red-500 text-sm mt-1'>{stockError}</p>

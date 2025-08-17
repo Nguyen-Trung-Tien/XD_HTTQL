@@ -3,9 +3,14 @@ import axios from "axios";
 const API_URL =
   import.meta.env.VITE_API_URL;
 
-const getAllProducts = async () => {
-  const response = await axios.get(`${API_URL}/api/v1/products`);
-  return Array.isArray(response.data) ? response.data : [];
+const getAllProducts = async (page = 1, limit = 10) => {
+  const response = await axios.get(`${API_URL}/api/v1/products`, {
+    params: {
+      page,
+      limit
+    }
+  });
+  return response.data;
 };
 
 const createProduct = async (productData) => {
