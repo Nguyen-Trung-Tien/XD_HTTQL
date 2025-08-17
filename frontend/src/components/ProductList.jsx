@@ -7,22 +7,23 @@ function ProductList() {
 	const navigate = useNavigate();
 
 	const [products, setProducts] = useState([]);
-	const [checked, setChecked] = useState([]);
-	const isAllChecked = checked.length === products.length;
 	const [filter, setFilter] = useState('Tất cả');
 	const [search, setSearch] = useState('');
+	const [page, setPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
 
 	useEffect(() => {
 		const fetchProduct = async () => {
 			try {
-				const data = await getAllProducts();
-				setProducts(data);
+				const data = await getAllProducts(page, 8);
+				setProducts(data.products);
+				setTotalPages(data.totalPages);
 			} catch (err) {
 				console.error(err);
 			}
 		};
 		fetchProduct();
-	}, []);
+	}, [page]);
 
 	const getStatusColor = (status) => {
 		switch (status) {
@@ -35,19 +36,6 @@ function ProductList() {
 			default:
 				return 'bg-gray-100 text-gray-800';
 		}
-	};
-
-	const handleChecked = (productId) => {
-		setChecked((prev) =>
-			prev.includes(productId)
-				? prev.filter((item) => item !== productId)
-				: [...prev, productId]
-		);
-	};
-
-	const handleAllChecked = () => {
-		if (isAllChecked) setChecked([]);
-		else setChecked(products.map((product) => product.id));
 	};
 
 	const handleDelete = async (id) => {
@@ -151,11 +139,6 @@ function ProductList() {
 						className='px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-sm'>
 						Thêm
 					</NavLink>
-					<button
-						onClick={() => navigate('/products/:id')}
-						className='px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-sm'>
-						Xóa
-					</button>
 				</div>
 			</div>
 
@@ -164,14 +147,6 @@ function ProductList() {
 					<table className='min-w-full divide-y divide-border'>
 						<thead>
 							<tr>
-								<th className='px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase'>
-									<input
-										onChange={handleAllChecked}
-										checked={isAllChecked}
-										type='checkbox'
-										name='check-all'
-									/>
-								</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase'>
 									#
 								</th>
@@ -199,14 +174,7 @@ function ProductList() {
 							{filteredProducts.map((product, index) => (
 								<tr key={product.id}>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-										<input
-											onChange={() => handleChecked(product.id)}
-											checked={checked.includes(product.id)}
-											type='checkbox'
-										/>
-									</td>
-									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-										{index + 1}
+										{(page - 1) * 8 + index + 1}
 									</td>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
 										{product.name}
@@ -269,6 +237,50 @@ function ProductList() {
 						</tbody>
 					</table>
 				</div>
+			</div>
+			<div className='flex justify-center gap-2 mt-5 flex-wrap'>
+				<button
+					onClick={() => setPage(1)}
+					disabled={page === 1}
+					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
+					First
+				</button>
+				<button
+					onClick={() => setPage(page - 1)}
+					disabled={page === 1}
+					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
+					Prev
+				</button>
+				{page >= 2 && (
+					<button
+						onClick={() => setPage(page - 1)}
+						className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700'>
+						{page - 1}
+					</button>
+				)}
+				<button
+					className={`px-4 py-1 rounded-lg font-medium transition-colors duration-200 bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white shadow`}>
+					{page}
+				</button>
+				{page < totalPages && (
+					<button
+						onClick={() => setPage(page + 1)}
+						className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700'>
+						{page + 1}
+					</button>
+				)}
+				<button
+					onClick={() => setPage(page + 1)}
+					disabled={page === totalPages}
+					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
+					Next
+				</button>
+				<button
+					onClick={() => setPage(totalPages)}
+					disabled={page === totalPages}
+					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
+					Last
+				</button>
 			</div>
 		</div>
 	);
