@@ -22,7 +22,7 @@ const createOrder = async (req, res) => {
 
     const order = await db.Order.create(
       {
-        orderNumber: "DH-" + Date.now(),
+        orderNumber: "DH-" + (await db.Order.count() + 1).toString().padStart(4, "0"),
         customerId,
         customerName,
         customerEmail,
