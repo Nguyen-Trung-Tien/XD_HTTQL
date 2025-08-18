@@ -38,6 +38,7 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
     setCurrentPage(1);
   }
 }, [orders, itemsPerPage]);
+
 const paginatedOrders = orders.slice(
   (currentPage - 1) * itemsPerPage,
   currentPage * itemsPerPage

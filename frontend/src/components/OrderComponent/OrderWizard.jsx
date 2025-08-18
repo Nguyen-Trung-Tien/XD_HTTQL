@@ -55,8 +55,9 @@ function OrderWizard({ onOrderCreated }) {
     const loadProducts = async () => {
       setIsLoadingProducts(true);
       try {
-        const data = await getAllProducts();
-        setProducts(data);
+        const res= await getAllProducts();
+        const data = res?.products || [];
+        setProducts(data);  
         setCategories([...new Set(data.map((p) => p.category))]);
       } catch (error) {
         console.error("Lỗi tải sản phẩm:", error);
