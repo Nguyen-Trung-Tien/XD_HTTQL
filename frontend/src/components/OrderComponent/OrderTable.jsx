@@ -1,10 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-} from "react";
+import React, { useState, useEffect } from "react";
 import { FiPlus, FiEye, FiTrash2 } from "react-icons/fi";
 import OrderDetail from "./OrderDetail";
-import { deleteOrder} from "../../API/orders/ordersApi";
+import { deleteOrder } from "../../API/orders/ordersApi";
 import { toast } from "react-toastify";
 const statusMap = {
   pending: {
@@ -28,21 +25,38 @@ const statusMap = {
     className: "bg-red-100 text-red-800",
   },
 };
+
 const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(11);
+  const [totalPages,setTotalPages]=useState(1);
 
- 
+  useEffect(() => {
+  setTotalPages(Math.ceil(orders.length / itemsPerPage) || 1);
+  if (currentPage > Math.ceil(orders.length / itemsPerPage)) {
+    setCurrentPage(1);
+  }
+}, [orders, itemsPerPage]);
+const paginatedOrders = orders.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
 
 
-
- 
-const handleDeleteOrder = async (orderId) => {
-  if (!window.confirm("Bạn có chắc muốn xóa đơn hàng này?")) return;
-  await deleteOrder(orderId);
-  toast.success("Xóa đơn hàng thành công");
-  if (onOrderChanged) onOrderChanged();
-
+const goToPage = (page) => {
+  if (page < 1) page = 1;
+  if (page > totalPages) page = totalPages;
+  setCurrentPage(page);
 };
+
+
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm("Bạn có chắc muốn xóa đơn hàng này?")) return;
+    await deleteOrder(orderId);
+    toast.success("Xóa đơn hàng thành công");
+    if (onOrderChanged) onOrderChanged();
+  };
 
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden">
@@ -101,7 +115,7 @@ const handleDeleteOrder = async (orderId) => {
                   </td>
                 </tr>
               ) : (
-                orders.map((order) => {
+                paginatedOrders.map((order) => {
                   const statusInfo = statusMap[order.status] || {
                     text: order.status,
                     className: "bg-gray-100 text-gray-800",
@@ -154,7 +168,56 @@ const handleDeleteOrder = async (orderId) => {
             </tbody>
           </table>
         </div>
+          <div className="flex justify-center gap-2 mt-5 flex-wrap">
+              <button
+                onClick={() => goToPage(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+              >
+                First
+              </button>
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+              >
+                Prev
+              </button>
+
+              {Array.from({ length: totalPages }, (_, index) => {
+                const pageNumber = index + 1;
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() => goToPage(pageNumber)}
+                    className={`px-4 py-1 rounded-lg font-medium transition-colors duration-200 ${
+                      currentPage === pageNumber
+                        ? "bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white shadow"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+              >
+                Next
+              </button>
+              <button
+                onClick={() => goToPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+              >
+                Last
+              </button>
+            </div>
       </div>
+      
       {selectedOrder && (
         <OrderDetail
           order={selectedOrder}
