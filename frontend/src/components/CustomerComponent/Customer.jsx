@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   fetchAllCustomers,
   createCustomer,
@@ -12,6 +12,7 @@ import ExportExcel from "./ImportExportCSV";
 import CustomerModal from "./CustomerModal";
 import CustomerTable from "./CustomerTable";
 import Pagination from "./Pagination";
+
 function Customer() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,27 +27,17 @@ function Customer() {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
-  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage] = useState(8);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [allCities, setAllCities] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
 
-  // Fetch customers
-  const fetchCustomers = async (pageNumber = 1) => {
+  const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const res = await fetchAllCustomers(
-        pageNumber,
-        limit,
-        search,
-        statusFilter
-      );
+      const res = await fetchAllCustomers();
       if (res?.data?.errCode === 0) {
         setCustomers(res.data.customers || []);
-        setTotalPages(res.data.pagination?.totalPages || 1);
-        setPage(res.data.pagination?.page || 1);
         setError(null);
       } else {
         setError(res?.data?.errMessage || "Failed to load customers");
@@ -57,33 +48,40 @@ function Customer() {
     setLoading(false);
   };
 
-  // Fetch cities
   useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const res = await fetchAllCustomers(1, 1000);
-        if (res?.data?.errCode === 0) {
-          const cities = [
-            ...new Set(res.data.customers.map((c) => c.city).filter(Boolean)),
-          ];
-          setAllCities(cities);
-        }
-      } catch (e) {
-        console.error("Error fetching cities:", e);
-      }
-    };
-    fetchCities();
+    fetchCustomers();
   }, []);
 
-  // Auto fetch when page changes
-  useEffect(() => {
-    fetchCustomers(page);
-  }, [page]);
+ 
+  const filteredCustomers = useMemo(() => {
+    let data = [...customers];
+    if (search) {
+      data = data.filter(
+        (c) =>
+          c.name?.toLowerCase().includes(search.toLowerCase()) ||
+          c.email?.toLowerCase().includes(search.toLowerCase()) ||
+          c.phoneNumber?.toLowerCase().includes(search.toLowerCase()) ||
+          c.address?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (statusFilter) {
+      data = data.filter((c) => c.status === statusFilter);
+    }
+    return data;
+  }, [customers, search, statusFilter]);
 
-  // Debounce search/filter
+  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage) || 1;
+  const paginatedCustomers = useMemo(
+    () =>
+      filteredCustomers.slice(
+        (page - 1) * itemsPerPage,
+        page * itemsPerPage
+      ),
+    [filteredCustomers, page, itemsPerPage]
+  );
+
   useEffect(() => {
-    const delay = setTimeout(() => fetchCustomers(1), 500);
-    return () => clearTimeout(delay);
+    setPage(1);
   }, [search, statusFilter]);
 
   // Modal handlers
@@ -103,8 +101,6 @@ function Customer() {
         email: "",
         phoneNumber: "",
         address: "",
-        lat: null,
-        lng: null,
       });
       setIsEditing(false);
     }
@@ -113,12 +109,7 @@ function Customer() {
 
   const handleSubmit = async () => {
     try {
-      const data = {
-        ...form,
-        lat: form.lat,
-        lng: form.lng,
-      };
-
+      const data = { ...form };
       if (isEditing) {
         await updateCustomer(data);
         toast.success("Cập nhật khách hàng thành công!");
@@ -126,7 +117,6 @@ function Customer() {
         await createCustomer(data);
         toast.success("Tạo khách hàng thành công!");
       }
-
       fetchCustomers();
       handleCloseModal();
     } catch (e) {
@@ -141,8 +131,7 @@ function Customer() {
       const res = await deleteCustomer(id);
       if (res?.data?.errCode === 0) {
         toast.success("Xóa thành công!");
-        if (customers.length === 1 && page > 1) setPage(page - 1);
-        else fetchCustomers(page);
+        fetchCustomers();
       } else {
         setError(res?.data?.errMessage || "Unknown error");
         toast.error("Xóa thất bại!");
@@ -164,7 +153,7 @@ function Customer() {
       if (res?.data?.errCode === 0) {
         toast.success("Xóa thành công!");
         setSelectedIds([]);
-        fetchCustomers(1);
+        fetchCustomers();
       } else {
         toast.error(res?.data?.errMessage || "Xóa thất bại!");
       }
@@ -181,8 +170,8 @@ function Customer() {
   };
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === customers.length) setSelectedIds([]);
-    else setSelectedIds(customers.map((c) => c.id));
+    if (selectedIds.length === paginatedCustomers.length) setSelectedIds([]);
+    else setSelectedIds(paginatedCustomers.map((c) => c.id));
   };
 
   return (
@@ -224,7 +213,6 @@ function Customer() {
         onSearchChange={setSearch}
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
-        allCities={allCities}
       />
 
       {/* Modal */}
@@ -240,7 +228,7 @@ function Customer() {
 
       {/* Table */}
       <CustomerTable
-        customers={customers}
+        customers={paginatedCustomers}
         selectedIds={selectedIds}
         toggleSelect={toggleSelect}
         toggleSelectAll={toggleSelectAll}
