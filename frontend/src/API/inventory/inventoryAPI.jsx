@@ -1,41 +1,40 @@
 import axios from "axios";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
-const getAllInventory = async () => {
-  const response = await axios.get(`${API_URL}/api/v1/inventory/get-all`);
-  return Array.isArray(response.data) ? response.data : [];
-};
-
-const createInventory = async (inventoryData) => {
-  const response = await axios.post(`${API_URL}/api/v1/inventory/create`, inventoryData);
+const getAllInventory = async (page = 1, limit = 10) => {
+  const response = await axios.get(`${API_URL}/api/v1/inventory`, {
+    params: { page, limit }
+  });
   return response.data;
 };
 
-const updateInventory = async (inventoryId, updatedData) => {
+const createInventoryLog = async (logData) => {
+  const response = await axios.post(
+    `${API_URL}/api/v1/inventory/create`,
+    logData
+  );
+  return response.data;
+};
+
+const editInventoryLog = async (id, logData) => {
   const response = await axios.put(
-    `${API_URL}/api/v1/inventory/update/${inventoryId}`,
-    updatedData
+    `${API_URL}/api/v1/inventory/edit/${id}`,
+    logData
   );
   return response.data;
 };
 
-const deleteInventory = async (inventoryId, userId) => {
+const deleteInventoryLog = async (id) => {
   const response = await axios.delete(
-    `${API_URL}/api/v1/inventory/delete/${inventoryId}`,
-    { data: { userId } }
+    `${API_URL}/api/v1/inventory/delete/${id}`
   );
   return response.data;
-};
-
-const getInventoryLogs = async () => {
-  const response = await axios.get(`${API_URL}/api/v1/inventory/logs`);
-  return Array.isArray(response.data) ? response.data : [];
 };
 
 export {
   getAllInventory,
-  createInventory,
-  updateInventory,
-  deleteInventory,
-  getInventoryLogs
+  createInventoryLog,
+  editInventoryLog,
+  deleteInventoryLog
 };
