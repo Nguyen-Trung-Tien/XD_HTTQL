@@ -1,61 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getAllStock } from "../API/stock/stockAPI";
 
 function Inventory() {
-  const [activeTab, setActiveTab] = React.useState("all");
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [activeTab, setActiveTab] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [inventoryItems, setInventoryItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const inventoryItems = [
-    {
-      id: "SP001",
-      name: "Điện thoại X Pro",
-      category: "Điện tử",
-      stock: 45,
-      price: 23000000,
-      status: "in-stock",
-      location: "Kho A",
-      lastUpdated: "2023-10-15",
-    },
-    {
-      id: "SP002",
-      name: "Laptop Ultra Pro",
-      category: "Điện tử",
-      stock: 12,
-      price: 35000000,
-      status: "in-stock",
-      location: "Kho B",
-      lastUpdated: "2023-10-18",
-    },
-    {
-      id: "SP003",
-      name: "Tai nghe không dây",
-      category: "Phụ kiện",
-      stock: 78,
-      price: 3000000,
-      status: "in-stock",
-      location: "Kho A",
-      lastUpdated: "2023-10-20",
-    },
-    {
-      id: "SP004",
-      name: "Đồng hồ thông minh",
-      category: "Thiết bị đeo",
-      stock: 5,
-      price: 7000000,
-      status: "low-stock",
-      location: "Kho C",
-      lastUpdated: "2023-10-22",
-    },
-    {
-      id: "SP005",
-      name: "Máy ảnh DSLR",
-      category: "Điện tử",
-      stock: 0,
-      price: 18000000,
-      status: "out-of-stock",
-      location: "Kho B",
-      lastUpdated: "2023-10-10",
-    },
-  ];
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const data = await getAllStock();
+        const formatted = (data || []).map((stock) => ({
+          id: stock.product?.id || stock.productId,
+          name: stock.product?.name || "Không rõ",
+          category: stock.product?.category || "Khác",
+          price: stock.product?.price || 0,
+          stock: stock.quantity,
+          status:
+            stock.quantity === 0
+              ? "out-of-stock"
+              : stock.quantity < 10
+              ? "low-stock"
+              : "in-stock",
+          location: stock.location || "Kho chưa rõ",
+          lastUpdated: stock.updatedAt,
+        }));
+        setInventoryItems(formatted);
+      } catch (err) {
+        console.error("Lỗi khi fetch tồn kho:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInventory();
+  }, []);
 
   const getStatusClass = (status) => {
     switch (status) {
@@ -92,9 +71,13 @@ function Inventory() {
       if (!searchTerm) return true;
       return (
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.id.toLowerCase().includes(searchTerm.toLowerCase())
+        item.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
       );
     });
+
+  if (loading) {
+    return <div className="p-6 text-center">Đang tải dữ liệu tồn kho...</div>;
+  }
 
   return (
     <div className="p-6">
@@ -180,98 +163,57 @@ function Inventory() {
             </div>
           </div>
 
+          {/* Table */}
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="min-w-full divide-y divide-border">
               <thead className="bg-gray-50">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
                     Mã SP
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
                     Sản phẩm
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
                     Danh mục
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
-                    Tồn kho
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
+                    Trạng thái
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
                     Giá
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
-                    Vị trí
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
+                    Số lượng
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
                     Cập nhật
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase tracking-wider"
-                  >
+                  <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
                     Thao tác
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-border">
                 {filteredItems.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-textPrimary">
-                      {item.id}
+                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium">{item.id}</td>
+                    <td className="px-6 py-4 text-sm">{item.name}</td>
+                    <td className="px-6 py-4 text-sm">{item.category}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${getStatusClass(
+                          item.status
+                        )} mr-2`}
+                      >
+                        {getStatusText(item.status)}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-textPrimary">
-                        {item.name}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-textSecondary">
-                      {item.category}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${getStatusClass(
-                            item.status
-                          )} font-medium mr-2`}
-                        >
-                          {getStatusText(item.status)}
-                        </span>
-                        <span className="text-sm text-textPrimary">
-                          {item.stock}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-textPrimary">
+                    <td className="px-6 py-4 text-sm">
                       {item.price.toLocaleString()}đ
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-textPrimary">
-                      {item.location}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-textSecondary">
+                    <td className="px-6 py-4 text-sm">{item.stock}</td>
+                    <td className="px-6 py-4 text-sm text-textSecondary">
                       {new Date(item.lastUpdated).toLocaleDateString("vi-VN")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -343,7 +285,6 @@ function Inventory() {
               Không tìm thấy sản phẩm nào phù hợp với tìm kiếm của bạn.
             </div>
           )}
-
           <div className="flex justify-between items-center mt-6">
             <div className="text-sm text-textSecondary">
               Hiển thị {filteredItems.length} / {inventoryItems.length} sản phẩm
@@ -369,14 +310,13 @@ function Inventory() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <div className="bg-card shadow-card rounded-lg overflow-hidden">
           <div className="p-6">
             <h3 className="text-lg font-semibold text-textPrimary mb-4">
               Tình trạng tồn kho
             </h3>
             <div className="h-64 flex items-center justify-center">
-              {/* Placeholder for a pie chart */}
               <div className="relative w-40 h-40">
                 <svg viewBox="0 0 36 36" className="w-full h-full">
                   <path
@@ -415,7 +355,7 @@ function Inventory() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-textPrimary">
-                      140
+                      {inventoryItems.length}
                     </div>
                     <div className="text-xs text-textSecondary">
                       Tổng sản phẩm
@@ -424,6 +364,7 @@ function Inventory() {
                 </div>
               </div>
             </div>
+        
             <div className="grid grid-cols-3 gap-2 mt-4">
               <div className="text-center p-2 bg-gray-50 rounded-md">
                 <div className="text-sm font-semibold text-textPrimary">
@@ -465,8 +406,7 @@ function Inventory() {
               {inventoryItems
                 .filter(
                   (item) =>
-                    item.status === "low-stock" ||
-                    item.status === "out-of-stock"
+                    item.status === "low-stock" || item.status === "out-of-stock"
                 )
                 .map((item) => (
                   <div

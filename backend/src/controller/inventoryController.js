@@ -1,103 +1,98 @@
-const db = require('../models');
+const { Op } = require("sequelize");
+const db = require("../models");
 
 module.exports = {
-  
-  getAllInventory: async (req, res) => {
-    try {
-      const inventory = await db.Product.findAll({
-        include: [
-          {
-            model: db.Stock,
-            as: 'stock',
-            attributes: ['id', 'quantity', 'location', 'updatedAt']
-          }
-        ],
-        attributes: ['id', 'name', 'category', 'price']
-      });
-
-      const plainInventory = inventory.map(item => item.get({ plain: true }));
-      return res.json(plainInventory);
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Lỗi server', error: err.message });
+  createLog: async (req, res) => {
+    const { productId, quantity, note, userId, location } = req.body;
+    if (!productId || !quantity) {
+      return res.status(400).json({ message: "Thiếu productId hoặc quantity" });
     }
-  },
 
-  
-  createInventory: async (req, res) => {
-    const { productId, quantity, location, note, userId } = req.body;
     try {
-      const stock = await db.Stock.create({ productId, quantity, location, note });
-
-      
-      await db.InventoryLog.create({
-        stockId: stock.id,
-        userId: userId || null,
-        change_type: 'create',
-        quantity,
-        note
-      });
-
-      return res.status(201).json({ message: 'Thêm tồn kho thành công', data: stock });
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Lỗi server', error: err.message });
-    }
-  },
-
-  editInventory: async (req, res) => {
-    const { id } = req.params;
-    const { quantity, location, note, userId } = req.body;
-    try {
-      const stock = await db.Stock.findByPk(id);
+      let stock = await db.Stock.findOne({ where: { productId } });
       if (!stock) {
-        return res.status(404).json({ message: 'Không tìm thấy tồn kho' });
+        stock = await db.Stock.create({ productId, quantity: 0, location: location || null });
       }
 
       const oldQuantity = stock.quantity;
+      const newQuantity = oldQuantity + quantity;
 
-      await stock.update({ quantity, location, note });
+      if (quantity < 0 && newQuantity < 0) {
+        return res.status(400).json({ message: "Số lượng tồn không đủ để xuất" });
+      }
+
+      await stock.update({ quantity: newQuantity, location });
 
       await db.InventoryLog.create({
         stockId: stock.id,
         userId: userId || null,
-        change_type: 'update',
-        quantity: quantity - oldQuantity, 
-        note
+        change_type: quantity >= 0 ? "IMPORT" : "EXPORT",
+        quantity,
+        qtyBefore: oldQuantity,
+        qtyAfter: newQuantity,
+        note,
       });
 
-      return res.json({ message: 'Cập nhật tồn kho thành công', data: stock });
+      return res.status(201).json({ message: "Cập nhật tồn kho thành công", data: { stock, newQuantity } });
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ message: 'Lỗi server', error: err.message });
+      return res.status(500).json({ message: "Lỗi server", error: err.message });
     }
   },
 
-  
-  deleteInventory: async (req, res) => {
+  adjustInventory: async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.body;
+    const { newQuantity, note, userId } = req.body;
     try {
       const stock = await db.Stock.findByPk(id);
-      if (!stock) {
-        return res.status(404).json({ message: 'Không tìm thấy tồn kho' });
-      }
+      if (!stock) return res.status(404).json({ message: "Không tìm thấy stock" });
 
-      await db.Stock.destroy({ where: { id } });
+      const oldQuantity = stock.quantity;
+      await stock.update({ quantity: newQuantity });
 
-      
       await db.InventoryLog.create({
-        stockId: id,
+        stockId: stock.id,
         userId: userId || null,
-        change_type: 'delete',
-        quantity: -stock.quantity,
-        note: 'Xóa tồn kho'
+        change_type: "ADJUST",
+        quantity: newQuantity - oldQuantity,
+        qtyBefore: oldQuantity,
+        qtyAfter: newQuantity,
+        note,
       });
 
-      return res.json({ message: 'Xóa tồn kho thành công' });
+      return res.json({ message: "Điều chỉnh tồn kho thành công", data: stock });
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Lỗi server', error: err.message });
+      return res.status(500).json({ message: "Lỗi server", error: err.message });
     }
-  }
+  },
+
+  getLogs: async (req, res) => {
+    const { productId, type, from, to } = req.query;
+    const where = {};
+    if (type) where.change_type = type;
+    if (from && to) where.createdAt = { [Op.between]: [new Date(from), new Date(to)] };
+
+    try {
+      const logs = await db.InventoryLog.findAll({
+        where,
+        include: [
+          {
+            model: db.Stock,
+            as: "stock",
+            attributes: ["id", "quantity", "productId"],
+            include: [{ model: db.Product, as: "product", attributes: ["id", "name"] }],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+
+      const result = productId
+        ? logs.filter(l => l.stock && l.stock.productId == productId)
+        : logs;
+
+      return res.json(result);
+    } catch (err) {
+      return res.status(500).json({ message: "Lỗi server", error: err.message });
+    }
+  },
 };
