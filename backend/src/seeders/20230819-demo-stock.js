@@ -2,8 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert("Stocks", [
-      {
+    await queryInterface.bulkInsert("Stocks", [{
         productId: 1,
         location: "Kho Hà Nội",
         note: "Nhập hàng tháng 1",
@@ -14,7 +13,7 @@ module.exports = {
         image: "gao-st25.jpg",
         category: "Gạo",
         unit: "kg",
-        status: "available",
+        status: "Còn hàng",
         description: "Gạo ngon nhất thế giới",
         warehouseAddress: "Kho Hà Nội",
         warehouseLat: 21.0278,
@@ -34,7 +33,7 @@ module.exports = {
         image: "lavie.jpg",
         category: "Nước uống",
         unit: "chai",
-        status: "available",
+        status: "Còn hàng",
         description: "Nước suối tinh khiết",
         warehouseAddress: "Kho HCM",
         warehouseLat: 10.7769,
@@ -54,7 +53,7 @@ module.exports = {
         image: "haohao.jpg",
         category: "Mì gói",
         unit: "gói",
-        status: "available",
+        status: "Còn hàng",
         description: "Mì gói thơm ngon",
         warehouseAddress: "Kho Hà Nội",
         warehouseLat: 21.028,
@@ -74,7 +73,7 @@ module.exports = {
         image: "vinamilk.jpg",
         category: "Sữa",
         unit: "chai",
-        status: "available",
+        status: "Còn hàng",
         description: "Sữa tươi sạch",
         warehouseAddress: "Kho HCM",
         warehouseLat: 10.777,
@@ -94,7 +93,7 @@ module.exports = {
         image: "trungga.jpg",
         category: "Trứng",
         unit: "quả",
-        status: "available",
+        status: "Còn hàng",
         description: "Trứng gà ta thượng hạng",
         warehouseAddress: "Kho Hà Nội",
         warehouseLat: 21.026,
@@ -114,7 +113,7 @@ module.exports = {
         image: "banhmi.jpg",
         category: "Bánh",
         unit: "cái",
-        status: "available",
+        status: "Còn hàng",
         description: "Bánh mì nóng hổi",
         warehouseAddress: "Kho HCM",
         warehouseLat: 10.775,
@@ -134,7 +133,7 @@ module.exports = {
         image: "cafe.jpg",
         category: "Cafe",
         unit: "gói",
-        status: "available",
+        status: "Còn hàng",
         description: "Cafe nguyên chất",
         warehouseAddress: "Kho Hà Nội",
         warehouseLat: 21.029,
