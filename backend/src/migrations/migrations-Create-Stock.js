@@ -9,18 +9,62 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+
+      // giữ nguyên các field cũ
       productId: {
         type: Sequelize.INTEGER,
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-      },
+      
       location: {
         type: Sequelize.STRING,
       },
       note: {
         type: Sequelize.TEXT,
       },
+
+      // bổ sung full dữ liệu
+      name: {
+        type: Sequelize.STRING,
+      },
+      type: {
+        type: Sequelize.STRING,
+      },
+      price: {
+        type: Sequelize.STRING,
+      },
+      stock: {
+        type: Sequelize.INTEGER,
+      },
+      image: {
+        type: Sequelize.BLOB("long"),
+      },
+      category: {
+        type: Sequelize.STRING,
+      },
+      unit: {
+        type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.STRING,
+      },
+      description: {
+        type: Sequelize.TEXT,
+      },
+      warehouseAddress: {
+        type: Sequelize.STRING,
+      },
+      warehouseLat: {
+        type: Sequelize.FLOAT,
+      },
+      warehouseLng: {
+        type: Sequelize.FLOAT,
+      },
+      deleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+
+      // timestamps
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -16,11 +16,11 @@ function Inventory() {
           name: stock.product?.name || "Không rõ",
           category: stock.product?.category || "Khác",
           price: stock.product?.price || 0,
-          stock: stock.quantity,
+          stock: stock.stock,
           status:
-            stock.quantity === 0
+            stock.stock === 0
               ? "out-of-stock"
-              : stock.quantity < 10
+              : stock.stock < 10
               ? "low-stock"
               : "in-stock",
           location: stock.location || "Kho chưa rõ",

@@ -2,17 +2,13 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Stock extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      // Quan hệ với Product
       Stock.belongsTo(models.Product, {
         foreignKey: "productId",
         as: "product"
       });
+      // Quan hệ với InventoryLog
       Stock.hasMany(models.InventoryLog, {
         foreignKey: "stockId",
         as: "logs"
@@ -21,10 +17,36 @@ module.exports = (sequelize, DataTypes) => {
   }
   Stock.init(
     {
-      productId: DataTypes.INTEGER,
-      quantity: DataTypes.INTEGER,
+      productId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      
+
+      // thêm các field tham chiếu từ Product
+      name: DataTypes.STRING,
+      type: DataTypes.STRING,
+      price: DataTypes.STRING,
+      image: DataTypes.BLOB("long"),
+      category: DataTypes.STRING,
+      unit: DataTypes.STRING,
+      status: DataTypes.STRING,
+      description: DataTypes.TEXT,
+
+      // thông tin kho chứa
+      warehouseAddress: DataTypes.STRING,
+      warehouseLat: DataTypes.FLOAT,
+      warehouseLng: DataTypes.FLOAT,
+
+      // quản lý tồn kho
       location: DataTypes.STRING,
       note: DataTypes.TEXT,
+
+      // cờ xoá
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
