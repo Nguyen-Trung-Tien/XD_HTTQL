@@ -1,5 +1,7 @@
 "use strict";
-const { Model } = require("sequelize");
+const {
+  Model
+} = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Stock extends Model {
     static associate(models) {
@@ -15,43 +17,35 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  Stock.init(
-    {
-      productId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      
+  Stock.init({
+    // thêm các field tham chiếu từ Product
+    name: DataTypes.STRING,
+    type: DataTypes.STRING,
+    price: DataTypes.STRING,
+    stock: DataTypes.INTEGER,
+    image: DataTypes.STRING,
+    category: DataTypes.STRING,
+    unit: DataTypes.STRING,
+    status: DataTypes.STRING,
+    description: DataTypes.TEXT,
 
-      // thêm các field tham chiếu từ Product
-      name: DataTypes.STRING,
-      type: DataTypes.STRING,
-      price: DataTypes.STRING,
-      image: DataTypes.BLOB("long"),
-      category: DataTypes.STRING,
-      unit: DataTypes.STRING,
-      status: DataTypes.STRING,
-      description: DataTypes.TEXT,
+    // thông tin kho chứa
+    warehouseAddress: DataTypes.STRING,
+    warehouseLat: DataTypes.FLOAT,
+    warehouseLng: DataTypes.FLOAT,
 
-      // thông tin kho chứa
-      warehouseAddress: DataTypes.STRING,
-      warehouseLat: DataTypes.FLOAT,
-      warehouseLng: DataTypes.FLOAT,
+    // quản lý tồn kho
+    location: DataTypes.STRING,
+    note: DataTypes.TEXT,
 
-      // quản lý tồn kho
-      location: DataTypes.STRING,
-      note: DataTypes.TEXT,
-
-      // cờ xoá
-      deleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
+    // cờ xoá
+    deleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
-    {
-      sequelize,
-      modelName: "Stock",
-    }
-  );
+  }, {
+    sequelize,
+    modelName: "Stock",
+  });
   return Stock;
 };

@@ -1,5 +1,5 @@
 const {
-  Product
+  Stock
 } = require('../models')
 
 module.exports.getAllProducts = async (req, res) => {
@@ -9,7 +9,7 @@ module.exports.getAllProducts = async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Lấy tất cả sản phẩm (không phân trang)
-    const allProducts = await Product.findAll({
+    const allProducts = await Stock.findAll({
       where: {
         deleted: false
       }
@@ -19,7 +19,7 @@ module.exports.getAllProducts = async (req, res) => {
     const {
       count,
       rows: products
-    } = await Product.findAndCountAll({
+    } = await Stock.findAndCountAll({
       where: {
         deleted: false
       },
@@ -49,36 +49,44 @@ module.exports.createProduct = async (req, res) => {
   try {
     const {
       name,
+      category,
+      description,
       stock,
-      price
-    } = req.body
+      price,
+      status
+    } = req.body;
 
-    let product = await Product.findOne({
-      where: {
-        name
-      }
-    });
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = `/image/${req.file.filename}`;
+    }
 
-    if (product) {
-      product.price = price
-      product.stock += stock
-      await product.save()
-
-      return res.status(200).json({
-        message: 'Sản phẩm đã tồn tại, đã cập nhật giá và số lượng',
-        product
-      });
-    } else {
-      product = await Product.create(req.body)
-      return res.status(201).json({
-        message: 'Tạo sản phẩm mới thành công',
-        product
+    if (!name || !category || !description || !price || !status) {
+      return res.json({
+        success: false,
+        message: 'Missing required field'
       });
     }
+
+    await Stock.create({
+      name,
+      category,
+      description,
+      stock,
+      price,
+      status,
+      image: imageUrl
+    });
+
+    res.json({
+      success: true,
+      message: 'Thêm sản phẩm thành công'
+    });
+
   } catch (error) {
-    console.error('Có lỗi khi tạo sản phẩm:', error);
     res.status(500).json({
-      error: error.message
+      success: false,
+      message: error.message
     });
   }
 }
@@ -89,7 +97,7 @@ module.exports.editProduct = async (req, res) => {
       id
     } = req.params;
 
-    const [updatedCount] = await Product.update(req.body, {
+    const [updatedCount] = await Stock.update(req.body, {
       where: {
         id: id
       }
@@ -100,7 +108,7 @@ module.exports.editProduct = async (req, res) => {
         message: 'Không tìm thấy sản phẩm'
       });
     }
-    const updatedProduct = await Product.findByPk(id);
+    const updatedProduct = await Stock.findByPk(id);
 
     res.status(200).json({
       message: 'Cập nhật thành công',
@@ -119,7 +127,7 @@ module.exports.deleteProduct = async (req, res) => {
     const {
       id
     } = req.params;
-    const deleted = await Product.update({
+    const deleted = await Stock.update({
       deleted: true
     }, {
       where: {
