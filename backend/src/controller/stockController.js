@@ -7,7 +7,7 @@ module.exports = {
         include: [
           { model: db.Product, as: "product", attributes: ["id", "name", "category", "price"] }
         ],
-        attributes: ["id", "productId", "quantity", "location", "updatedAt"]
+        attributes: ["id", "productId", "stock", "location", "updatedAt"] // đổi quantity -> stock
       });
 
       return res.json(stocks);
@@ -19,11 +19,11 @@ module.exports = {
 
   getStockById: async (req, res) => {
     try {
-      const stock = await db.Stock.findByPk(req.params.id, {
+      const stockRecord = await db.Stock.findByPk(req.params.id, {
         include: [{ model: db.Product, as: "product", attributes: ["id", "name"] }]
       });
-      if (!stock) return res.status(404).json({ message: "Không tìm thấy stock" });
-      return res.json(stock);
+      if (!stockRecord) return res.status(404).json({ message: "Không tìm thấy stock" });
+      return res.json(stockRecord);
     } catch (err) {
       return res.status(500).json({ message: "Lỗi server", error: err.message });
     }
@@ -31,12 +31,12 @@ module.exports = {
 
   updateStock: async (req, res) => {
     try {
-      const { quantity, location } = req.body;
-      const stock = await db.Stock.findByPk(req.params.id);
-      if (!stock) return res.status(404).json({ message: "Không tìm thấy stock" });
+      const { stock, location } = req.body; // đổi quantity -> stock
+      const stockRecord = await db.Stock.findByPk(req.params.id);
+      if (!stockRecord) return res.status(404).json({ message: "Không tìm thấy stock" });
 
-      await stock.update({ quantity, location });
-      return res.json({ message: "Cập nhật stock thành công", data: stock });
+      await stockRecord.update({ stock, location });
+      return res.json({ message: "Cập nhật stock thành công", data: stockRecord });
     } catch (err) {
       return res.status(500).json({ message: "Lỗi server", error: err.message });
     }
@@ -44,10 +44,10 @@ module.exports = {
 
   deleteStock: async (req, res) => {
     try {
-      const stock = await db.Stock.findByPk(req.params.id);
-      if (!stock) return res.status(404).json({ message: "Không tìm thấy stock" });
+      const stockRecord = await db.Stock.findByPk(req.params.id);
+      if (!stockRecord) return res.status(404).json({ message: "Không tìm thấy stock" });
 
-      await stock.destroy();
+      await stockRecord.destroy();
       return res.json({ message: "Đã xoá stock" });
     } catch (err) {
       return res.status(500).json({ message: "Lỗi server", error: err.message });
