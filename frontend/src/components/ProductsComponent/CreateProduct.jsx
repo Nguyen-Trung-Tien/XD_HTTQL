@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import { createProduct } from '../../API/products/productsApi';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
 import upload_area from '../../assets/assets';
 
 function ProductForm() {
-	const navigate = useNavigate();
-
 	const [name, setName] = useState('');
 	const [image, setImage] = useState(false);
 	const [price, setPrice] = useState('');
 	const [category, setCategory] = useState('');
 	const [description, setDescription] = useState('');
 	const [status, setStatus] = useState('Còn hàng');
+	const [adding, setAdding] = useState(false);
 
 	const handleSubmit = async (e) => {
 		try {
 			e.preventDefault();
 
-			if (!name || !category || !price || !description || !status) {
+			setAdding(true);
+
+			if (!name || !category || !price || !description || !status || !image) {
 				alert('Vui lòng điền đầy đủ thông tin!');
 				return;
 			}
@@ -31,18 +31,21 @@ function ProductForm() {
 			formData.append('category', category);
 			formData.append('description', description);
 			formData.append('stock', stock);
-			formData.append('price', price);
+			formData.append('price', String(price));
 			formData.append('status', status);
 			formData.append('image', image);
 
-			await createProduct(formData);
+			const data = await createProduct(formData);
 
-			toast.success('Thêm sản phẩm thành công');
-
-			navigate('/products');
+			if (data.success) {
+				toast.success(data.message);
+			} else {
+				toast.error(data.message);
+			}
 		} catch (error) {
-			console.error('Error creating product:', error);
-			alert('Có lỗi xảy ra khi tạo sản phẩm!');
+			toast.error(error.message);
+		} finally {
+			setAdding(false);
 		}
 	};
 
@@ -95,7 +98,7 @@ function ProductForm() {
 				<div>
 					<label className='block text-sm text-gray-600 mb-1'>Giá</label>
 					<input
-						type='text'
+						type='number'
 						name='price'
 						onChange={(e) => setPrice(e.target.value)}
 						className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
@@ -126,7 +129,7 @@ function ProductForm() {
 				<button
 					type='submit'
 					className='w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition'>
-					Tạo sản phẩm
+					{adding ? 'Đang tạo...' : 'Tạo sản phẩm'}
 				</button>
 			</div>
 		</form>

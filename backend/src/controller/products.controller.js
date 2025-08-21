@@ -9,7 +9,7 @@ module.exports.getAllProducts = async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Lấy tất cả sản phẩm (không phân trang)
-    const allProducts = await Stock.findAll({
+    const allProductsRaw = await Stock.findAll({
       where: {
         deleted: false
       }
@@ -18,7 +18,7 @@ module.exports.getAllProducts = async (req, res) => {
     // Lấy sản phẩm phân trang
     const {
       count,
-      rows: products
+      rows: productsRaw
     } = await Stock.findAndCountAll({
       where: {
         deleted: false
@@ -30,9 +30,29 @@ module.exports.getAllProducts = async (req, res) => {
       ]
     });
 
+    // Base URL (dùng env nếu có, fallback localhost:5000)
+    const baseUrl = 'http://localhost:3001';
+
+    // Convert đường dẫn ảnh thành URL đầy đủ
+    const allProducts = allProductsRaw.map(p => {
+      const product = p.toJSON();
+      return {
+        ...product,
+        image: product.image ? `${baseUrl}${product.image}` : null
+      };
+    });
+
+    const products = productsRaw.map(p => {
+      const product = p.toJSON();
+      return {
+        ...product,
+        image: product.image ? `${baseUrl}${product.image}` : null
+      };
+    });
+
     res.json({
-      products, // sản phẩm phân trang
-      allProducts, // tất cả sản phẩm
+      products,
+      allProducts,
       total: count,
       page,
       totalPages: Math.ceil(count / limit),
@@ -43,7 +63,8 @@ module.exports.getAllProducts = async (req, res) => {
       error: err.message
     });
   }
-}
+};
+
 
 module.exports.createProduct = async (req, res) => {
   try {
@@ -97,26 +118,43 @@ module.exports.editProduct = async (req, res) => {
       id
     } = req.params;
 
-    const [updatedCount] = await Stock.update(req.body, {
-      where: {
-        id: id
-      }
-    });
+    const {
+      name,
+      category,
+      description,
+      stock,
+      price,
+      status
+    } = req.body
 
-    if (updatedCount === 0) {
-      return res.status(404).json({
-        message: 'Không tìm thấy sản phẩm'
-      });
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = `/image/${req.file.filename}`;
     }
-    const updatedProduct = await Stock.findByPk(id);
+
+    const product = await Stock.findByPk(id);
+
+    await Stock.update({
+      name,
+      category,
+      description,
+      stock,
+      price,
+      status,
+      image: imageUrl
+    }, {
+      where: {
+        id
+      }
+    })
 
     res.status(200).json({
+      success: true,
       message: 'Cập nhật thành công',
-      product: updatedProduct
     });
   } catch (error) {
-    console.error('Có lỗi khi cập nhật sản phẩm:', error);
     res.status(500).json({
+      success: false,
       error: error.message
     });
   }
