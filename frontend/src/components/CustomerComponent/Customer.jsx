@@ -11,7 +11,7 @@ import FilterBar from "./FilterBar";
 import ExportExcel from "./ImportExportCSV";
 import CustomerModal from "./CustomerModal";
 import CustomerTable from "./CustomerTable";
-import Pagination from "./Pagination";
+
 
 function Customer() {
   const [customers, setCustomers] = useState([]);
@@ -52,7 +52,7 @@ function Customer() {
     fetchCustomers();
   }, []);
 
- 
+
   const filteredCustomers = useMemo(() => {
     let data = [...customers];
     if (search) {
@@ -84,7 +84,6 @@ function Customer() {
     setPage(1);
   }, [search, statusFilter]);
 
-  // Modal handlers
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -124,7 +123,6 @@ function Customer() {
     }
   };
 
-  // Delete handlers
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa khách hàng này?")) return;
     try {
@@ -162,7 +160,6 @@ function Customer() {
     }
   };
 
-  // Checkbox handlers
   const toggleSelect = (id) => {
     if (selectedIds.includes(id))
       setSelectedIds(selectedIds.filter((x) => x !== id));
@@ -176,7 +173,7 @@ function Customer() {
 
   return (
     <div className="p-6">
-      {/* Header + action buttons */}
+   
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 className="text-2xl font-bold text-textPrimary">
           Quản Lý Khách Hàng
@@ -200,14 +197,14 @@ function Customer() {
         </div>
       </div>
 
-      {/* Error */}
+
       {error && (
         <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-400 text-red-700 rounded shadow-sm">
           {error}
         </div>
       )}
 
-      {/* Filters */}
+
       <FilterBar
         search={search}
         onSearchChange={setSearch}
@@ -215,7 +212,7 @@ function Customer() {
         onStatusFilterChange={setStatusFilter}
       />
 
-      {/* Modal */}
+
       {isModalOpen && (
         <CustomerModal
           isEditing={isEditing}
@@ -226,7 +223,7 @@ function Customer() {
         />
       )}
 
-      {/* Table */}
+
       <CustomerTable
         customers={paginatedCustomers}
         selectedIds={selectedIds}
@@ -235,10 +232,11 @@ function Customer() {
         onEdit={handleOpenModal}
         onDelete={handleDelete}
         loading={loading}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
       />
 
-      {/* Pagination */}
-      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

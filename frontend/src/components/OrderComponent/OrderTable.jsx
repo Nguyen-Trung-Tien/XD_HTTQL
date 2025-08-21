@@ -74,7 +74,7 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
           </button>
         </div>
 
-        {/* 2. Áp dụng cấu trúc bảng tương tự ShipperList */}
+
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="min-w-full divide-y divide-border">
             <thead className="bg-gray-50">
@@ -126,25 +126,23 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-textPrimary">
                         {order.orderNumber}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-textSecondary">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-textPrimary">
                         {order.customerName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {/* 3. Sử dụng badge màu cho trạng thái */}
                         <span
                           className={`px-2 py-1 text-xs rounded-full font-medium ${statusInfo.className}`}
                         >
                           {statusInfo.text}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-textSecondary font-semibold">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-textPrimary">
                         {order.total?.toLocaleString()}đ
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-textSecondary">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-textPrimary">
                         {new Date(order.createdAt).toLocaleDateString("vi-VN")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {/* 4. Sử dụng icon cho các nút thao tác */}
                         <div className="flex space-x-2">
                           <button
                             className="p-1 text-primary hover:text-accent transition-colors"
@@ -173,14 +171,14 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
           <button
             onClick={() => goToPage(1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
           >
             Trang đầu
           </button>
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
           >
             <FiChevronLeft size={18} />
           </button>
@@ -191,10 +189,10 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
               <button
                 key={pageNumber}
                 onClick={() => goToPage(pageNumber)}
-                className={`px-4 py-1 rounded-lg font-medium transition-colors duration-200 ${
+                className={`px-3 py-1 border border-border rounded-md transition-colors ${
                   currentPage === pageNumber
-                    ? "bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white shadow"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    ? "gradient-bg text-white shadow"
+                    : "text-textSecondary hover:bg-gray-50"
                 }`}
               >
                 {pageNumber}
@@ -205,14 +203,14 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
           >
-             <FiChevronRight size={18} />
+            <FiChevronRight size={18} />
           </button>
           <button
             onClick={() => goToPage(totalPages)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
           >
             Trang cuối
           </button>
