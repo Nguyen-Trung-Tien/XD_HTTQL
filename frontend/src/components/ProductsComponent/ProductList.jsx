@@ -145,7 +145,7 @@ function ProductList() {
 			<div className='bg-card shadow-card rounded-lg p-6'>
 				<div className='overflow-x-auto'>
 					<table className='min-w-full divide-y divide-border'>
-						<thead>
+						<thead className="bg-gray-50">
 							<tr>
 								<th className='px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase'>
 									#
