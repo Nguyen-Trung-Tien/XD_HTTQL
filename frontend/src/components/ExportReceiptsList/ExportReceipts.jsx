@@ -5,7 +5,7 @@ import {
   updateExportReceipt,
   deleteExportReceipt,
 } from "../../API/exportReceiptsApi/exportReceiptsApi";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
 import { toast } from "react-toastify";
 
 export default function ExportReceiptsTable() {
@@ -119,282 +119,271 @@ export default function ExportReceiptsTable() {
     );
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Danh sách phiếu xuất
-        </h2>
-        <button
-          onClick={openModal}
-          className="px-4 py-2 rounded bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white font-semibold shadow-md hover:from-[#009acd] hover:to-[#6cb6ff] transition"
-        >
-          Thêm phiếu xuất
-        </button>
-      </div>
-
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <div className="overflow-x-auto shadow-md rounded-lg">
-          <div className="overflow-x-auto shadow-md rounded-lg bg-white">
-            <table className="w-full table-auto border border-gray-200 text-black bg-white">
-              <thead className="bg-gray-50 text-black sticky top-0 z-10">
-                <tr>
-                  <th className="px-4 py-3 border text-center">ID</th>
-                  <th className="px-4 py-3 border">Người xuất</th>
-                  <th className="px-4 py-3 border">Ngày xuất</th>
-                  <th className="px-4 py-3 border">Lý do</th>
-                  <th className="px-4 py-3 border">Ghi chú</th>
-                  <th className="px-4 py-3 border">Chi tiết sản phẩm</th>
-                  <th className="px-4 py-3 border text-center">Hành động</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {receipts.map((r) => (
-                  <tr key={r.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-2 border text-center">{r.id}</td>
-                    <td className="px-4 py-2 border">
-                      {r.userData?.firstName ||
-                        r.userData?.email ||
-                        `User ID: ${r.userId}`}
-                    </td>
-                    <td className="px-4 py-2 border">
-                      {new Date(r.export_date).toLocaleDateString("vi-VN")}
-                    </td>
-                    <td className="px-4 py-2 border">{r.reason}</td>
-                    <td className="px-4 py-2 border">{r.note}</td>
-                    <td className="px-4 py-2 border max-w-md">
-                      {r.exportDetailData?.length > 0 ? (
-                        <ul className="list-disc pl-4 max-h-60 overflow-y-auto space-y-2 text-black">
-                          {r.exportDetailData.map((d) => (
-                            <li
-                              key={d.id}
-                              className="pb-2 border-b last:border-b-0"
-                            >
-                              <div>
-                                <strong>Tên SP:</strong>{" "}
-                                {d.productData?.name || d.productId}
-                              </div>
-                              <div>
-                                <strong>Loại:</strong> {d.productData?.type}
-                              </div>
-                              <div>
-                                <strong>Danh mục:</strong>{" "}
-                                {d.productData?.category}
-                              </div>
-                              <div>
-                                <strong>Mô tả:</strong>{" "}
-                                {d.productData?.description}
-                              </div>
-                              <div>
-                                <strong>Đơn vị:</strong> {d.productData?.unit}
-                              </div>
-                              <div>
-                                <strong>Giá:</strong> {d.productData?.price} đ
-                              </div>
-                              <div>
-                                <strong>Tồn kho:</strong> {d.productData?.stock}
-                              </div>
-                              <div>
-                                <strong>Kho:</strong>{" "}
-                                {d.productData?.warehouseAddress}
-                              </div>
-                              <div>
-                                <strong>Tọa độ:</strong>{" "}
-                                {d.productData?.warehouseLat},{" "}
-                                {d.productData?.warehouseLng}
-                              </div>
-                              <div>
-                                <strong>Trạng thái:</strong>{" "}
-                                {d.productData?.status}
-                              </div>
-                              <div>
-                                <strong>Ngày tạo SP:</strong>{" "}
-                                {new Date(
-                                  d.productData?.createdAt
-                                ).toLocaleString("vi-VN")}
-                              </div>
-                              <div>
-                                <strong>Ngày cập nhật SP:</strong>{" "}
-                                {new Date(
-                                  d.productData?.updatedAt
-                                ).toLocaleString("vi-VN")}
-                              </div>
-                              <div>
-                                <strong>Số lượng xuất:</strong> {d.quantity}
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <span className="text-gray-500">Không có sản phẩm</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          onClick={() => handleEdit(r)}
-                          className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white p-2 rounded-full hover:brightness-90 transition"
-                          title="Sửa phiếu xuất"
-                        >
-                          <FiEdit size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(r.id)}
-                          className="bg-gradient-to-r from-red-500 to-red-600 text-white p-2 rounded-full hover:brightness-90 transition"
-                          title="Xóa phiếu xuất"
-                        >
-                          <FiTrash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+    <div className="p-6 bg-blue-50 min-h-screen">
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-textPrimary mb-6">
+            Danh sách phiếu xuất
+          </h1>
+          <button
+            onClick={openModal}
+            className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
+          >
+            <FiPlus /> Thêm mới
+          </button>
         </div>
-      </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-start pt-10 z-50 overflow-auto">
-          <div className="bg-white p-6 rounded shadow w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold mb-4">
-              {isEditing ? "Cập nhật phiếu xuất" : "Thêm phiếu xuất"}
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <small className="text-gray-500 text-xs mb-1">
-                    ID người dùng thực hiện xuất kho
-                  </small>
-                  <input
-                    type="number"
-                    name="userId"
-                    placeholder="User ID"
-                    value={form.userId}
-                    onChange={handleChange}
-                    min={1}
-                    className="w-full border p-2 rounded"
-                    required
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <small className="text-gray-500 text-xs mb-1">
-                    Ngày thực hiện xuất kho
-                  </small>
-                  <input
-                    type="date"
-                    name="export_date"
-                    value={form.export_date}
-                    onChange={handleChange}
-                    className="w-full border p-2 rounded"
-                    required
-                  />
-                </div>
-              </div>
+        <div className="overflow-x-auto rounded-lg border border-gray-200 mb-4">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  ID
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Người xuất
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Ngày xuất
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Lý do
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Ghi chú
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Chi tiết sản phẩm
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Hành động
+                </th>
+              </tr>
+            </thead>
 
-              <div className="flex flex-col">
-                <small className="text-gray-500 text-xs mb-1">
-                  Lý do xuất kho (ví dụ: bán hàng, trả hàng)
-                </small>
-                <input
-                  type="text"
-                  name="reason"
-                  placeholder="Lý do"
-                  value={form.reason}
-                  onChange={handleChange}
-                  className="w-full border p-2 rounded"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <small className="text-gray-500 text-xs mb-1">
-                  Ghi chú thêm (nếu cần)
-                </small>
-                <input
-                  type="text"
-                  name="note"
-                  placeholder="Ghi chú"
-                  value={form.note}
-                  onChange={handleChange}
-                  className="w-full border p-2 rounded"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="font-semibold">Chi tiết sản phẩm</h4>
-                <div className="max-h-60 overflow-y-auto border rounded p-2 space-y-2">
-                  {details.map((d, i) => (
-                    <div key={i} className="flex gap-2 items-center">
-                      <div className="flex flex-col w-1/2">
-                        <small className="text-gray-500 text-xs mb-1">
-                          Mã sản phẩm
-                        </small>
-                        <input
-                          type="number"
-                          placeholder="Product ID"
-                          value={d.productId}
-                          min={1}
-                          onChange={(e) =>
-                            handleDetailChange(i, "productId", e.target.value)
-                          }
-                          className="border p-2 rounded w-full"
-                          required
-                        />
-                      </div>
-                      <div className="flex flex-col w-1/4">
-                        <small className="text-gray-500 text-xs mb-1">
-                          Số lượng
-                        </small>
-                        <input
-                          type="number"
-                          placeholder="Số lượng"
-                          value={d.quantity}
-                          min={1}
-                          onChange={(e) =>
-                            handleDetailChange(i, "quantity", e.target.value)
-                          }
-                          className="border p-2 rounded w-full"
-                          required
-                        />
-                      </div>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {receipts.map((r) => (
+                <tr
+                  key={r.id}
+                  className="hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                    {r.id}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {r.userData?.firstName ||
+                      r.userData?.email ||
+                      `User ID: ${r.userId}`}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {new Date(r.export_date).toLocaleDateString("vi-VN")}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {r.reason}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800">{r.note}</td>
+                  <td className="px-6 py-4 text-sm text-gray-800">
+                    {r.exportDetailData?.length > 0 ? (
+                      <ul className="list-disc pl-4 max-h-60 overflow-y-auto space-y-2 text-black">
+                        {r.exportDetailData.map((d) => (
+                          <li
+                            key={d.id}
+                            className="pb-2 border-b last:border-b-0"
+                          >
+                            <div>
+                              <strong>Tên SP:</strong>{" "}
+                              {d.productData?.name || d.productId}
+                            </div>
+                            <div>
+                              <strong>Loại:</strong> {d.productData?.type}
+                            </div>
+                            <div>
+                              <strong>Danh mục:</strong>{" "}
+                              {d.productData?.category}
+                            </div>
+                            <div>
+                              <strong>Số lượng xuất:</strong> {d.quantity}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span className="text-gray-500">Không có sản phẩm</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-800 text-center">
+                    <div className="flex justify-center space-x-3">
                       <button
-                        type="button"
-                        onClick={() => removeDetail(i)}
-                        className="bg-red-500 text-white px-2 py-1 rounded mt-5"
+                        onClick={() => handleEdit(r)}
+                        className="p-1 text-primary hover:text-blue-500 transition-colors rounded"
                       >
-                        Xóa
+                        <FiEdit className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(r.id)}
+                        className="p-1 text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        <FiTrash2 className="w-5 h-5" />
                       </button>
                     </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={addDetail}
-                  className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white px-3 py-1 rounded mt-2"
-                >
-                  Thêm sản phẩm
-                </button>
-              </div>
-
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  type="submit"
-                  className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white px-4 py-2 rounded hover:from-[#009acd] hover:to-[#6cb6ff]"
-                >
-                  {isEditing ? "Cập nhật" : "Thêm mới"}
-                </button>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                >
-                  Hủy
-                </button>
-              </div>
-            </form>
-          </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-start pt-10 z-50 overflow-auto">
+            <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-100">
+              {/* Title */}
+              <h3 className="text-xl font-bold mb-6 text-sky-700 text-center">
+                {isEditing ? "Cập nhật phiếu xuất" : "Thêm phiếu xuất"}
+              </h3>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* User & Date */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col">
+                    <small className="text-gray-500 text-xs mb-1">
+                      ID người dùng thực hiện xuất kho
+                    </small>
+                    <input
+                      type="number"
+                      name="userId"
+                      placeholder="User ID"
+                      value={form.userId}
+                      onChange={handleChange}
+                      min={1}
+                      required
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <small className="text-gray-500 text-xs mb-1">
+                      Ngày thực hiện xuất kho
+                    </small>
+                    <input
+                      type="date"
+                      name="export_date"
+                      value={form.export_date}
+                      onChange={handleChange}
+                      required
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                    />
+                  </div>
+                </div>
+
+                {/* Reason */}
+                <div className="flex flex-col">
+                  <small className="text-gray-500 text-xs mb-1">
+                    Lý do xuất kho (ví dụ: bán hàng, trả hàng)
+                  </small>
+                  <input
+                    type="text"
+                    name="reason"
+                    placeholder="Lý do"
+                    value={form.reason}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                  />
+                </div>
+
+                {/* Note */}
+                <div className="flex flex-col">
+                  <small className="text-gray-500 text-xs mb-1">
+                    Ghi chú thêm (nếu cần)
+                  </small>
+                  <input
+                    type="text"
+                    name="note"
+                    placeholder="Ghi chú"
+                    value={form.note}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                  />
+                </div>
+
+                {/* Product Details */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-700">
+                    Chi tiết sản phẩm
+                  </h4>
+                  <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-xl p-3 space-y-3">
+                    {details.map((d, i) => (
+                      <div key={i} className="flex gap-3 items-end">
+                        <div className="flex flex-col w-1/2">
+                          <small className="text-gray-500 text-xs mb-1">
+                            Mã sản phẩm
+                          </small>
+                          <input
+                            type="number"
+                            placeholder="Product ID"
+                            value={d.productId}
+                            min={1}
+                            onChange={(e) =>
+                              handleDetailChange(i, "productId", e.target.value)
+                            }
+                            required
+                            className="w-full p-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                          />
+                        </div>
+                        <div className="flex flex-col w-1/4">
+                          <small className="text-gray-500 text-xs mb-1">
+                            Số lượng
+                          </small>
+                          <input
+                            type="number"
+                            placeholder="Số lượng"
+                            value={d.quantity}
+                            min={1}
+                            onChange={(e) =>
+                              handleDetailChange(i, "quantity", e.target.value)
+                            }
+                            required
+                            className="w-full p-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeDetail(i)}
+                          className="bg-red-500 text-white px-3 py-1 rounded-xl hover:bg-red-600 transition"
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addDetail}
+                    className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white px-4 py-2 rounded-xl hover:from-[#009acd] hover:to-[#6cb6ff] transition mt-2"
+                  >
+                    Thêm sản phẩm
+                  </button>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end gap-3 mt-5">
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white px-5 py-2 rounded-xl hover:from-[#009acd] hover:to-[#6cb6ff] transition font-medium shadow-md"
+                  >
+                    {isEditing ? "Cập nhật" : "Thêm mới"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="bg-gray-400 text-white px-5 py-2 rounded-xl hover:bg-gray-500 transition font-medium"
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FiEdit, FiTrash2, FiSearch, FiPlus, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import {
+  FiEdit,
+  FiTrash2,
+  FiSearch,
+  FiPlus,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { toast } from "react-toastify";
 import {
   getAllSuppliers,
@@ -7,7 +14,6 @@ import {
   updateSupplier,
   deleteSupplier,
 } from "../../API/suppliersApi/suppliersApi";
-import { useNavigate } from "react-router";
 
 function SuppliersPage() {
   const [suppliers, setSuppliers] = useState([]);
@@ -25,8 +31,6 @@ function SuppliersPage() {
   const [itemsPerPage] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const navigate = useNavigate();
 
   const fetchSuppliers = async () => {
     setLoading(true);
@@ -95,9 +99,6 @@ function SuppliersPage() {
     }
   };
 
-  const handleClickImportDetail = () => navigate("/ImportDetails");
-  const handleClickImportReceipt = () => navigate("/ImportReceipts");
-
   const goToPage = (page) => {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
@@ -105,13 +106,12 @@ function SuppliersPage() {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-blue-50 min-h-screen">
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">
+        <h1 className="text-2xl font-bold text-textPrimary mb-6">
           Quản lý nhà cung cấp
         </h1>
 
-        {/* Top controls */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-sm bg-gray-50">
             <FiSearch className="text-gray-400 mr-2" />
@@ -142,20 +142,6 @@ function SuppliersPage() {
               className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
             >
               <FiPlus /> Thêm nhà cung cấp
-            </button>
-
-            <button
-              onClick={handleClickImportDetail}
-              className="px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-            >
-              Quản lý nhập hàng
-            </button>
-
-            <button
-              onClick={handleClickImportReceipt}
-              className="px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-            >
-              Danh sách phiếu nhập
             </button>
           </div>
         </div>
@@ -226,7 +212,7 @@ function SuppliersPage() {
                           >
                             <FiEdit className="w-5 h-5" />
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleDelete(supplier.id)}
                             className="p-1 text-red-500 hover:text-red-700 transition-colors"
                             title="Xóa nhà cung cấp"
@@ -255,7 +241,7 @@ function SuppliersPage() {
                 disabled={currentPage === 1}
                 className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <FiChevronLeft size={18}/>
+                <FiChevronLeft size={18} />
               </button>
 
               {Array.from({ length: totalPages }, (_, index) => {
@@ -280,7 +266,7 @@ function SuppliersPage() {
                 disabled={currentPage === totalPages}
                 className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <FiChevronRight size={18}/>
+                <FiChevronRight size={18} />
               </button>
               <button
                 onClick={() => goToPage(totalPages)}
