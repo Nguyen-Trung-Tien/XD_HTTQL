@@ -12,7 +12,6 @@ import ExportExcel from "./ImportExportCSV";
 import CustomerModal from "./CustomerModal";
 import CustomerTable from "./CustomerTable";
 
-
 function Customer() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,7 +51,6 @@ function Customer() {
     fetchCustomers();
   }, []);
 
-
   const filteredCustomers = useMemo(() => {
     let data = [...customers];
     if (search) {
@@ -73,10 +71,7 @@ function Customer() {
   const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage) || 1;
   const paginatedCustomers = useMemo(
     () =>
-      filteredCustomers.slice(
-        (page - 1) * itemsPerPage,
-        page * itemsPerPage
-      ),
+      filteredCustomers.slice((page - 1) * itemsPerPage, page * itemsPerPage),
     [filteredCustomers, page, itemsPerPage]
   );
 
@@ -172,10 +167,9 @@ function Customer() {
   };
 
   return (
-    <div className="p-6">
-   
+    <div className="p-6 bg-blue-50 min-h-screen">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-textPrimary">
+        <h1 className="text-2xl font-bold text-textPrimary mb-6">
           Quản Lý Khách Hàng
         </h1>
         <div className="flex flex-wrap gap-3">
@@ -197,13 +191,11 @@ function Customer() {
         </div>
       </div>
 
-
       {error && (
         <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-400 text-red-700 rounded shadow-sm">
           {error}
         </div>
       )}
-
 
       <FilterBar
         search={search}
@@ -211,7 +203,6 @@ function Customer() {
         statusFilter={statusFilter}
         onStatusFilterChange={setStatusFilter}
       />
-
 
       {isModalOpen && (
         <CustomerModal
@@ -222,7 +213,6 @@ function Customer() {
           onSubmit={handleSubmit}
         />
       )}
-
 
       <CustomerTable
         customers={paginatedCustomers}
@@ -236,7 +226,6 @@ function Customer() {
         totalPages={totalPages}
         onPageChange={setPage}
       />
-
     </div>
   );
 }

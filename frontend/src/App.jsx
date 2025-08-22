@@ -26,25 +26,23 @@ import WarehouseManagement from './components/WarehouseManagement/WarehouseManag
 import ProductDetail from './components/ProductsComponent/ProductDetail';
 
 function App() {
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	useEffect(() => {
-		const storedUser = localStorage.getItem('user');
-		if (storedUser) {
-			dispatch(login(JSON.parse(storedUser)));
-		}
-	}, []);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      dispatch(login(JSON.parse(storedUser)));
+    }
+  }, []);
 
-	return (
-		<>
-			<ToastContainer position='top-right' autoClose={3000} />
+  return (
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
 
-			<Routes>
-				<Route path='/sign-in' element={<SignIn />} />
-				<Route path='/sign-up' element={<SignUp />} />
-				<Route path='/profile' element={<Profile />} />
-				<Route path='/ExportDetails' element={<ExportDetails />} />
-				<Route path='/ExportReceipts' element={<ExportReceipts />} />
+      <Routes>
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/profile" element={<Profile />} />
 
 				<Route element={<RequireAuth />}>
 					<Route path='/' element={<Layout />}>
@@ -72,6 +70,7 @@ function App() {
 			</Routes>
 		</>
 	);
+
 }
 
 export default App;

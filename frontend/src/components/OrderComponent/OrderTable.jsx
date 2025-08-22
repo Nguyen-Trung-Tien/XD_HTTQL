@@ -171,14 +171,14 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
           <button
             onClick={() => goToPage(1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Trang đầu
           </button>
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FiChevronLeft size={18} />
           </button>
@@ -203,14 +203,14 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FiChevronRight size={18} />
           </button>
           <button
             onClick={() => goToPage(totalPages)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors"
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Trang cuối
           </button>
