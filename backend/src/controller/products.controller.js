@@ -30,10 +30,8 @@ module.exports.getAllProducts = async (req, res) => {
       ]
     });
 
-    // Base URL (dùng env nếu có, fallback localhost:5000)
     const baseUrl = 'http://localhost:3001';
 
-    // Convert đường dẫn ảnh thành URL đầy đủ
     const allProducts = allProductsRaw.map(p => {
       const product = p.toJSON();
       return {
@@ -72,6 +70,7 @@ module.exports.createProduct = async (req, res) => {
       name,
       category,
       description,
+      unit,
       stock,
       price,
       status
@@ -82,7 +81,7 @@ module.exports.createProduct = async (req, res) => {
       imageUrl = `/image/${req.file.filename}`;
     }
 
-    if (!name || !category || !description || !price || !status) {
+    if (!name || !category || !unit || !description || !price || !status) {
       return res.json({
         success: false,
         message: 'Missing required field'
@@ -93,9 +92,10 @@ module.exports.createProduct = async (req, res) => {
       name,
       category,
       description,
+      unit,
       stock,
       price,
-      status,
+      status: stock === 0 ? 'Còn hàng' : 'Hết hàng',
       image: imageUrl
     });
 
@@ -122,7 +122,6 @@ module.exports.editProduct = async (req, res) => {
       name,
       category,
       description,
-      stock,
       price,
       status
     } = req.body
@@ -138,7 +137,6 @@ module.exports.editProduct = async (req, res) => {
       name,
       category,
       description,
-      stock,
       price,
       status,
       image: imageUrl

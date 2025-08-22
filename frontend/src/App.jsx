@@ -23,6 +23,7 @@ import Suppliers from './components/SuppliersComponent/Suppliers';
 import ImportDetails from './components/ImportDetailComponent/ImportDetails';
 import ImportReceipts from './components/ImportReceiptComponent/importReceipt';
 import WarehouseManagement from './components/WarehouseManagement/WarehouseManagement';
+import ProductDetail from './components/ProductsComponent/ProductDetail';
 
 function App() {
 	const dispatch = useDispatch();
@@ -52,6 +53,7 @@ function App() {
 							<Route index element={<ProductList />} />
 							<Route path='create' element={<CreateProduct />} />
 							<Route path='edit/:id' element={<EditProduct />} />
+							<Route path='detail/:id' element={<ProductDetail />} />
 						</Route>
 						<Route path='inventory' element={<Inventory />} />
 						<Route path='orders' element={<Orders />} />
