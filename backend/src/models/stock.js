@@ -33,19 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       status: DataTypes.STRING,
       description: DataTypes.TEXT,
 
-<<<<<<< Updated upstream
-      // thông tin kho chứa
-      warehouseAddress: DataTypes.STRING,
-      warehouseLat: DataTypes.FLOAT,
-      warehouseLng: DataTypes.FLOAT,
-=======
     // quản lý tồn kho
     
-    note: DataTypes.TEXT,
->>>>>>> Stashed changes
-
-      // quản lý tồn kho
-      location: DataTypes.STRING,
       note: DataTypes.TEXT,
 
       // cờ xoá

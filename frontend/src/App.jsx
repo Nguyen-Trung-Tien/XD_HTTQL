@@ -1,30 +1,3 @@
-<<<<<<< Updated upstream
-import { Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import Dashboard from "./components/Dashboard";
-import Orders from "./components/OrderComponent/Orders";
-import Shippers from "./components/ShipperComponent/Shippers";
-import Inventory from "./components/Inventory";
-import Statistics from "./components/Statistics";
-import Layout from "./components/Layout";
-import ProductList from "./components/ProductList";
-import CreateProduct from "./components/CreateProduct";
-import EditProduct from "./components/EditProduct";
-import SignIn from "./components/SignIn";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { login } from "./redux/slice/userSlice";
-import SignUp from "./components/SignUp";
-import RequireAuth from "./auth/RequireAuth";
-import Profile from "./components/Profile";
-import Customer from "./components/CustomerComponent/Customer";
-import ExportDetails from "./components/ExportDetails/ExportDetails";
-import ExportReceipts from "./components/ExportReceiptsList/ExportReceipts";
-import Suppliers from "./components/SuppliersComponent/Suppliers";
-import ImportDetails from "./components/ImportDetailComponent/ImportDetails";
-import ImportReceipts from "./components/ImportReceiptComponent/importReceipt";
-import WarehouseManagement from "./components/WarehouseManagement/WarehouseManagement";
-=======
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Dashboard from './components/Dashboard';
@@ -50,7 +23,6 @@ import Suppliers from './components/SuppliersComponent/Suppliers';
 import ImportDetails from './components/ImportDetailComponent/ImportDetails';
 import ImportReceipts from './components/ImportReceiptComponent/importReceipt';
 import WarehouseManagement from './components/WarehouseManagement/WarehouseManagement';
->>>>>>> Stashed changes
 
 
 function App() {

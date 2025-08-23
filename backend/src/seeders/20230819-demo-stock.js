@@ -2,15 +2,8 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-<<<<<<< Updated upstream
-    await queryInterface.bulkInsert("Stocks", [
-      {
-        productId: 1,
-        location: "Kho Hà Nội",
-=======
     await queryInterface.bulkInsert("Stocks", [{
         productId: 1, 
->>>>>>> Stashed changes
         note: "Nhập hàng tháng 1",
         name: "Gạo ST25",
         type: "Thực phẩm",

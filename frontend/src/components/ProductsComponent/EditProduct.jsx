@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllProducts, editProduct } from '../API/products/productsApi';
+import { getAllProducts, editProduct } from '../../API/products/productsApi';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 

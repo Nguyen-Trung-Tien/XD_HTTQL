@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { getAllProducts, deleteProduct } from '../API/products/productsApi';
+import { getAllProducts, deleteProduct } from '../../API/products/productsApi';
 import { toast } from 'react-toastify';
 
 function ProductList() {
