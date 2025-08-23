@@ -10,7 +10,7 @@ const exportDetailRoutes = require("./exportDetailRoutes");
 const exportReceiptRoutes = require("./exportReceiptRoutes");
 const inventoryRouter = require("./inventoryRouter");
 const stockRouter = require("./stockRouter");
-
+const statisticsRouter = require('./statisticsRouter');
 const routes = (app) => {
   app.use("/api/v1/user", UserRouter);
   app.use("/api/v1/shipper", ShipperRouter);
@@ -24,5 +24,6 @@ const routes = (app) => {
   app.use("/api/v1/export-receipt", exportReceiptRoutes);
   app.use("/api/v1/inventory", inventoryRouter);
   app.use("/api/v1/stock", stockRouter);
+  app.use("/api/v1/statistics", statisticsRouter);
 };
 module.exports = routes;

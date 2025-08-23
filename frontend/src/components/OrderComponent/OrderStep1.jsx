@@ -30,15 +30,20 @@ function OrderStep1({
   }, [products, searchTerm, selectedCategory, filter]);
 
   const updateProductQuantity = (index, newQuantity) => {
-    if (newQuantity < 1 || newQuantity > orderData.products[index].stock)
-      return;
+  let quantity = Number(newQuantity);
 
-    setOrderData((prev) => {
-      const updatedProducts = [...prev.products];
-      updatedProducts[index].quantity = newQuantity;
-      return { ...prev, products: updatedProducts };
-    });
-  };
+
+  if (isNaN(quantity) || quantity < 1) quantity = 1;
+  if (quantity > orderData.products[index].stock) {
+    quantity = orderData.products[index].stock;
+  }
+
+  setOrderData((prev) => {
+    const updatedProducts = [...prev.products];
+    updatedProducts[index].quantity = quantity;
+    return { ...prev, products: updatedProducts };
+  });
+};
 
   const removeProductFromOrder = (index) => {
     setOrderData((prev) => {
@@ -83,7 +88,7 @@ function OrderStep1({
             value={searchTerm}
             type="text"
             placeholder="Tìm kiếm sản phẩm..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border transition-all"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
           />
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg
@@ -197,7 +202,7 @@ function OrderStep1({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                         <button
-                          onClick={() => addProductToOrder(product)} 
+                          onClick={() => addProductToOrder(product)}
                           disabled={product.status === "Hết hàng" || isInOrder}
                           className={`p-1.5 rounded-full transition-all duration-300 ${
                             isInOrder
@@ -295,11 +300,24 @@ function OrderStep1({
                               updateProductQuantity(index, item.quantity - 1)
                             }
                             disabled={item.quantity <= 1}
-                            className="px-2 py-1 border rounded hover:bg-gray-100 disabled:opacity-50"
+                            className="px-2 py-1 border rounded hover:bg-gray-100 disabled:opacity-50 "
                           >
                             -
                           </button>
-                          <span>{item.quantity}</span>
+                          <input
+                        
+                            min={1}
+                            max={item.stock}
+                            value={item.quantity}
+                            onChange={(e) =>
+                              updateProductQuantity(
+                                index,
+                                Number(e.target.value)
+                              )
+                            }
+                            className="w-16 text-center border rounded "
+                          />
+
                           <button
                             onClick={() =>
                               updateProductQuantity(index, item.quantity + 1)
