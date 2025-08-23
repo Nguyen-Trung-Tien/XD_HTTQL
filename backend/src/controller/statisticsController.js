@@ -110,8 +110,27 @@ const getTopSellingProducts = async (req, res) => {
     }
 };
 
+// trạng thái đơn hàng
+const getOrderStatusStats = async (req, res) => {
+    try {
+        const orderStatus = await Order.findAll({
+            attributes: [
+                'status',
+                [sequelize.fn('COUNT', sequelize.col('status')), 'count']
+            ],
+            group: ['status']
+        });
+        res.status(200).json(orderStatus);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ', error: error.message });
+    }
+};
+
+
+
 module.exports = {
     getGeneralStats,
     getRevenueByPeriod,
-    getTopSellingProducts
+    getTopSellingProducts,
+    getOrderStatusStats
 };
