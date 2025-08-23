@@ -1,13 +1,16 @@
-import React from "react";
-
+import React , {useState,useEffect,useRef} from "react";
+import { fetchTotalRevenue } from "../API/statistics/statisticsAPI";
 function Statistics() {
-  const [timeRange, setTimeRange] = React.useState("month");
-  const [activeTab, setActiveTab] = React.useState("sales");
-
-  const salesChartRef = React.useRef(null);
-  const inventoryChartRef = React.useRef(null);
-
-  React.useEffect(() => {
+  const [timeRange, setTimeRange] = useState("month");
+  const [activeTab, setActiveTab] = useState("sales");
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  
+  const salesChartRef = useRef(null);
+  const inventoryChartRef = useRef(null);
+  useEffect(() => { 
+    fetchTotalRevenue()
+      .then(data => setTotalRevenue(data.totalRevenue))
+      .catch(() => setTotalRevenue(0));
     if (activeTab === "sales" && salesChartRef.current) {
       const ctx = salesChartRef.current;
       const canvas = ctx.getContext("2d");
@@ -291,7 +294,7 @@ function Statistics() {
                   Tổng doanh thu
                 </h3>
                 <p className="text-2xl font-bold gradient-text">
-                  1.245.000.000đ
+                  {totalRevenue.toLocaleString("vi-VN") + "đ"}
                 </p>
               </div>
             </div>
