@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Stock.init({
-    // thêm các field tham chiếu từ Product
+  // thêm các field tham chiếu từ Product
     name: DataTypes.STRING,
     type: DataTypes.STRING,
     price: DataTypes.STRING,
@@ -35,20 +35,18 @@ module.exports = (sequelize, DataTypes) => {
     warehouseLng: DataTypes.FLOAT,
 
     // quản lý tồn kho
+    note: DataTypes.TEXT,
+
+    // cờ xoá
+    deleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    }
 
     
-      note: DataTypes.TEXT,
-
-      // cờ xoá
-      deleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-
-
   }, {
     sequelize,
     modelName: "Stock",
   });
-  return Stock;
-};
+    return Stock;
+  };
