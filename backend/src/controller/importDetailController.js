@@ -26,7 +26,7 @@ const create = async (req, res) => {
     const detail = await importDetailService.createImportDetail(req.body);
     res.status(201).json({ success: true, data: detail });
   } catch (err) {
-    if (err.message.includes("not found") || err.message.includes("required")) {
+    if (err.message.includes("not found") || err.message.includes("must be")) {
       return res.status(400).json({ success: false, error: err.message });
     }
     res.status(500).json({ success: false, error: err.message });
@@ -39,7 +39,7 @@ const update = async (req, res) => {
       req.params.id,
       req.body
     );
-    res.status(200).json({ success: true, updated });
+    res.status(200).json({ success: true, data: updated });
   } catch (err) {
     if (err.message.includes("not found")) {
       return res.status(404).json({ success: false, error: err.message });
@@ -50,8 +50,8 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    await importDetailService.deleteImportDetail(req.params.id);
-    res.status(200).json({ success: true, message: "Deleted successfully" });
+    const deleted = await importDetailService.deleteImportDetail(req.params.id);
+    res.status(200).json({ success: true, data: deleted });
   } catch (err) {
     if (err.message.includes("not found")) {
       return res.status(404).json({ success: false, error: err.message });

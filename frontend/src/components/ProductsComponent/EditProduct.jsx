@@ -1,49 +1,37 @@
 import { useEffect, useState } from 'react';
 import { getAllProducts, editProduct } from '../../API/products/productsApi';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
+import upload_area from '../../assets/assets';
 
 function ProductForm() {
-	const [products, setProducts] = useState([]);
-
-	useEffect(() => {
-		const fetchProduct = async () => {
-			try {
-				const { products } = await getAllProducts();
-				setProducts(products);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-		fetchProduct();
-	}, []);
-
-	const navigate = useNavigate();
 	const { id } = useParams();
 
-	const [originalStock, setOriginalStock] = useState(0);
+	const [previewUrl, setPreviewUrl] = useState('');
+	const [editing, setEditing] = useState(false);
+
 	const [form, setForm] = useState({
 		name: '',
 		category: '',
 		price: '',
-		stock: '',
+		description: '',
+		image: '',
 		status: 'Còn hàng',
 	});
-	const [stockError, setStockError] = useState('');
 
 	useEffect(() => {
 		const fetchProduct = async () => {
 			try {
 				const { products } = await getAllProducts();
-				const selectedProduct = products.find((p) => p.id === parseInt(id)); // lấy đúng sản phẩm theo ID
+				const selectedProduct = products.find((p) => p.id === parseInt(id));
 				setForm({
 					name: selectedProduct.name,
 					category: selectedProduct.category,
 					price: selectedProduct.price,
-					stock: 0, // mặc định số thay đổi
+					description: selectedProduct.description,
 					status: selectedProduct.status,
 				});
-				setOriginalStock(selectedProduct.stock); // lưu số lượng cũ
+				setPreviewUrl(selectedProduct.image);
 			} catch (err) {
 				console.error(err);
 			}
@@ -51,148 +39,151 @@ function ProductForm() {
 		fetchProduct();
 	}, [id]);
 
-	const handleChange = (e) => {
-		const { name, value } = e.target;
-
-		if (name === 'stock') {
-			const change = parseInt(value);
-			const inventory =
-				products.find((item) => item.name === form.name)?.stock || 0;
-
-			if (change > inventory) {
-				setStockError('Số lượng nhập vào vượt quá hàng tồn kho!');
-			} else {
-				setStockError('');
-			}
+	const handleImageChange = (e) => {
+		const file = e.target.files[0];
+		if (file) {
+			setForm((prev) => ({ ...prev, image: file }));
+			setPreviewUrl(URL.createObjectURL(file));
 		}
-
-		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleSubmit = async (e) => {
-		e.preventDefault();
-
-		const change = parseInt(form.stock);
-
-		if (isNaN(change)) {
-			alert('Số lượng không hợp lệ');
-			return;
-		}
-
-		if (stockError) {
-			alert('Vui lòng kiểm tra lại số lượng!');
-			return;
-		}
-
-		const productInventory = products.find((item) => item.name === form.name);
-		const availableStock = productInventory?.stock || 0;
-
-		const newStock = originalStock + change;
-
-		const updateData = {
-			price: parseFloat(form.price),
-			stock: newStock,
-			status: form.status,
-		};
-
 		try {
-			await editProduct(id, updateData);
-			productInventory.stock = availableStock - change;
-			toast.success('Cập nhật sản phẩm thành công');
-			navigate('/products');
+			e.preventDefault();
+			setEditing(true);
+
+			const formData = new FormData();
+
+			formData.append('name', form.name);
+			formData.append('category', form.category);
+			formData.append('description', form.description);
+			formData.append('price', String(form.price));
+			formData.append('status', form.status);
+			formData.append('image', form.image);
+
+			const data = await editProduct(id, formData);
+
+			if (data.success) {
+				toast.success(data.message);
+			} else {
+				toast.error(data.message);
+			}
 		} catch (err) {
-			console.error(err);
-			alert('Có lỗi khi cập nhật sản phẩm');
+			toast.error(err.message);
+		} finally {
+			setEditing(false);
 		}
 	};
 
 	return (
-		<form
-			onSubmit={handleSubmit}
-			className='bg-white shadow-md rounded-2xl p-8 w-full max-w-md mx-auto'>
-			<h2 className='text-2xl font-semibold text-gray-800 mb-6 text-center'>
-				Chỉnh sửa sản phẩm
-			</h2>
-
-			<div className='space-y-4'>
-				<div>
-					<label className='block text-sm text-gray-600 mb-1'>
-						Tên sản phẩm
-					</label>
-					<input
-						type='text'
-						name='name'
-						value={form.name}
-						disabled
-						className='w-full px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg'
-					/>
-				</div>
-
-				<div>
-					<label className='block text-sm text-gray-600 mb-1'>Danh mục</label>
-					<input
-						type='text'
-						name='category'
-						value={form.category}
-						disabled
-						className='w-full px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg'
-					/>
-				</div>
-
-				<div>
-					<label className='block text-sm text-gray-600 mb-1'>Giá</label>
-					<input
-						type='text'
-						name='price'
-						value={form.price}
-						onChange={handleChange}
-						className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
-					/>
-				</div>
-
-				<div>
-					<label className='block text-sm text-gray-600 mb-1'>
-						Số lượng muốn thêm hoặc bớt
-					</label>
-					<input
-						type='number'
-						name='stock'
-						value={form.stock}
-						onChange={handleChange}
-						className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-							stockError
-								? 'border-red-500 focus:ring-red-400'
-								: 'border-gray-300 focus:ring-blue-400'
-						}`}
-					/>
-					<p className='text-sm text-gray-500 mt-1'>
-						Số lượng trong kho:{' '}
-						{products.find((item) => item.name === form.name)?.stock ?? 0}
-					</p>
-					{stockError && (
-						<p className='text-red-500 text-sm mt-1'>{stockError}</p>
-					)}
-				</div>
-
-				<div>
-					<label className='block text-sm text-gray-600 mb-1'>Trạng thái</label>
-					<select
-						name='status'
-						value={form.status}
-						onChange={handleChange}
-						className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'>
-						<option value='Còn hàng'>Còn hàng</option>
-						<option value='Hết hàng'>Hết hàng</option>
-					</select>
-				</div>
-
+		<div className='flex'>
+			<div>
 				<button
-					type='submit'
-					className='w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition'>
-					Gửi
+					onClick={() => window.history.back()}
+					className='mt-6 ml-6 font-medium text-sm bg-white px-4 py-2 rounded-full text-blue-600 hover:text-blue-800'>
+					&larr; Quay lại
 				</button>
 			</div>
-		</form>
+			<form
+				onSubmit={handleSubmit}
+				className='bg-white shadow-md rounded-2xl mt-6 p-8 w-full max-w-md mx-[450px]'>
+				<h2 className='text-2xl font-semibold text-gray-800 mb-6 text-center'>
+					Chỉnh sửa sản phẩm
+				</h2>
+
+				<div className='space-y-4'>
+					<div>
+						<label className='block text-sm text-gray-600 mb-1'>Ảnh</label>
+						<label htmlFor='image'>
+							<img
+								src={previewUrl || upload_area}
+								alt=''
+								className='mt-2 h-16 rounded cursor-pointer'
+							/>
+							<input
+								onChange={handleImageChange}
+								type='file'
+								id='image'
+								hidden
+							/>
+						</label>
+					</div>
+					<div>
+						<label className='block text-sm text-gray-600 mb-1'>
+							Tên sản phẩm
+						</label>
+						<input
+							type='text'
+							onChange={(e) =>
+								setForm((prev) => ({ ...prev, name: e.target.value }))
+							}
+							value={form.name}
+							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+						/>
+					</div>
+
+					<div>
+						<label className='block text-sm text-gray-600 mb-1'>Danh mục</label>
+						<input
+							type='text'
+							onChange={(e) =>
+								setForm((prev) => ({ ...prev, category: e.target.value }))
+							}
+							value={form.category}
+							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+						/>
+					</div>
+
+					<div>
+						<label className='block text-sm text-gray-600 mb-1'>Giá</label>
+						<input
+							type='number'
+							name='price'
+							onChange={(e) =>
+								setForm((prev) => ({ ...prev, price: e.target.value }))
+							}
+							value={form.price}
+							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+						/>
+					</div>
+
+					<div className='flex gap-2 mt-4'>
+						<label className='flex flex-col gap-1 text-sm text-gray-600 mb-1'>
+							<label className='block text-sm text-gray-600 mb-1'>Mô tả</label>
+							<textarea
+								onChange={(e) =>
+									setForm((prev) => ({ ...prev, description: e.target.value }))
+								}
+								value={form.description}
+								className='w-[384px] h-[128px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							/>
+						</label>
+					</div>
+
+					<div>
+						<label className='block text-sm text-gray-600 mb-1'>
+							Trạng thái
+						</label>
+						<select
+							name='status'
+							value={form.status}
+							onChange={(e) =>
+								setForm((prev) => ({ ...prev, status: e.target.value }))
+							}
+							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'>
+							<option value='Còn hàng'>Còn hàng</option>
+							<option value='Hết hàng'>Hết hàng</option>
+						</select>
+					</div>
+
+					<button
+						type='submit'
+						className='w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition'>
+						{editing ? 'Đang chỉnh sửa...' : 'Chỉnh sửa sản phẩm'}
+					</button>
+				</div>
+			</form>
+		</div>
 	);
 }
 

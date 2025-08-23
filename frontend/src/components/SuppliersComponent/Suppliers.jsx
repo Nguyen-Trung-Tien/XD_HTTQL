@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FiEdit, FiTrash2, FiSearch, FiPlus } from "react-icons/fi";
+import {
+  FiEdit,
+  FiTrash2,
+  FiSearch,
+  FiPlus,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { toast } from "react-toastify";
 import {
   getAllSuppliers,
@@ -7,9 +14,8 @@ import {
   updateSupplier,
   deleteSupplier,
 } from "../../API/suppliersApi/suppliersApi";
-import { useNavigate } from "react-router";
 
-export default function SuppliersPage() {
+function SuppliersPage() {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
@@ -25,8 +31,6 @@ export default function SuppliersPage() {
   const [itemsPerPage] = useState(8);
   const [totalPages, setTotalPages] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const navigate = useNavigate();
 
   const fetchSuppliers = async () => {
     setLoading(true);
@@ -95,9 +99,6 @@ export default function SuppliersPage() {
     }
   };
 
-  const handleClickImportDetail = () => navigate("/ImportDetails");
-  const handleClickImportReceipt = () => navigate("/ImportReceipts");
-
   const goToPage = (page) => {
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
@@ -105,13 +106,11 @@ export default function SuppliersPage() {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-blue-50 min-h-screen">
+      <h1 className="text-2xl font-bold text-textPrimary mb-6">
+        Quản lý nhà cung cấp
+      </h1>
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">
-          Quản lý nhà cung cấp
-        </h1>
-
-        {/* Top controls */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-sm bg-gray-50">
             <FiSearch className="text-gray-400 mr-2" />
@@ -143,20 +142,6 @@ export default function SuppliersPage() {
             >
               <FiPlus /> Thêm nhà cung cấp
             </button>
-
-            <button
-              onClick={handleClickImportDetail}
-              className="px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-            >
-              Quản lý nhập hàng
-            </button>
-
-            <button
-              onClick={handleClickImportReceipt}
-              className="px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-            >
-              Danh sách phiếu nhập
-            </button>
           </div>
         </div>
 
@@ -171,67 +156,91 @@ export default function SuppliersPage() {
             Không có nhà cung cấp nào.
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border rounded-lg shadow-sm bg-white">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
-                  <th className="p-3 border">ID</th>
-                  <th className="p-3 border">Tên</th>
-                  <th className="p-3 border">SĐT</th>
-                  <th className="p-3 border">Địa chỉ</th>
-                  <th className="p-3 border">Mô tả</th>
-                  <th className="p-3 border">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {suppliers.map((supplier) => (
-                  <tr
-                    key={supplier.id}
-                    className="hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <td className="p-3 border text-center">{supplier.id}</td>
-                    <td className="p-3 border">{supplier.name || "-"}</td>
-                    <td className="p-3 border">
-                      {supplier.phoneNumber || "-"}
-                    </td>
-                    <td className="p-3 border">{supplier.address || "-"}</td>
-                    <td className="p-3 border">
-                      {supplier.description || "-"}
-                    </td>
-                    <td className="p-3 border flex gap-2 justify-center">
-                      <button
-                        onClick={() => handleEdit(supplier)}
-                        className="p-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-                      >
-                        <FiEdit />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(supplier.id)}
-                        className="p-2 rounded-lg text-white bg-red-500 hover:bg-red-600 hover:scale-105 transition-transform duration-200"
-                      >
-                        <FiTrash2 />
-                      </button>
-                    </td>
+          <>
+            <div className="overflow-x-auto rounded-lg border border-gray-200 mb-4">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tên
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      SĐT
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Địa chỉ
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Mô tả
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Hành động
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {suppliers.map((supplier) => (
+                    <tr
+                      key={supplier.id}
+                      className="hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">
+                        {supplier.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {supplier.name || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {supplier.phoneNumber || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {supplier.address || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {supplier.description || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                        <div className="flex justify-center space-x-3">
+                          <button
+                            onClick={() => handleEdit(supplier)}
+                            className="p-1 text-primary hover:text-blue-500 transition-colors rounded"
+                            title="Sửa nhà cung cấp"
+                          >
+                            <FiEdit className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(supplier.id)}
+                            className="p-1 text-red-500 hover:text-red-700 transition-colors"
+                            title="Xóa nhà cung cấp"
+                          >
+                            <FiTrash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {/* Pagination */}
             <div className="flex justify-center gap-2 mt-5 flex-wrap">
               <button
                 onClick={() => goToPage(1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                First
+                Trang đầu
               </button>
               <button
                 onClick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Prev
+                <FiChevronLeft size={18} />
               </button>
 
               {Array.from({ length: totalPages }, (_, index) => {
@@ -240,10 +249,10 @@ export default function SuppliersPage() {
                   <button
                     key={pageNumber}
                     onClick={() => goToPage(pageNumber)}
-                    className={`px-4 py-1 rounded-lg font-medium transition-colors duration-200 ${
+                    className={`px-3 py-1 border border-gray-300 rounded-md transition-colors ${
                       currentPage === pageNumber
                         ? "bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white shadow"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                        : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
                     {pageNumber}
@@ -254,19 +263,19 @@ export default function SuppliersPage() {
               <button
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Next
+                <FiChevronRight size={18} />
               </button>
               <button
                 onClick={() => goToPage(totalPages)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Last
+                Trang cuối
               </button>
             </div>
-          </div>
+          </>
         )}
 
         {/* Modal */}
@@ -335,3 +344,5 @@ export default function SuppliersPage() {
     </div>
   );
 }
+
+export default SuppliersPage;

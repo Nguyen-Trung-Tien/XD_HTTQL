@@ -1,6 +1,7 @@
-import React from "react";
+import React , {useEffect,useState} from "react";
 import RevenueChart from "./RevenueChart";
 import TopProducts from "./TopProducts";
+import { fetchTotalRevenue } from "../API/statistics/statisticsAPI";
 function Dashboard() {
   return (
     <div className="p-6">
@@ -13,12 +14,26 @@ function Dashboard() {
   );
 }
 
-// components/DashboardCards.jsx
 function DashboardCards() {
+  const [totalRevenue, setTotalRevenue] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchTotalRevenue();
+        setTotalRevenue(data.totalRevenue);
+      } catch (error) {
+        console.error("Error fetching total revenue:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const stats = [
     {
       title: "Tổng doanh thu",
-      value: "1.245.000.000đ",
+      value: totalRevenue.toLocaleString("vi-VN") + "đ",
       change: "+12.5%",
       isPositive: true,
       icon: (

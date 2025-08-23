@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         as: "userData",
       });
+
       ImportReceipts.hasMany(models.ImportDetails, {
         foreignKey: "importId",
         as: "importDetailData",

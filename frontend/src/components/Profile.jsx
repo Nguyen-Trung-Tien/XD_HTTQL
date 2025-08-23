@@ -12,7 +12,7 @@ import {
 } from "react-icons/fi";
 import { arrayBufferToString } from "../utils/arrayBufferToString";
 
-const InputField = ({ label, value, onChange, icon, disabled }) => (
+const InputField = ({ label, value, onChange, icon, disabled, onEnter }) => (
   <div>
     <label className="block text-sm font-medium bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent mb-1">
       {label}
@@ -25,6 +25,11 @@ const InputField = ({ label, value, onChange, icon, disabled }) => (
         value={value}
         onChange={onChange}
         disabled={disabled}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && onEnter) {
+            onEnter();
+          }
+        }}
       />
     </div>
   </div>
@@ -133,19 +138,21 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex justify-center items-center bg-blue-50 pt-2 px-2 pb-4 min-h-screen">
-      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 border border-blue-300">
-        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent mb-2">
+    <div className="flex justify-center items-center bg-blue-50 pt-6 px-2 pb-10 min-h-screen">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-blue-200">
+        {/* Tiêu đề */}
+        <h1 className="text-3xl text-center font-bold mb-6 text-gray-800">
           Thông Tin Cá Nhân
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Ảnh đại diện */}
           <div>
-            <label className="block text-sm font-medium bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] bg-clip-text text-transparent mb-2">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
               Ảnh đại diện
             </label>
-            <div className="flex items-center space-x-5">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-[#00BFFF] bg-blue-100">
+            <div className="flex items-center space-x-6">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#00BFFF] bg-blue-100 shadow">
                 {avatarPreview ? (
                   <img
                     src={avatarPreview}
@@ -154,13 +161,13 @@ const Profile = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-[#00BFFF]">
-                    <FiUser size={30} />
+                    <FiUser size={40} />
                   </div>
                 )}
               </div>
               <label
                 htmlFor="avatarInput"
-                className="cursor-pointer inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white rounded-md hover:opacity-90 transition"
+                className="cursor-pointer inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white rounded-lg hover:opacity-90 transition"
               >
                 <FiUpload className="mr-2" />
                 Chọn ảnh
@@ -175,48 +182,63 @@ const Profile = () => {
             </div>
           </div>
 
-          <InputField
-            label="Email"
-            value={user.email}
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
-            icon={<FiMail size={16} />}
-            disabled
-          />
-          <InputField
-            label="First Name"
-            value={user.firstName}
-            onChange={(e) => setUser({ ...user, firstName: e.target.value })}
-            icon={<FiUser size={16} />}
-          />
-          <InputField
-            label="Last Name"
-            value={user.lastName}
-            onChange={(e) => setUser({ ...user, lastName: e.target.value })}
-            icon={<FiUser size={16} />}
-          />
-          <InputField
-            label="Số điện thoại"
-            value={user.phoneNumber}
-            onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
-            icon={<FiPhone size={16} />}
-          />
+          {/* Các input */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label="Email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              icon={<FiMail size={16} />}
+              disabled
+            />
+            <InputField
+              label="Số điện thoại"
+              value={user.phoneNumber}
+              onChange={(e) =>
+                setUser({ ...user, phoneNumber: e.target.value })
+              }
+              onEnter={handleSubmit}
+              icon={<FiPhone size={16} />}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label="First Name"
+              value={user.firstName}
+              onChange={(e) => setUser({ ...user, firstName: e.target.value })}
+              icon={<FiUser size={16} />}
+              onEnter={handleSubmit}
+            />
+            <InputField
+              label="Last Name"
+              value={user.lastName}
+              onChange={(e) => setUser({ ...user, lastName: e.target.value })}
+              icon={<FiUser size={16} />}
+              onEnter={handleSubmit}
+            />
+          </div>
+
           <InputField
             label="Địa chỉ"
             value={user.address}
             onChange={(e) => setUser({ ...user, address: e.target.value })}
             icon={<FiHome size={16} />}
+            onEnter={handleSubmit}
           />
           <InputField
             label="Vai trò"
             value={user.role}
             onChange={(e) => setUser({ ...user, role: e.target.value })}
             icon={<FiShield size={16} />}
+            onEnter={handleSubmit}
           />
 
+          {/* Nút lưu */}
           <div className="text-center">
             <button
               type="submit"
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:from-[#009acd] hover:to-[#6cb6ff] text-white rounded-md font-medium transition"
+              className="inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:from-[#009acd] hover:to-[#6cb6ff] text-white rounded-lg font-medium shadow-md hover:shadow-lg transition disabled:opacity-50"
               disabled={loading}
             >
               <FiSave className="mr-2" />

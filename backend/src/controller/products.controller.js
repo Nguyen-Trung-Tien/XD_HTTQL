@@ -1,5 +1,5 @@
 const {
-  Product
+  Stock
 } = require('../models')
 
 module.exports.getAllProducts = async (req, res) => {
@@ -9,7 +9,7 @@ module.exports.getAllProducts = async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Lấy tất cả sản phẩm (không phân trang)
-    const allProducts = await Product.findAll({
+    const allProductsRaw = await Stock.findAll({
       where: {
         deleted: false
       }
@@ -18,8 +18,8 @@ module.exports.getAllProducts = async (req, res) => {
     // Lấy sản phẩm phân trang
     const {
       count,
-      rows: products
-    } = await Product.findAndCountAll({
+      rows: productsRaw
+    } = await Stock.findAndCountAll({
       where: {
         deleted: false
       },
@@ -30,9 +30,27 @@ module.exports.getAllProducts = async (req, res) => {
       ]
     });
 
+    const baseUrl = 'http://localhost:3001';
+
+    const allProducts = allProductsRaw.map(p => {
+      const product = p.toJSON();
+      return {
+        ...product,
+        image: product.image ? `${baseUrl}${product.image}` : null
+      };
+    });
+
+    const products = productsRaw.map(p => {
+      const product = p.toJSON();
+      return {
+        ...product,
+        image: product.image ? `${baseUrl}${product.image}` : null
+      };
+    });
+
     res.json({
-      products, // sản phẩm phân trang
-      allProducts, // tất cả sản phẩm
+      products,
+      allProducts,
       total: count,
       page,
       totalPages: Math.ceil(count / limit),
@@ -43,42 +61,53 @@ module.exports.getAllProducts = async (req, res) => {
       error: err.message
     });
   }
-}
+};
+
 
 module.exports.createProduct = async (req, res) => {
   try {
     const {
       name,
+      category,
+      description,
+      unit,
       stock,
-      price
-    } = req.body
+      price,
+      status
+    } = req.body;
 
-    let product = await Product.findOne({
-      where: {
-        name
-      }
-    });
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = `/image/${req.file.filename}`;
+    }
 
-    if (product) {
-      product.price = price
-      product.stock += stock
-      await product.save()
-
-      return res.status(200).json({
-        message: 'Sản phẩm đã tồn tại, đã cập nhật giá và số lượng',
-        product
-      });
-    } else {
-      product = await Product.create(req.body)
-      return res.status(201).json({
-        message: 'Tạo sản phẩm mới thành công',
-        product
+    if (!name || !category || !unit || !description || !price || !status) {
+      return res.json({
+        success: false,
+        message: 'Missing required field'
       });
     }
+
+    await Stock.create({
+      name,
+      category,
+      description,
+      unit,
+      stock,
+      price,
+      status: stock === 0 ? 'Còn hàng' : 'Hết hàng',
+      image: imageUrl
+    });
+
+    res.json({
+      success: true,
+      message: 'Thêm sản phẩm thành công'
+    });
+
   } catch (error) {
-    console.error('Có lỗi khi tạo sản phẩm:', error);
     res.status(500).json({
-      error: error.message
+      success: false,
+      message: error.message
     });
   }
 }
@@ -89,26 +118,41 @@ module.exports.editProduct = async (req, res) => {
       id
     } = req.params;
 
-    const [updatedCount] = await Product.update(req.body, {
-      where: {
-        id: id
-      }
-    });
+    const {
+      name,
+      category,
+      description,
+      price,
+      status
+    } = req.body
 
-    if (updatedCount === 0) {
-      return res.status(404).json({
-        message: 'Không tìm thấy sản phẩm'
-      });
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = `/image/${req.file.filename}`;
     }
-    const updatedProduct = await Product.findByPk(id);
+
+    const product = await Stock.findByPk(id);
+
+    await Stock.update({
+      name,
+      category,
+      description,
+      price,
+      status,
+      image: imageUrl
+    }, {
+      where: {
+        id
+      }
+    })
 
     res.status(200).json({
+      success: true,
       message: 'Cập nhật thành công',
-      product: updatedProduct
     });
   } catch (error) {
-    console.error('Có lỗi khi cập nhật sản phẩm:', error);
     res.status(500).json({
+      success: false,
       error: error.message
     });
   }
@@ -119,7 +163,7 @@ module.exports.deleteProduct = async (req, res) => {
     const {
       id
     } = req.params;
-    const deleted = await Product.update({
+    const deleted = await Stock.update({
       deleted: true
     }, {
       where: {

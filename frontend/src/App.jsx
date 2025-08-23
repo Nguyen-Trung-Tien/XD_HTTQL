@@ -23,7 +23,7 @@ import Suppliers from './components/SuppliersComponent/Suppliers';
 import ImportDetails from './components/ImportDetailComponent/ImportDetails';
 import ImportReceipts from './components/ImportReceiptComponent/importReceipt';
 import WarehouseManagement from './components/WarehouseManagement/WarehouseManagement';
-
+import ProductDetail from './components/ProductsComponent/ProductDetail';
 
 function App() {
   const dispatch = useDispatch();
@@ -43,34 +43,34 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/ExportDetails" element={<ExportDetails />} />
-        <Route path="/ExportReceipts" element={<ExportReceipts />} />
 
-        <Route element={<RequireAuth />}>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="products">
-              <Route index element={<ProductList />} />
-              <Route path="create" element={<CreateProduct />} />
-              <Route path="edit/:id" element={<EditProduct />} />
-            </Route>
-            <Route path="inventory" element={<Inventory />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="shippers" element={<Shippers />} />
-            <Route path="stats" element={<Statistics />} />
-            <Route path="customer" element={<Customer />} />
-            <Route path="suppliers" element={<Suppliers />} />
-            <Route path="ImportDetails" element={<ImportDetails />} />
-            <Route path="ImportReceipts" element={<ImportReceipts />} />
-            <Route
-              path="WarehouseManagement"
-              element={<WarehouseManagement />}
-            />
-          </Route>
-        </Route>
-      </Routes>
-    </>
-  );
+				<Route element={<RequireAuth />}>
+					<Route path='/' element={<Layout />}>
+						<Route index element={<Dashboard />} />
+						<Route path='products'>
+							<Route index element={<ProductList />} />
+							<Route path='create' element={<CreateProduct />} />
+							<Route path='edit/:id' element={<EditProduct />} />
+							<Route path='detail/:id' element={<ProductDetail />} />
+						</Route>
+						<Route path='inventory' element={<Inventory />} />
+						<Route path='orders' element={<Orders />} />
+						<Route path='shippers' element={<Shippers />} />
+						<Route path='stats' element={<Statistics />} />
+						<Route path='customer' element={<Customer />} />
+						<Route path='suppliers' element={<Suppliers />} />
+						<Route path='ImportDetails' element={<ImportDetails />} />
+						<Route path='ImportReceipts' element={<ImportReceipts />} />
+						<Route
+							path='WarehouseManagement'
+							element={<WarehouseManagement />}
+						/>
+					</Route>
+				</Route>
+			</Routes>
+		</>
+	);
+
 }
 
 export default App;

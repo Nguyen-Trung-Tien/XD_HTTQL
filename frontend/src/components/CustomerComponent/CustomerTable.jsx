@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { FiEdit, FiTrash2, FiList } from "react-icons/fi";
+import {
+  FiEdit,
+  FiTrash2,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import CustomerOrderHistory from "./CustomerOrderHistory";
 
 export default function CustomerTable({
@@ -10,6 +15,9 @@ export default function CustomerTable({
   onEdit,
   onDelete,
   loading,
+  page,
+  totalPages,
+  onPageChange,
 }) {
   const [showOrderHistory, setShowOrderHistory] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -18,6 +26,57 @@ export default function CustomerTable({
     setSelectedCustomer(customer);
     setShowOrderHistory(true);
   };
+
+  const Pagination = () => (
+    <div className="flex justify-center gap-2 mt-5 flex-wrap">
+      <button
+        onClick={() => onPageChange(1)}
+        disabled={page === 1}
+        className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Trang đầu
+      </button>
+      <button
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+        disabled={page === 1}
+        className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <FiChevronLeft size={18} />
+      </button>
+
+      {Array.from({ length: totalPages }, (_, index) => {
+        const pageNumber = index + 1;
+        return (
+          <button
+            key={pageNumber}
+            onClick={() => onPageChange(pageNumber)}
+            className={`px-3 py-1 border border-border rounded-md transition-colors ${
+              page === pageNumber
+                ? "gradient-bg text-white shadow"
+                : "text-textSecondary hover:bg-gray-50"
+            }`}
+          >
+            {pageNumber}
+          </button>
+        );
+      })}
+
+      <button
+        onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+        disabled={page === totalPages}
+        className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <FiChevronRight size={18} />
+      </button>
+      <button
+        onClick={() => onPageChange(totalPages)}
+        disabled={page === totalPages}
+        className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Trang cuối
+      </button>
+    </div>
+  );
 
   return (
     <div className="bg-card shadow-card rounded-lg overflow-hidden">
@@ -57,7 +116,6 @@ export default function CustomerTable({
                 </th>
               </tr>
             </thead>
-
             <tbody className="bg-white divide-y divide-border">
               {loading ? (
                 <tr>
@@ -91,39 +149,30 @@ export default function CustomerTable({
                         className="accent-primary"
                       />
                     </td>
-
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-textPrimary">
-                        {c.name}
-                      </div>
+                
+                    <td className="px-6 py-4 whitespace-nowrap text-sm  text-textPrimary">
+                      {c.name}
                     </td>
-
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-textPrimary">{c.email}</div>
+                
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-textPrimary">
+                      {c.email}
                     </td>
-
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-textPrimary">
-                        {c.phoneNumber || "-"}
-                      </div>
+                
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-textPrimary">
+                      {c.phoneNumber || "-"}
                     </td>
-
-                    <td className="px-6 py-4 whitespace-normal break-words max-w-[400px]">
-                      <div className="text-sm text-textPrimary">
-                        {c.address || "-"}
-                      </div>
+                  
+                    <td className="px-6 py-4 whitespace-normal break-words max-w-sm text-sm text-textPrimary">
+                      {c.address || "-"}
                     </td>
-
-                    {/* Cột Đơn hàng */}
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
-                        className="flex items-center gap-1 text-primary hover:underline"
+                        className="text-primary hover:underline"
                         onClick={() => handleShowOrderHistory(c)}
                       >
-                       {c.orderCount || 0} đơn hàng
+                        {c.orderCount || 0} đơn hàng
                       </button>
                     </td>
-
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         <button
@@ -133,11 +182,10 @@ export default function CustomerTable({
                         >
                           <FiEdit className="w-5 h-5" />
                         </button>
-
                         <button
                           onClick={() => onDelete(c.id)}
                           title="Xóa"
-                          className="p-1 text-primary hover:text-red-500 transition-colors rounded"
+                          className="p-1 text-red-500 hover:text-red-700 transition-colors"
                         >
                           <FiTrash2 className="w-5 h-5" />
                         </button>
@@ -149,9 +197,9 @@ export default function CustomerTable({
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && <Pagination />}
       </div>
 
-      {/* Modal lịch sử đơn hàng */}
       {showOrderHistory && selectedCustomer && (
         <CustomerOrderHistory
           customerId={selectedCustomer.id}

@@ -1,8 +1,4 @@
-import React, {
-
-  useState,
-  useEffect,
-} from "react";
+import React, { useState, useEffect } from "react";
 import {
   updateOrder,
   findNearestShipper,
@@ -41,13 +37,9 @@ const ORDER_STATUS = {
 };
 
 const OrderStatus = ({ orders, loading, onOrderChanged }) => {
-
   const [filter, setFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  
-
-  
   const handleCancelOrder = async (order) => {
     if (!window.confirm("Bạn có chắc muốn hủy đơn này?")) return;
     try {
@@ -61,9 +53,8 @@ const OrderStatus = ({ orders, loading, onOrderChanged }) => {
         });
       }
       await deleteOrder(order.id);
-      if (onOrderChanged) onOrderChanged()
+      if (onOrderChanged) onOrderChanged();
       toast.success("Đã hủy đơn hàng #" + order.orderNumber);
-     
     } catch (error) {
       console.error("Error cancelling order:", error);
       toast.error("Có lỗi khi hủy đơn hàng");
@@ -111,12 +102,11 @@ const OrderStatus = ({ orders, loading, onOrderChanged }) => {
         );
         if (onOrderChanged) onOrderChanged();
       }
-
     } catch (error) {
       console.error("Error finding shipper:", error);
       toast.error("Có lỗi khi tìm shipper");
       await updateOrder(order.id, { status: "pending" });
-       if (onOrderChanged) onOrderChanged();
+      if (onOrderChanged) onOrderChanged();
     } finally {
       // setLoading(false);
     }
@@ -256,10 +246,11 @@ const OrderStatus = ({ orders, loading, onOrderChanged }) => {
     );
   };
 
- const filteredOrders =
+  const filteredOrders =
     filter === "all"
       ? orders.filter(
-          (order) => order.status !== "delivered" && order.status !== "cancelled"
+          (order) =>
+            order.status !== "delivered" && order.status !== "cancelled"
         )
       : orders.filter(
           (order) =>
