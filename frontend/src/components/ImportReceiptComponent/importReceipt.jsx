@@ -8,6 +8,8 @@ import {
   updateImportReceipt,
 } from "../../API/importReceiptApi/importReceiptApi";
 import { getManySupplier } from "../../API/suppliersApi/suppliersApi";
+import { useLocation } from "react-router-dom";
+
 
 export default function ImportReceipts() {
   const [receipts, setReceipts] = useState([]);
@@ -21,6 +23,15 @@ export default function ImportReceipts() {
     note: "",
     details: [],
   });
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.openForm) {
+      openForm(); // mở form thêm phiếu nhập
+    }
+  }, [location.state]);
+
 
   const fetchData = async () => {
     setLoading(true);

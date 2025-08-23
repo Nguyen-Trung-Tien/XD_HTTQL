@@ -35,13 +35,16 @@ module.exports = (sequelize, DataTypes) => {
     warehouseLng: DataTypes.FLOAT,
 
     // quản lý tồn kho
-    location: DataTypes.STRING,
-    note: DataTypes.TEXT,
 
-    // cờ xoá
-    deleted: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+    
+      note: DataTypes.TEXT,
+
+      // cờ xoá
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+
     },
   }, {
     sequelize,

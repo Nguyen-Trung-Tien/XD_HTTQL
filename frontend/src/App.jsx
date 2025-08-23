@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import Dashboard from './components/Dashboard';
 import Orders from './components/OrderComponent/Orders';
 import Shippers from './components/ShipperComponent/Shippers';
-import Inventory from './components/Inventory';
+import Inventory from './components/InventoryComponent/Inventory';
 import Statistics from './components/Statistics';
 import Layout from './components/Layout';
 import ProductList from './components/ProductsComponent/ProductList';
