@@ -27,10 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-       customerEmail: {
+      customerEmail: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { isEmail: true }
+        validate: { isEmail: true },
       },
       customerPhone: {
         type: DataTypes.STRING,
@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-       customerId: { 
+      customerId: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },

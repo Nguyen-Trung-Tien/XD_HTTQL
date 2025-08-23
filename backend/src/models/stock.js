@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: false,
       },
 
-    },
+
   }, {
     sequelize,
     modelName: "Stock",
