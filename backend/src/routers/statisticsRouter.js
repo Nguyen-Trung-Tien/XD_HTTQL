@@ -4,6 +4,7 @@ const statisticsController = require('../controller/statisticsController');
 
 router.get('/general', statisticsController.getGeneralStats);
 router.get('/revenue-by-period', statisticsController.getRevenueByPeriod);
+router.get('/top-selling-products', statisticsController.getTopSellingProducts);
 
 
 module.exports = router;
