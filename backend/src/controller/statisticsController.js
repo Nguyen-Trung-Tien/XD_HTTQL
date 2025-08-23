@@ -91,7 +91,27 @@ const getRevenueByPeriod = async (req, res) => {
     }
 };
 
+// sản phẩm bán chạy
+const getTopSellingProducts = async (req, res) => {
+    try {
+        const topProducts = await OrderItem.findAll({
+            attributes: [
+                'productId',
+                'name',
+                [sequelize.fn('SUM', sequelize.col('quantity')), 'totalQuantity']
+            ],
+            group: ['productId', 'name'],
+            order: [[sequelize.col('totalQuantity'), 'DESC']],
+            limit: 10
+        });
+        res.status(200).json(topProducts);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ', error: error.message });
+    }
+};
+
 module.exports = {
     getGeneralStats,
-    getRevenueByPeriod
+    getRevenueByPeriod,
+    getTopSellingProducts
 };
