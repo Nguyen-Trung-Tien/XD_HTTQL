@@ -1,25 +1,22 @@
-const { Order, OrderItem } = require('../models');
-const { Sequelize } = require('sequelize');
+const { Order, OrderItem, Customer, Product, sequelize } = require('../models');
+const { Op } = require('sequelize');
 
-const getTotalRevenue = async (req, res) => {
-  try {
 
-    const result = await OrderItem.findAll({
-      attributes: [
-        [Sequelize.fn('SUM', Sequelize.literal('price * quantity')), 'totalProduct']
-      ]
-    });
-    const shipResult = await Order.findAll({
-      attributes: [
-        [Sequelize.fn('SUM', Sequelize.col('shippingFee')), 'totalShip']
-      ]
-    });
-    const totalProduct = Number(result[0].dataValues.totalProduct) || 0;
-    const totalShip = Number(shipResult[0].dataValues.totalShip) || 0;
-    res.json({ totalRevenue: totalProduct + totalShip });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// Hàm trợ giúp để lấy ngày bắt đầu dựa trên khoảng thời gian
+const getStartDate = (period) => {
+    const now = new Date();
+    if (period === 'week') {
+        const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        return new Date(firstDayOfWeek.setHours(0, 0, 0, 0));
+    } else if (period === 'month') {
+        return new Date(now.getFullYear(), now.getMonth(), 1);
+    } else if (period === 'year') {
+        return new Date(now.getFullYear(), 0, 1);
+    }
+    // Mặc định là 'hôm nay'
+    return new Date(now.setHours(0, 0, 0, 0));
 };
 
-module.exports = { getTotalRevenue };
+module.exports = {
+    // ...
+};
