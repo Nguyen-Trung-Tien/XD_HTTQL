@@ -156,19 +156,18 @@ export default function ImportReceipts() {
 
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
+        <h1 className="text-2xl font-bold text-textPrimary mb-6">
+          Danh sách phiếu nhập
+        </h1>
+        <button
+          onClick={() => openForm()}
+          className="flex items-center gap-2 px-5 py-2 rounded-lg shadow text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
+        >
+          <FiPlus /> Thêm mới
+        </button>
+      </div>
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-2 gap-2">
-          <h1 className="text-2xl font-bold text-textPrimary mb-6">
-            Danh sách phiếu nhập
-          </h1>
-          <button
-            onClick={() => openForm()}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg shadow text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-          >
-            <FiPlus /> Thêm mới
-          </button>
-        </div>
-
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
@@ -187,9 +186,9 @@ export default function ImportReceipts() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Nhà cung cấp
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Người nhập
-                  </th>
+                  {/* <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Mã nhân viên
+                  </th> */}
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Ghi chú
                   </th>
@@ -216,9 +215,9 @@ export default function ImportReceipts() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                       {r.supplierData?.name || `ID ${r.supplierId}`}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {r.userData?.name || `User #${r.userId}`}
-                    </td>
+                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {r.userData?.name || `NV${r.userId}`}
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                       {r.note}
                     </td>
@@ -323,21 +322,6 @@ export default function ImportReceipts() {
                   </div>
                 </div>
 
-                {/* Note */}
-                <div className="flex flex-col">
-                  <small className="text-gray-500 text-xs mb-1">
-                    Nhập ghi chú liên quan đến phiếu nhập
-                  </small>
-                  <label className="block mb-1 font-medium text-gray-700">
-                    Ghi chú
-                  </label>
-                  <textarea
-                    value={formData.note}
-                    onChange={(e) => handleFormChange("note", e.target.value)}
-                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
-                  />
-                </div>
-
                 {/* Product Details */}
                 <div className="space-y-3">
                   <h4 className="font-semibold text-gray-700">
@@ -346,22 +330,6 @@ export default function ImportReceipts() {
                   <div className="max-h-80 overflow-y-auto border border-gray-200 rounded-xl p-3 space-y-3">
                     {formData.details.map((d, i) => (
                       <div key={i} className="flex gap-3 items-end">
-                        <div className="flex-1 flex flex-col">
-                          <small className="text-gray-500 text-xs mb-1">
-                            Tên sản phẩm
-                          </small>
-                          <input
-                            type="text"
-                            value={d.productData?.name || ""}
-                            onChange={(e) =>
-                              handleDetailChange(i, "productData", {
-                                name: e.target.value,
-                              })
-                            }
-                            className="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
-                          />
-                        </div>
-
                         <div className="flex flex-col w-20">
                           <small className="text-gray-500 text-xs mb-1">
                             SL
@@ -410,8 +378,23 @@ export default function ImportReceipts() {
                     onClick={addDetail}
                     className="flex items-center gap-1 mt-2 text-green-500 hover:text-green-700 transition font-medium"
                   >
-                    <FiPlus /> Thêm chi tiết
+                    <FiPlus /> Nhập số lượng sản phẩm
                   </button>
+                </div>
+
+                {/* Note */}
+                <div className="flex flex-col">
+                  <small className="text-gray-500 text-xs mb-1">
+                    Nhập ghi chú liên quan đến phiếu nhập
+                  </small>
+                  <label className="block mb-1 font-medium text-gray-700">
+                    Ghi chú
+                  </label>
+                  <textarea
+                    value={formData.note}
+                    onChange={(e) => handleFormChange("note", e.target.value)}
+                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                  />
                 </div>
 
                 {/* Actions */}

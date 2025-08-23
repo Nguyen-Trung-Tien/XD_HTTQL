@@ -120,19 +120,18 @@ export default function ExportReceiptsTable() {
 
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-textPrimary mb-6">
+          Danh sách phiếu xuất
+        </h1>
+        <button
+          onClick={openModal}
+          className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
+        >
+          <FiPlus /> Thêm mới
+        </button>
+      </div>
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-textPrimary mb-6">
-            Danh sách phiếu xuất
-          </h1>
-          <button
-            onClick={openModal}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-          >
-            <FiPlus /> Thêm mới
-          </button>
-        </div>
-
         <div className="overflow-x-auto rounded-lg border border-gray-200 mb-4">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

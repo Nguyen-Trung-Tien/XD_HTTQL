@@ -106,13 +106,12 @@ export default function ImportDetails() {
 
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
+      <h1 className="text-2xl font-bold text-textPrimary mb-6">
+        {editingId
+          ? "Cập nhật chi tiết nhập hàng"
+          : "Quản lý chi tiết nhập hàng"}
+      </h1>
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-textPrimary mb-6">
-          {editingId
-            ? "Cập nhật chi tiết nhập hàng"
-            : "Quản lý chi tiết nhập hàng"}
-        </h1>
-
         <form
           onSubmit={handleSubmit}
           className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3 bg-white p-4 rounded-lg shadow items-end"

@@ -1,10 +1,10 @@
-const db = require("../models/index");
+const db = require("../models");
 
-const getAllImportReceipts = async () => {
-  return await db.ImportReceipts.findAll({
+const getAllImportReceipts = () => {
+  return db.ImportReceipts.findAll({
     include: [
-      { model: db.Suppliers, as: "supplierData" },
       { model: db.User, as: "userData" },
+      { model: db.Suppliers, as: "supplierData" },
       {
         model: db.ImportDetails,
         as: "importDetailData",
@@ -27,9 +27,7 @@ const getImportReceiptById = async (id) => {
       },
     ],
   });
-  if (!receipt) {
-    throw new Error(`Import receipt with ID ${id} not found`);
-  }
+  if (!receipt) throw new Error(`Import receipt with ID ${id} not found`);
   return receipt;
 };
 
@@ -50,7 +48,7 @@ const createImportReceipt = async (data) => {
     }
 
     await t.commit();
-    return receipt;
+    return await getImportReceiptById(receipt.id);
   } catch (err) {
     await t.rollback();
     throw err;
@@ -76,7 +74,7 @@ const updateImportReceipt = async (id, data) => {
     }
 
     await t.commit();
-    return true;
+    return await getImportReceiptById(id);
   } catch (err) {
     await t.rollback();
     throw err;
@@ -86,10 +84,9 @@ const updateImportReceipt = async (id, data) => {
 const deleteImportReceipt = async (id) => {
   const t = await db.sequelize.transaction();
   try {
-    await db.ImportDetails.destroy({ where: { importId: id }, transaction: t });
     await db.ImportReceipts.destroy({ where: { id }, transaction: t });
     await t.commit();
-    return true;
+    return { message: "Deleted successfully" };
   } catch (err) {
     await t.rollback();
     throw err;

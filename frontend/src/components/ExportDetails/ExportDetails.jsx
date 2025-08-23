@@ -103,35 +103,35 @@ function ExportDetails() {
 
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
-          <h1 className="text-2xl font-bold text-textPrimary mb-6">
-            Quản lý phiếu xuất
-          </h1>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+        <h1 className="text-2xl font-bold text-textPrimary mb-6">
+          Quản lý phiếu xuất
+        </h1>
 
-          <div className="flex gap-2 w-full md:w-auto">
-            <div className="relative flex-1">
-              <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Tìm sản phẩm..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-8 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-            <button
-              onClick={() => {
-                setForm({ exportId: "", productId: "", quantity: "" });
-                setIsEditing(false);
-                setShowModal(true);
-              }}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-            >
-              <FiPlus className="w-4 h-4" /> Thêm mới
-            </button>
+        <div className="flex gap-2 w-full md:w-auto">
+          <div className="relative flex-1">
+            <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Tìm sản phẩm..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-8 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
           </div>
+          <button
+            onClick={() => {
+              setForm({ exportId: "", productId: "", quantity: "" });
+              setIsEditing(false);
+              setShowModal(true);
+            }}
+            className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
+          >
+            <FiPlus className="w-4 h-4" /> Thêm mới
+          </button>
         </div>
+      </div>
+      <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="mb-4 flex flex-col gap-2">
           <span className="font-semibold bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
             Tổng số lượng: {totalQuantity.toLocaleString()} sản phẩm

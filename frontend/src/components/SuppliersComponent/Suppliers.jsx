@@ -107,11 +107,10 @@ function SuppliersPage() {
 
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
+      <h1 className="text-2xl font-bold text-textPrimary mb-6">
+        Quản lý nhà cung cấp
+      </h1>
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-textPrimary mb-6">
-          Quản lý nhà cung cấp
-        </h1>
-
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full max-w-sm bg-gray-50">
             <FiSearch className="text-gray-400 mr-2" />
