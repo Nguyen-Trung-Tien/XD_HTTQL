@@ -3,6 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert("Stocks", [{
+
         productId: 1, 
         note: "Nhập hàng tháng 1",
         name: "Gạo ST25",
