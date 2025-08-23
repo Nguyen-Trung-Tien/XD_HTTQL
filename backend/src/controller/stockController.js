@@ -7,7 +7,7 @@ module.exports = {
         include: [
           { model: db.Product, as: "product", attributes: ["id", "name", "category", "price"] }
         ],
-        attributes: ["id", "productId", "stock", "location", "updatedAt"] // đổi quantity -> stock
+        attributes: ["id", "productId", "stock", "warehouseAddress", "updatedAt"]
       });
 
       return res.json(stocks);
@@ -31,11 +31,11 @@ module.exports = {
 
   updateStock: async (req, res) => {
     try {
-      const { stock, location } = req.body; // đổi quantity -> stock
+      const { stock, warehouseAddress } = req.body;
       const stockRecord = await db.Stock.findByPk(req.params.id);
       if (!stockRecord) return res.status(404).json({ message: "Không tìm thấy stock" });
 
-      await stockRecord.update({ stock, location });
+      await stockRecord.update({ stock, warehouseAddress });
       return res.json({ message: "Cập nhật stock thành công", data: stockRecord });
     } catch (err) {
       return res.status(500).json({ message: "Lỗi server", error: err.message });

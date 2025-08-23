@@ -1,11 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { getAllStock } from "../API/stock/stockAPI";
+import { getAllStock } from "../../API/stock/stockAPI";
+import InventoryStatusCard from "./InventoryStatusCard";
+import InventoryListCard from "./InventoryListCard";
+import { useNavigate } from "react-router-dom";
+
 
 function Inventory() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [inventoryItems, setInventoryItems] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
+
+  const handleAddProduct = () => {
+    navigate("/products/create"); // 👈 đúng route bạn đã cấu hình trong App.jsx
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, activeTab]);
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -23,7 +40,7 @@ function Inventory() {
               : stock.stock < 10
               ? "low-stock"
               : "in-stock",
-          location: stock.location || "Kho chưa rõ",
+          location: stock.warehouseAddress || "Kho chưa rõ",
           lastUpdated: stock.updatedAt,
         }));
         setInventoryItems(formatted);
@@ -74,6 +91,10 @@ function Inventory() {
         item.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
       );
     });
+  
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
 
   if (loading) {
     return <div className="p-6 text-center">Đang tải dữ liệu tồn kho...</div>;
@@ -157,7 +178,10 @@ function Inventory() {
                 </div>
               </div>
 
-              <button className="px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-sm">
+              <button
+                onClick={handleAddProduct}
+                className="px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-sm"
+              >
                 Thêm sản phẩm
               </button>
             </div>
@@ -195,7 +219,7 @@ function Inventory() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-border">
-                {filteredItems.map((item) => (
+                {currentItems.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm font-medium">{item.id}</td>
                     <td className="px-6 py-4 text-sm">{item.name}</td>
@@ -285,190 +309,53 @@ function Inventory() {
               Không tìm thấy sản phẩm nào phù hợp với tìm kiếm của bạn.
             </div>
           )}
+          
           <div className="flex justify-between items-center mt-6">
             <div className="text-sm text-textSecondary">
-              Hiển thị {filteredItems.length} / {inventoryItems.length} sản phẩm
+              Hiển thị {currentItems.length} / {filteredItems.length} sản phẩm
             </div>
             <div className="flex space-x-2">
-              <button className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors">
-                Trước
-              </button>
-              <button className="px-3 py-1 gradient-bg text-white rounded-md">
-                1
-              </button>
-              <button className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors">
-                2
-              </button>
-              <button className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors">
-                3
-              </button>
-              <button className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 transition-colors">
-                Sau
-              </button>
-            </div>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 disabled:opacity-50"
+          >
+            Trước
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-3 py-1 rounded-md ${
+                currentPage === i + 1
+                  ? "gradient-bg text-white"
+                  : "border border-border text-textSecondary hover:bg-gray-50"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() =>
+              setCurrentPage((p) => Math.min(totalPages, p + 1))  
+            }
+            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 disabled:opacity-50"
+          >
+            Sau
+          </button>
           </div>
         </div>
       </div>
+    </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className="bg-card shadow-card rounded-lg overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-textPrimary mb-4">
-              Tình trạng tồn kho
-            </h3>
-            <div className="h-64 flex items-center justify-center">
-              <div className="relative w-40 h-40">
-                <svg viewBox="0 0 36 36" className="w-full h-full">
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="#E2E8F0"
-                    strokeWidth="3"
-                  />
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="#00BFFF"
-                    strokeWidth="3"
-                    strokeDasharray="75, 100"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="#FFD700"
-                    strokeWidth="3"
-                    strokeDasharray="15, 100"
-                    strokeDashoffset="-75"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="#FF6B6B"
-                    strokeWidth="3"
-                    strokeDasharray="10, 100"
-                    strokeDashoffset="-90"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-textPrimary">
-                      {inventoryItems.length}
-                    </div>
-                    <div className="text-xs text-textSecondary">
-                      Tổng sản phẩm
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-        
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              <div className="text-center p-2 bg-gray-50 rounded-md">
-                <div className="text-sm font-semibold text-textPrimary">
-                  75%
-                </div>
-                <div className="text-xs text-textSecondary flex items-center justify-center">
-                  <div className="w-3 h-3 bg-primary rounded-full mr-1"></div>
-                  Còn hàng
-                </div>
-              </div>
-              <div className="text-center p-2 bg-gray-50 rounded-md">
-                <div className="text-sm font-semibold text-textPrimary">
-                  15%
-                </div>
-                <div className="text-xs text-textSecondary flex items-center justify-center">
-                  <div className="w-3 h-3 bg-accent rounded-full mr-1"></div>
-                  Sắp hết
-                </div>
-              </div>
-              <div className="text-center p-2 bg-gray-50 rounded-md">
-                <div className="text-sm font-semibold text-textPrimary">
-                  10%
-                </div>
-                <div className="text-xs text-textSecondary flex items-center justify-center">
-                  <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
-                  Hết hàng
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-card shadow-card rounded-lg overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-textPrimary mb-4">
-              Sản phẩm cần nhập thêm
-            </h3>
-            <div className="space-y-4">
-              {inventoryItems
-                .filter(
-                  (item) =>
-                    item.status === "low-stock" || item.status === "out-of-stock"
-                )
-                .map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex items-center">
-                      <div
-                        className={`w-10 h-10 rounded-md ${
-                          item.status === "out-of-stock"
-                            ? "bg-red-100"
-                            : "bg-accent/10"
-                        } flex items-center justify-center mr-3`}
-                      >
-                        <svg
-                          className={`w-6 h-6 ${
-                            item.status === "out-of-stock"
-                              ? "text-red-500"
-                              : "text-accent"
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                          ></path>
-                        </svg>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-textPrimary">
-                          {item.name}
-                        </div>
-                        <div className="text-xs text-textSecondary">
-                          Mã: {item.id} | Kho: {item.location}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-semibold text-textPrimary">
-                        {item.stock} sản phẩm
-                      </div>
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${getStatusClass(
-                          item.status
-                        )} font-medium`}
-                      >
-                        {getStatusText(item.status)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-            </div>
-            <button className="w-full mt-4 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors">
-              Tạo đơn nhập hàng
-            </button>
-          </div>
-        </div>
+        <InventoryStatusCard inventoryItems={inventoryItems} />
+        <InventoryListCard
+          inventoryItems={inventoryItems}
+          getStatusClass={getStatusClass}
+          getStatusText={getStatusText}
+        />
       </div>
     </div>
   );
