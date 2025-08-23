@@ -51,6 +51,47 @@ const getGeneralStats = async (req, res) => {
     }
 };
 
+//lấy doanh thu theo kỳ
+const getRevenueByPeriod = async (req, res) => {
+    try {
+        const { period = 'month' } = req.query; // 'day', 'week', 'month', 'year'
+        let groupBy, dateFormat;
+
+        switch (period) {
+            case 'day':
+                groupBy = [sequelize.fn('DATE', sequelize.col('createdAt'))];
+                dateFormat = '%Y-%m-%d';
+                break;
+            case 'week':
+                groupBy = [sequelize.fn('YEAR', sequelize.col('createdAt')), sequelize.fn('WEEK', sequelize.col('createdAt'))];
+                dateFormat = '%Y-%u';
+                break;
+            case 'year':
+                groupBy = [sequelize.fn('YEAR', sequelize.col('createdAt')), sequelize.fn('MONTH', sequelize.col('createdAt'))];
+                 dateFormat = '%Y-%m';
+                break;
+            default: // month
+                groupBy = [sequelize.fn('DATE', sequelize.col('createdAt'))];
+                 dateFormat = '%Y-%m-%d';
+                break;
+        }
+
+        const revenue = await Order.findAll({
+            attributes: [
+                [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), dateFormat), 'period'],
+                [sequelize.fn('SUM', sequelize.col('total')), 'revenue']
+            ],
+            where: { status: 'completed' },
+            group: groupBy,
+            order: [[sequelize.col('period'), 'ASC']]
+        });
+        res.status(200).json(revenue);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ', error: error.message });
+    }
+};
+
 module.exports = {
-    getGeneralStats
+    getGeneralStats,
+    getRevenueByPeriod
 };
