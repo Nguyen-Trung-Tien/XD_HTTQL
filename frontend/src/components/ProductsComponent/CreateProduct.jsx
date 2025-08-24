@@ -3,7 +3,7 @@ import { createProduct } from '../../API/products/productsApi';
 import { toast } from 'react-toastify';
 import upload_area from '../../assets/assets';
 
-function ProductForm() {
+const ProductForm = () => {
 	const [name, setName] = useState('');
 	const [image, setImage] = useState(false);
 	const [price, setPrice] = useState('');
@@ -169,6 +169,6 @@ function ProductForm() {
 			</form>
 		</div>
 	);
-}
+};
 
 export default ProductForm;

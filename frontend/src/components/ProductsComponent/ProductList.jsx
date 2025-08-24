@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { getAllProducts, deleteProduct } from '../../API/products/productsApi';
 import { toast } from 'react-toastify';
 
-function ProductList() {
+const ProductList = () => {
 	const navigate = useNavigate();
 
 	const [products, setProducts] = useState([]);
@@ -20,8 +20,9 @@ function ProductList() {
 				const data = await getAllProducts(page, 8);
 				setProducts(data.products || []);
 				setTotalPages(data.totalPages || 1);
+				// eslint-disable-next-line no-unused-vars
 			} catch (err) {
-				console.error(err);
+				toast.error('Network error');
 			} finally {
 				setLoading(false);
 			}
@@ -81,6 +82,27 @@ function ProductList() {
 				<h1 className='text-2xl font-bold text-textPrimary'>
 					Danh sách sản phẩm
 				</h1>
+				{loading && (
+					<div className='flex items-center text-sm text-textSecondary'>
+						<svg
+							className='animate-spin h-5 w-5 text-primary'
+							viewBox='0 0 24 24'>
+							<circle
+								className='opacity-25'
+								cx='12'
+								cy='12'
+								r='10'
+								stroke='currentColor'
+								strokeWidth='4'
+								fill='none'></circle>
+							<path
+								className='opacity-75'
+								fill='currentColor'
+								d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'></path>
+						</svg>
+						<span className='ml-2'>Đang tải dữ liệu...</span>
+					</div>
+				)}
 			</div>
 
 			<div className='flex items-center gap-4 mb-4 justify-between'>
@@ -179,123 +201,95 @@ function ProductList() {
 						</thead>
 
 						<tbody className='bg-white divide-y divide-border'>
-							{loading
-								? [...Array(6)].map((_, idx) => (
-										<tr key={`skeleton-${idx}`}>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												<div className='h-4 bg-gray-200 rounded animate-pulse w-6' />
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												<div className='h-4 bg-gray-200 rounded animate-pulse w-40' />
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												<div className='h-4 bg-gray-200 rounded animate-pulse w-24' />
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												<div className='h-4 bg-gray-200 rounded animate-pulse w-20' />
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												<div className='h-4 bg-gray-200 rounded animate-pulse w-16' />
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap'>
-												<div className='h-4 bg-gray-200 rounded-full animate-pulse w-24' />
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm'>
-												<div className='h-4 bg-gray-200 rounded animate-pulse w-28' />
-											</td>
-										</tr>
-								  ))
-								: filteredProducts.map((product, index) => (
-										<tr key={product.id}>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												{(page - 1) * 8 + index + 1}
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												{product.name}
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												{product.category}
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												{product.price} đ
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-												{product.stock + ' ' + product.unit}
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap'>
-												<span
-													className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
-														product.status
-													)}`}>
-													{product.status}
-												</span>
-											</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm'>
-												<div className='flex space-x-2'>
-													<button
-														onClick={() =>
-															navigate(`/products/detail/${product.id}`)
-														}
-														className='p-1 text-primary hover:text-accent transition-colors'>
-														<svg
-															className='w-5 h-5'
-															fill='none'
-															stroke='currentColor'
-															viewBox='0 0 24 24'>
-															<path
-																strokeLinecap='round'
-																strokeLinejoin='round'
-																strokeWidth='2'
-																d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
-															/>
-															<path
-																strokeLinecap='round'
-																strokeLinejoin='round'
-																strokeWidth='2'
-																d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
-															/>
-														</svg>
-													</button>
-													<button
-														onClick={() =>
-															navigate(`/products/edit/${product.id}`)
-														}
-														className='p-1 text-primary hover:text-accent transition-colors'>
-														<svg
-															className='w-5 h-5'
-															fill='none'
-															stroke='currentColor'
-															viewBox='0 0 24 24'
-															xmlns='http://www.w3.org/2000/svg'>
-															<path
-																strokeLinecap='round'
-																strokeLinejoin='round'
-																strokeWidth='2'
-																d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-															/>
-														</svg>
-													</button>
-													<button
-														onClick={() => handleDelete(product.id)}
-														className='p-1 text-red-500 hover:text-red-700 transition-colors'>
-														<svg
-															className='w-5 h-5'
-															fill='none'
-															stroke='currentColor'
-															viewBox='0 0 24 24'
-															xmlns='http://www.w3.org/2000/svg'>
-															<path
-																strokeLinecap='round'
-																strokeLinejoin='round'
-																strokeWidth='2'
-																d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-															/>
-														</svg>
-													</button>
-												</div>
-											</td>
-										</tr>
-								  ))}
+							{filteredProducts.map((product, index) => (
+								<tr key={product.id}>
+									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
+										{(page - 1) * 8 + index + 1}
+									</td>
+									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
+										{product.name}
+									</td>
+									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
+										{product.category}
+									</td>
+									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
+										{product.price} đ
+									</td>
+									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
+										{product.stock + ' ' + product.unit}
+									</td>
+									<td className='px-6 py-4 whitespace-nowrap'>
+										<span
+											className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
+												product.status
+											)}`}>
+											{product.status}
+										</span>
+									</td>
+									<td className='px-6 py-4 whitespace-nowrap text-sm'>
+										<div className='flex space-x-2'>
+											<button
+												onClick={() =>
+													navigate(`/products/detail/${product.id}`)
+												}
+												className='p-1 text-primary hover:text-accent transition-colors'>
+												<svg
+													className='w-5 h-5'
+													fill='none'
+													stroke='currentColor'
+													viewBox='0 0 24 24'>
+													<path
+														strokeLinecap='round'
+														strokeLinejoin='round'
+														strokeWidth='2'
+														d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+													/>
+													<path
+														strokeLinecap='round'
+														strokeLinejoin='round'
+														strokeWidth='2'
+														d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+													/>
+												</svg>
+											</button>
+											<button
+												onClick={() => navigate(`/products/edit/${product.id}`)}
+												className='p-1 text-primary hover:text-accent transition-colors'>
+												<svg
+													className='w-5 h-5'
+													fill='none'
+													stroke='currentColor'
+													viewBox='0 0 24 24'
+													xmlns='http://www.w3.org/2000/svg'>
+													<path
+														strokeLinecap='round'
+														strokeLinejoin='round'
+														strokeWidth='2'
+														d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+													/>
+												</svg>
+											</button>
+											<button
+												onClick={() => handleDelete(product.id)}
+												className='p-1 text-red-500 hover:text-red-700 transition-colors'>
+												<svg
+													className='w-5 h-5'
+													fill='none'
+													stroke='currentColor'
+													viewBox='0 0 24 24'
+													xmlns='http://www.w3.org/2000/svg'>
+													<path
+														strokeLinecap='round'
+														strokeLinejoin='round'
+														strokeWidth='2'
+														d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+													/>
+												</svg>
+											</button>
+										</div>
+									</td>
+								</tr>
+							))}
 						</tbody>
 					</table>
 				</div>
@@ -306,13 +300,13 @@ function ProductList() {
 					onClick={() => setPage(1)}
 					disabled={page === 1}
 					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
-					First
+					{'<<'}
 				</button>
 				<button
 					onClick={() => setPage(page - 1)}
 					disabled={page === 1}
 					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
-					Prev
+					{'<'}
 				</button>
 				{page >= 2 && (
 					<button
@@ -336,17 +330,17 @@ function ProductList() {
 					onClick={() => setPage(page + 1)}
 					disabled={page === totalPages}
 					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
-					Next
+					{'>'}
 				</button>
 				<button
 					onClick={() => setPage(totalPages)}
 					disabled={page === totalPages}
 					className='px-3 py-1 rounded-lg bg-gray-200 text-gray-700 disabled:opacity-50'>
-					Last
+					{'>>'}
 				</button>
 			</div>
 		</div>
 	);
-}
+};
 
 export default ProductList;
