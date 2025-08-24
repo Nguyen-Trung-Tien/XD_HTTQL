@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiEdit, FiTrash2, FiPlus, FiArrowLeft } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
 import { toast } from "react-toastify";
 import {
   createImportDetail,
@@ -7,6 +7,12 @@ import {
   getAllImportDetails,
   updateImportDetail,
 } from "../../API/importDetailApi/importDetailsApi";
+
+// Helper function to format price with thousand separators
+const formatPrice = (price) => {
+  if (!price) return "";
+  return new Intl.NumberFormat("vi-VN").format(price);
+};
 
 export default function ImportDetails() {
   const [details, setDetails] = useState([]);
@@ -159,21 +165,28 @@ export default function ImportDetails() {
           </div>
 
           <div className="flex flex-col">
-            <small className="text-gray-500 text-xs mb-1">Giá sản phẩm</small>
-            <input
-              type="text"
-              placeholder="Giá"
-              className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-              value={form.price}
-              min={1}
-              onChange={(e) => setForm({ ...form, price: e.target.value })}
-            />
+            <small className="text-gray-500 text-xs mb-1">
+              Giá sản phẩm (VND)
+            </small>
+            <div className="relative">
+              <input
+                type="number"
+                placeholder="Giá"
+                className="border border-gray-300 rounded p-2 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
+                value={form.price}
+                min={1}
+                onChange={(e) => setForm({ ...form, price: e.target.value })}
+              />
+              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+                VND
+              </span>
+            </div>
           </div>
 
           <div>
             <button
               type="submit"
-              className="flex items-center gap-3 px-5 py-2  rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
+              className="flex items-center gap-3 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
             >
               <FiPlus /> {editingId ? "Cập nhật" : "Thêm mới"}
             </button>
@@ -189,9 +202,6 @@ export default function ImportDetails() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Mã sản phẩm
                   </th>
@@ -202,7 +212,7 @@ export default function ImportDetails() {
                     Số lượng
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Giá
+                    Giá (VND)
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Hành động
@@ -216,9 +226,6 @@ export default function ImportDetails() {
                       key={item.id}
                       className="hover:bg-gray-50 transition-colors duration-200"
                     >
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                        {item.id}
-                      </td> */}
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         {item.importId}
                       </td>
@@ -229,7 +236,7 @@ export default function ImportDetails() {
                         {item.quantity}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        {item.price}
+                        {formatPrice(item.price)} VND
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                         <div className="flex justify-center space-x-3">
@@ -252,7 +259,7 @@ export default function ImportDetails() {
                 ) : (
                   <tr>
                     <td
-                      colSpan="6"
+                      colSpan="5"
                       className="text-center p-6 text-gray-400 text-base"
                     >
                       Không có dữ liệu
