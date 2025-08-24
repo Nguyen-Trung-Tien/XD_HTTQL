@@ -4,11 +4,12 @@ import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import upload_area from '../../assets/assets';
 
-function ProductForm() {
+const EditProduct = () => {
 	const { id } = useParams();
 
 	const [previewUrl, setPreviewUrl] = useState('');
 	const [editing, setEditing] = useState(false);
+	const [image, setImage] = useState('');
 
 	const [form, setForm] = useState({
 		name: '',
@@ -30,7 +31,9 @@ function ProductForm() {
 					price: selectedProduct.price,
 					description: selectedProduct.description,
 					status: selectedProduct.status,
+					image: selectedProduct.image,
 				});
+				setImage(selectedProduct.image);
 				setPreviewUrl(selectedProduct.image);
 			} catch (err) {
 				console.error(err);
@@ -44,6 +47,8 @@ function ProductForm() {
 		if (file) {
 			setForm((prev) => ({ ...prev, image: file }));
 			setPreviewUrl(URL.createObjectURL(file));
+		} else {
+			setForm((prev) => ({ ...prev, image: image }));
 		}
 	};
 
@@ -59,7 +64,12 @@ function ProductForm() {
 			formData.append('description', form.description);
 			formData.append('price', String(form.price));
 			formData.append('status', form.status);
-			formData.append('image', form.image);
+
+			if (form.image instanceof File) {
+				formData.append('image', form.image);
+			} else if (form.image && typeof form.image === 'string') {
+				formData.append('image', form.image);
+			}
 
 			const data = await editProduct(id, formData);
 
@@ -185,6 +195,6 @@ function ProductForm() {
 			</form>
 		</div>
 	);
-}
+};
 
-export default ProductForm;
+export default EditProduct;

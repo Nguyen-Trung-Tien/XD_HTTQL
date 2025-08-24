@@ -36,7 +36,8 @@ module.exports.getAllProducts = async (req, res) => {
       const product = p.toJSON();
       return {
         ...product,
-        image: product.image ? `${baseUrl}${product.image}` : null
+        image: product.image ? `${baseUrl}${product.image}` : null,
+        status: product.stock !== 0 ? 'Còn hàng' : 'Hết hàng'
       };
     });
 
@@ -44,7 +45,8 @@ module.exports.getAllProducts = async (req, res) => {
       const product = p.toJSON();
       return {
         ...product,
-        image: product.image ? `${baseUrl}${product.image}` : null
+        image: product.image ? `${baseUrl}${product.image}` : null,
+        status: product.stock !== 0 ? 'Còn hàng' : 'Hết hàng'
       };
     });
 
@@ -133,18 +135,31 @@ module.exports.editProduct = async (req, res) => {
 
     const product = await Stock.findByPk(id);
 
-    await Stock.update({
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      });
+    }
+
+    // Build update payload and only set image when a new file was uploaded.
+    const updateData = {
       name,
       category,
       description,
       price,
-      status,
-      image: imageUrl
-    }, {
+      status
+    };
+
+    if (req.file) {
+      updateData.image = imageUrl;
+    }
+
+    await Stock.update(updateData, {
       where: {
         id
       }
-    })
+    });
 
     res.status(200).json({
       success: true,

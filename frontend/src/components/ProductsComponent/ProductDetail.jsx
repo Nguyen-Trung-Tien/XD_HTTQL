@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { getAllProducts } from '../../API/products/productsApi';
 import upload_area from '../../assets/assets';
@@ -33,7 +33,7 @@ const ProductDetail = () => {
 
 	const createdAt = product.createdAt ? new Date(product.createdAt) : null;
 
-	const location = product.location || product.warehouseAddress || '-';
+	const location = product.warehouseAddress || '-';
 
 	const imageSrc = product.image || upload_area;
 
