@@ -4,7 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     // Lấy danh sách sản phẩm
     const [products] = await queryInterface.sequelize.query(
-      `SELECT id, name, price FROM Products`
+      `SELECT id, name, price FROM stocks`
     );
     if (!products.length) return;
 
