@@ -22,7 +22,8 @@ const createOrder = async (req, res) => {
 
     const order = await db.Order.create(
       {
-        orderNumber: "DH-" + (await db.Order.count() + 1).toString().padStart(4, "0"),
+        orderNumber:
+          "DH-" + ((await db.Order.count()) + 1).toString().padStart(4, "0"),
         customerId,
         customerName,
         customerEmail,
@@ -48,6 +49,31 @@ const createOrder = async (req, res) => {
     }
     if (Array.isArray(items) && items.length > 0) {
       for (const item of items) {
+        const stockRecord = await db.Stock.findOne({
+          where: { productId: item.productId, deleted: false },
+          transaction: t,
+        });
+        if (!stockRecord) {
+          await t.rollback();
+          return res
+            .status(400)
+            .json({
+              message: `Không tìm thấy tồn kho cho sản phẩm ID ${item.productId}`,
+            });
+        }
+        if (stockRecord.stock < item.quantity) {
+          await t.rollback();
+          return res
+            .status(400)
+            .json({
+              message: `Số lượng tồn kho không đủ cho sản phẩm ${stockRecord.name}`,
+            });
+        }
+        // Trừ tồn kho
+        await stockRecord.decrement("stock", {
+          by: item.quantity,
+          transaction: t,
+        });
         await db.OrderItem.create(
           {
             orderId: order.id,
@@ -76,8 +102,8 @@ const getAllOrders = async (req, res) => {
     const orders = await db.Order.findAll({
       include: [
         { model: db.OrderItem, as: "items" },
-        { model: db.Shipper, as: "shipper" }, 
-        { model: db.Customers, as: "customer" }
+        { model: db.Shipper, as: "shipper" },
+        { model: db.Customers, as: "customer" },
       ],
     });
 
@@ -120,7 +146,6 @@ const deleteOrder = async (req, res) => {
 
     const deleted = await db.Order.destroy({ where: { id } });
     if (deleted) {
-    
       if (order.customerId) {
         await db.Customers.decrement("orderCount", {
           by: 1,
@@ -136,7 +161,6 @@ const deleteOrder = async (req, res) => {
   }
 };
 const findNearestShipper = async (req, res) => {
-  
   try {
     const { lat, lng } = req.query;
 
@@ -146,7 +170,7 @@ const findNearestShipper = async (req, res) => {
 
     const shippers = await db.Shipper.findAll({
       where: {
-        status: 'available',
+        status: "available",
         lat: { [Op.ne]: null },
         lng: { [Op.ne]: null },
       },
@@ -176,7 +200,9 @@ const findNearestShipper = async (req, res) => {
     return res.status(200).json(nearestShipper);
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 

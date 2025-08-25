@@ -1,6 +1,6 @@
 
 const { Order, OrderItem } = require("../models");
-const { Op } = require("sequelize");
+const { Op , Sequelize} = require("sequelize");
 
 const getTotalRevenue = async (req, res) => {
   try {
