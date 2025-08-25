@@ -8,7 +8,6 @@ import {
   updateImportDetail,
 } from "../../API/importDetailApi/importDetailsApi";
 
-// Helper function to format price with thousand separators
 const formatPrice = (price) => {
   if (!price) return "";
   return new Intl.NumberFormat("vi-VN").format(price);

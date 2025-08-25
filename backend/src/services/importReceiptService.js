@@ -11,7 +11,6 @@ const getAllImportReceipts = () => {
         include: [{ model: db.Product, as: "productData" }],
       },
     ],
-    order: [["id", "DESC"]],
   });
 };
 
