@@ -4,7 +4,7 @@ const getAllExportDetails = async () => {
   return await db.ExportDetails.findAll({
     include: [
       { model: db.ExportReceipts, as: "exportReceiptData" },
-      { model: db.Product, as: "productData" },
+      { model: db.Stock, as: "StockProductData" },
     ],
   });
 };
@@ -13,7 +13,7 @@ const getExportDetailById = async (id) => {
   const detail = await db.ExportDetails.findByPk(id, {
     include: [
       { model: db.ExportReceipts, as: "exportReceiptData" },
-      { model: db.Product, as: "productData" },
+      { model: db.Stock, as: "StockProductData" },
     ],
   });
   if (!detail) throw new Error("Export detail not found");

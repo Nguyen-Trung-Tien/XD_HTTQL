@@ -229,7 +229,7 @@ export default function ImportDetails() {
                         {item.importId}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                        {item.productData?.name || "-"}
+                        {item.StockProductData?.name || "-"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         {item.quantity}

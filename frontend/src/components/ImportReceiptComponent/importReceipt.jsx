@@ -50,7 +50,7 @@ export default function ImportManagement() {
 
       const products = receiptData
         .flatMap((r) => r.importDetailData || [])
-        .map((d) => d.productData)
+        .map((d) => d.StockProductData)
         .filter((p) => p && p.id && p.name && p.unit);
       setProductOptions([...new Map(products.map((p) => [p.id, p])).values()]);
     } catch (e) {
@@ -135,7 +135,7 @@ export default function ImportManagement() {
         details:
           receipt.importDetailData?.map((d) => ({
             productId: d.productId || "",
-            productData: d.productData || { name: "", unit: "" },
+            StockProductData: d.StockProductData || { name: "", unit: "" },
             quantity: d.quantity || 1,
             price: d.price || 0,
           })) || [],
@@ -150,7 +150,7 @@ export default function ImportManagement() {
         details: [
           {
             productId: "",
-            productData: { name: "", unit: "" },
+            StockProductData: { name: "", unit: "" },
             quantity: 1,
             price: 0,
           },
@@ -171,7 +171,7 @@ export default function ImportManagement() {
     const newDetails = [...receiptFormData.details];
     if (field === "quantity" || field === "price") value = Number(value) || 0;
     if (field === "productId")
-      newDetails[index].productData = productOptions.find(
+      newDetails[index].StockProductData = productOptions.find(
         (p) => p.id === value
       ) || { name: "", unit: "" };
     newDetails[index][field] = value;
@@ -185,7 +185,7 @@ export default function ImportManagement() {
         ...receiptFormData.details,
         {
           productId: "",
-          productData: { name: "", unit: "" },
+          StockProductData: { name: "", unit: "" },
           quantity: 1,
           price: 0,
         },

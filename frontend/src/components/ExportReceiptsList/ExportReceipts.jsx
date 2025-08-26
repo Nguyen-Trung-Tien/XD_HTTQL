@@ -191,14 +191,14 @@ export default function ExportReceiptsTable() {
                           >
                             <div>
                               <strong>Tên SP:</strong>{" "}
-                              {d.productData?.name || d.productId}
+                              {d.StockProductData?.name || d.productId}
                             </div>
                             <div>
-                              <strong>Loại:</strong> {d.productData?.type}
+                              <strong>Loại:</strong> {d.StockProductData?.type}
                             </div>
                             <div>
                               <strong>Danh mục:</strong>{" "}
-                              {d.productData?.category}
+                              {d.StockProductData?.category}
                             </div>
                             <div>
                               <strong>Số lượng xuất:</strong> {d.quantity}

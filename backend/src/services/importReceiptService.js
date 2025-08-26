@@ -8,7 +8,7 @@ const getAllImportReceipts = () => {
       {
         model: db.ImportDetails,
         as: "importDetailData",
-        include: [{ model: db.Product, as: "productData" }],
+        include: [{ model: db.Stock, as: "StockProductData" }],
       },
     ],
   });
@@ -22,7 +22,7 @@ const getImportReceiptById = async (id) => {
       {
         model: db.ImportDetails,
         as: "importDetailData",
-        include: [{ model: db.Product, as: "productData" }],
+        include: [{ model: db.Stock, as: "StockProductData" }],
       },
     ],
   });

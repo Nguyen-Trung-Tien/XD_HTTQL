@@ -91,13 +91,16 @@ function ExportDetails() {
   const totalRevenue = Array.isArray(data)
     ? data.reduce(
         (sum, item) =>
-          sum + Number(item.productData?.price || 0) * (item.quantity || 0),
+          sum +
+          Number(item.StockProductData?.price || 0) * (item.quantity || 0),
         0
       )
     : 0;
   const filteredData = Array.isArray(data)
     ? data.filter((item) =>
-        item.productData?.name?.toLowerCase().includes(search.toLowerCase())
+        item.StockProductData?.name
+          ?.toLowerCase()
+          .includes(search.toLowerCase())
       )
     : [];
 
@@ -206,18 +209,18 @@ function ExportDetails() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                       <div className="flex flex-col">
                         <span className="font-semibold text-gray-900">
-                          {item.productData?.name || "—"}
+                          {item.StockProductData?.name || "—"}
                         </span>
                         <span className="text-gray-600 text-sm">
-                          Loại: {item.productData?.type || "—"} | Giá:{" "}
+                          Loại: {item.StockProductData?.type || "—"} | Giá:{" "}
                           {Number(
-                            item.productData?.price || 0
+                            item.StockProductData?.price || 0
                           ).toLocaleString()}
-                          ₫/{item.productData?.unit || "—"}
+                          ₫/{item.StockProductData?.unit || "—"}
                         </span>
                         <span className="text-gray-500 text-xs">
-                          Tồn kho: {item.productData?.stock || 0} | Kho:{" "}
-                          {item.productData?.warehouseAddress || "—"}
+                          Tồn kho: {item.StockProductData?.stock || 0} | Kho:{" "}
+                          {item.StockProductData?.warehouseAddress || "—"}
                         </span>
                       </div>
                     </td>

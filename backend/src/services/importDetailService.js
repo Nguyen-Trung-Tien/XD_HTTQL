@@ -4,7 +4,7 @@ const getAllImportDetails = () => {
   return db.ImportDetails.findAll({
     include: [
       { model: db.ImportReceipts, as: "importReceiptData" },
-      { model: db.Product, as: "productData" },
+      { model: db.Stock, as: "StockProductData" },
     ],
     order: [["id", "DESC"]],
   });
@@ -14,7 +14,7 @@ const getImportDetailById = async (id) => {
   const detail = await db.ImportDetails.findByPk(id, {
     include: [
       { model: db.ImportReceipts, as: "importReceiptData" },
-      { model: db.Product, as: "productData" },
+      { model: db.Stock, as: "StockProductData" },
     ],
   });
   if (!detail) throw new Error(`Import detail with ID ${id} not found`);
@@ -25,7 +25,7 @@ const createImportDetail = async (data) => {
   const receipt = await db.ImportReceipts.findByPk(data.importId);
   if (!receipt) throw new Error(`Import receipt ${data.importId} not found`);
 
-  const product = await db.Product.findByPk(data.productId);
+  const product = await db.Stock.findByPk(data.productId);
   if (!product) throw new Error(`Product ${data.productId} not found`);
 
   data.quantity = Number(data.quantity);

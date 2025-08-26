@@ -11,8 +11,8 @@ const supplierInclude = [
         as: "importDetailData",
         include: [
           {
-            model: db.Product,
-            as: "productData",
+            model: db.Stock,
+            as: "StockProductData",
           },
         ],
       },
