@@ -16,7 +16,7 @@ import { getStockProduct } from "../../API/stock/stockAPI";
 
 const CURRENCY_UNIT = "VND";
 
-export default function ImportManagement() {
+export default function ImportReceipt() {
   const [receipts, setReceipts] = useState([]);
   const [filteredReceipts, setFilteredReceipts] = useState([]);
   const [supplierOptions, setSupplierOptions] = useState([]);

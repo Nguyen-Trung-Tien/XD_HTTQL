@@ -190,7 +190,7 @@ export default function ExportReceiptsTable() {
                             className="pb-2 border-b last:border-b-0"
                           >
                             <div>
-                              <strong>Tên SP:</strong>{" "}
+                              <strong>SP:</strong>{" "}
                               {d.StockProductData?.name || d.productId}
                             </div>
                             <div>

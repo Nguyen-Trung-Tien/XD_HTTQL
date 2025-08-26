@@ -70,22 +70,40 @@ export default function ReceiptTable({
                   <td className="px-6 py-4 text-sm text-gray-800">
                     {r.note || "-"}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-800">
-                    <ul className="list-disc list-inside max-h-40 overflow-y-auto">
+                  <td className="px-6 py-4 text-sm text-gray-800 align-top">
+                    <div className="max-h-40 overflow-y-auto space-y-3">
                       {r.importDetailData?.length ? (
                         r.importDetailData.map((d, i) => (
-                          <li key={i}>
-                            {d.productData?.name || `Sản phẩm #${d.productId}`}{" "}
-                            - SL: {d.quantity} {d.productData?.unit || "đơn vị"}{" "}
-                            - Giá: {Number(d.price).toLocaleString("vi-VN")}{" "}
-                            {CURRENCY_UNIT}
-                          </li>
+                          <div
+                            key={i}
+                            className="whitespace-pre-line break-words border-b pb-2 last:border-b-0"
+                          >
+                            <div className=" text-left">
+                              SP:{" "}
+                              {d.StockProductData?.name ||
+                                `Sản phẩm #${d.productId}`}
+                            </div>
+                            <div className="text-left">
+                              SL: {d.quantity}{" "}
+                              <span>
+                                {d.StockProductData?.unit || "đơn vị"}
+                              </span>
+                            </div>
+                            <div className="text-left">
+                              Giá:{" "}
+                              <span>
+                                {Number(d.price).toLocaleString("vi-VN")}{" "}
+                                {CURRENCY_UNIT}
+                              </span>
+                            </div>
+                          </div>
                         ))
                       ) : (
-                        <li>Chưa có sản phẩm</li>
+                        <div>Chưa có sản phẩm</div>
                       )}
-                    </ul>
+                    </div>
                   </td>
+
                   <td className="px-6 py-4 text-sm text-gray-800">
                     {calculateTotalCost(r.importDetailData || [])}
                   </td>
