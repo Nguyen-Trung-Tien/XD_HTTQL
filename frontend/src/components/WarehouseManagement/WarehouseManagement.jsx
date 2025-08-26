@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { FiBox, FiClipboard, FiTruck, FiArchive } from "react-icons/fi";
 
 import ImportReceipts from "../ImportReceiptComponent/ImportReceipt";
@@ -7,8 +8,13 @@ import ExportReceipts from "../ExportReceiptsComponent/ExportReceipts";
 import ExportDetails from "../ExportDetailsComponent/ExportDetails";
 
 export default function WarehouseManagement() {
+  const location = useLocation();
+  const stateTab = location.state?.tab;
+
   const [activeTab, setActiveTab] = useState(() => {
-    return localStorage.getItem("activeWarehouseTab") || "importReceipts";
+    return (
+      stateTab || localStorage.getItem("activeWarehouseTab") || "importReceipts"
+    );
   });
 
   useEffect(() => {
@@ -19,22 +25,22 @@ export default function WarehouseManagement() {
     {
       id: "importReceipts",
       label: "Phiếu nhập",
-      icon: <FiBox className="w-4 h-4" />,
+      icon: <FiBox className="w-5 h-5" />,
     },
     {
       id: "importDetails",
       label: "Chi tiết nhập",
-      icon: <FiClipboard className="w-4 h-4" />,
+      icon: <FiClipboard className="w-5 h-5" />,
     },
     {
       id: "exportReceipts",
       label: "Phiếu xuất",
-      icon: <FiTruck className="w-4 h-4" />,
+      icon: <FiTruck className="w-5 h-5" />,
     },
     {
       id: "exportDetails",
       label: "Chi tiết xuất",
-      icon: <FiArchive className="w-4 h-4" />,
+      icon: <FiArchive className="w-5 h-5" />,
     },
   ];
 
