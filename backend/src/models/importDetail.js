@@ -7,12 +7,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "importId",
         as: "importReceiptData",
       });
-      ImportDetails.belongsTo(models.Product, {
+
+      ImportDetails.belongsTo(models.Stock, {
         foreignKey: "productId",
-        as: "productData",
+        as: "StockProductData",
       });
     }
   }
+
   ImportDetails.init(
     {
       importId: DataTypes.INTEGER,

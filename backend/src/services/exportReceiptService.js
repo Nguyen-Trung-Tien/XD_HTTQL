@@ -7,7 +7,7 @@ const getAllExportReceipts = async () => {
       {
         model: db.ExportDetails,
         as: "exportDetailData",
-        include: [{ model: db.Product, as: "productData" }],
+        include: [{ model: db.Stock, as: "StockProductData" }],
       },
     ],
   });
@@ -20,7 +20,7 @@ const getExportReceiptById = async (id) => {
       {
         model: db.ExportDetails,
         as: "exportDetailData",
-        include: [{ model: db.Product, as: "productData" }],
+        include: [{ model: db.Stock, as: "StockProductData" }],
       },
     ],
   });

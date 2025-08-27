@@ -120,19 +120,18 @@ export default function ExportReceiptsTable() {
 
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-textPrimary mb-6">
+          Danh sách phiếu xuất
+        </h1>
+        <button
+          onClick={openModal}
+          className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
+        >
+          <FiPlus /> Thêm mới
+        </button>
+      </div>
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-textPrimary mb-6">
-            Danh sách phiếu xuất
-          </h1>
-          <button
-            onClick={openModal}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-          >
-            <FiPlus /> Thêm mới
-          </button>
-        </div>
-
         <div className="overflow-x-auto rounded-lg border border-gray-200 mb-4">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -191,15 +190,15 @@ export default function ExportReceiptsTable() {
                             className="pb-2 border-b last:border-b-0"
                           >
                             <div>
-                              <strong>Tên SP:</strong>{" "}
-                              {d.productData?.name || d.productId}
+                              <strong>SP:</strong>{" "}
+                              {d.StockProductData?.name || d.productId}
                             </div>
                             <div>
-                              <strong>Loại:</strong> {d.productData?.type}
+                              <strong>Loại:</strong> {d.StockProductData?.type}
                             </div>
                             <div>
                               <strong>Danh mục:</strong>{" "}
-                              {d.productData?.category}
+                              {d.StockProductData?.category}
                             </div>
                             <div>
                               <strong>Số lượng xuất:</strong> {d.quantity}
@@ -236,13 +235,10 @@ export default function ExportReceiptsTable() {
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-start pt-10 z-50 overflow-auto">
             <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-100">
-              {/* Title */}
               <h3 className="text-xl font-bold mb-6 text-sky-700 text-center">
                 {isEditing ? "Cập nhật phiếu xuất" : "Thêm phiếu xuất"}
               </h3>
-
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* User & Date */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col">
                     <small className="text-gray-500 text-xs mb-1">
@@ -273,8 +269,6 @@ export default function ExportReceiptsTable() {
                     />
                   </div>
                 </div>
-
-                {/* Reason */}
                 <div className="flex flex-col">
                   <small className="text-gray-500 text-xs mb-1">
                     Lý do xuất kho (ví dụ: bán hàng, trả hàng)
@@ -288,8 +282,6 @@ export default function ExportReceiptsTable() {
                     className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
                   />
                 </div>
-
-                {/* Note */}
                 <div className="flex flex-col">
                   <small className="text-gray-500 text-xs mb-1">
                     Ghi chú thêm (nếu cần)
@@ -303,8 +295,6 @@ export default function ExportReceiptsTable() {
                     className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
                   />
                 </div>
-
-                {/* Product Details */}
                 <div className="space-y-3">
                   <h4 className="font-semibold text-gray-700">
                     Chi tiết sản phẩm
@@ -362,8 +352,6 @@ export default function ExportReceiptsTable() {
                     Thêm sản phẩm
                   </button>
                 </div>
-
-                {/* Buttons */}
                 <div className="flex justify-end gap-3 mt-5">
                   <button
                     type="submit"

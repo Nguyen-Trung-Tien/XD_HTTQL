@@ -10,19 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
 
-      // giữ nguyên các field cũ
       productId: {
         type: Sequelize.INTEGER,
       },
       
-      location: {
-        type: Sequelize.STRING,
-      },
       note: {
         type: Sequelize.TEXT,
       },
-
-      // bổ sung full dữ liệu
       name: {
         type: Sequelize.STRING,
       },
@@ -64,7 +58,6 @@ module.exports = {
         defaultValue: false,
       },
 
-      // timestamps
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

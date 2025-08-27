@@ -4,8 +4,13 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const getAllStock = async (page = 1, limit = 10) => {
   const res = await axios.get(`${API_URL}/api/v1/stock`, {
-    params: { page, limit }
+    params: { page, limit },
   });
+  return res.data;
+};
+
+export const getStockProduct = async () => {
+  const res = await axios.get(`${API_URL}/api/v1/stock`);
   return res.data;
 };
 

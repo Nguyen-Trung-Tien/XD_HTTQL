@@ -1,11 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const InventoryListCard = ({ inventoryItems, getStatusClass, getStatusText }) => {
+const InventoryListCard = ({
+  inventoryItems,
+  getStatusClass,
+  getStatusText,
+}) => {
   const navigate = useNavigate();
 
   const handleCreateOrder = () => {
-    navigate("/ImportReceipts", { state: { openForm: true } });
+    navigate("/WarehouseManagement", {
+      state: { tab: "importReceipts" },
+    });
   };
 
   return (
