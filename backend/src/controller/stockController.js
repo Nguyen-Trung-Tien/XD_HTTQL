@@ -3,7 +3,10 @@ const db = require("../models");
 module.exports = {
   getAllStocks: async (req, res) => {
     try {
-      const stocks = await db.Stock.findAll();
+      const stocks = await db.Stock.findAll({
+        where: { deleted: false },
+        order: [["createdAt", "DESC"]],
+      });
       return res.json(stocks);
     } catch (err) {
       console.error(err);
@@ -14,9 +17,7 @@ module.exports = {
   },
   getStockById: async (req, res) => {
     try {
-      const stockRecord = await db.Stock.findByPk(req.params.id, {
-
-      });
+      const stockRecord = await db.Stock.findByPk(req.params.id, {});
       if (!stockRecord)
         return res.status(404).json({ message: "Không tìm thấy stock" });
       return res.json(stockRecord);

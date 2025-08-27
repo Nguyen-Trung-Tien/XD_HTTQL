@@ -50,7 +50,7 @@ const createOrder = async (req, res) => {
     if (Array.isArray(items) && items.length > 0) {
       for (const item of items) {
         const stockRecord = await db.Stock.findOne({
-          where: { productId: item.productId, deleted: false },
+          where: { id: item.productId, deleted: false },
           transaction: t,
         });
         if (!stockRecord) {
@@ -69,7 +69,6 @@ const createOrder = async (req, res) => {
               message: `Số lượng tồn kho không đủ cho sản phẩm ${stockRecord.name}`,
             });
         }
-        // Trừ tồn kho
         await stockRecord.decrement("stock", {
           by: item.quantity,
           transaction: t,
@@ -101,7 +100,10 @@ const getAllOrders = async (req, res) => {
   try {
     const orders = await db.Order.findAll({
       include: [
-        { model: db.OrderItem, as: "items" },
+        { 
+          model: db.OrderItem, 
+          as: "items",
+        },
         { model: db.Shipper, as: "shipper" },
         { model: db.Customers, as: "customer" },
       ],
