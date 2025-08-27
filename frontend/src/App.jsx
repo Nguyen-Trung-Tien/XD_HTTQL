@@ -21,6 +21,7 @@ import Suppliers from "./components/SuppliersComponent/Suppliers";
 import WarehouseManagement from "./components/WarehouseManagement/WarehouseManagement";
 import ProductDetail from "./components/ProductsComponent/ProductDetail";
 
+
 function App() {
   const dispatch = useDispatch();
 
