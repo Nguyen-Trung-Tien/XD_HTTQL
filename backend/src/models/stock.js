@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       warehouseLat: DataTypes.FLOAT,
       warehouseLng: DataTypes.FLOAT,
 
-      // quản lý tồn kho
+    // quản lý tồn kho
       note: DataTypes.TEXT,
 
       // cờ xoá

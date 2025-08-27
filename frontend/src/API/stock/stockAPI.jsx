@@ -30,6 +30,6 @@ export const updateStock = async (id, data) => {
 };
 
 export const deleteStock = async (id) => {
-  const res = await axios.delete(`${API_URL}/api/v1/stock/delete/${id}`);
+  const res = await axios.delete(`${API_URL}/api/v1/stock/${id}`);
   return res.data;
 };

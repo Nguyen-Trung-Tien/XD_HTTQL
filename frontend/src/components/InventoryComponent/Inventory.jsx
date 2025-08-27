@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllStock } from "../../API/stock/stockAPI";
+import { getAllStock, deleteStock } from "../../API/stock/stockAPI";
 import InventoryStatusCard from "./InventoryStatusCard";
 import InventoryListCard from "./InventoryListCard";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,26 @@ function Inventory() {
   const handleAddProduct = () => {
     navigate("/products/create");
   };
+  const handleView = (id) => {
+  navigate(`/products/detail/${id}`);
+  };
+  const handleEdit = (id) => {
+  navigate(`/products/edit/${id}`);
+  };
+  const handleDelete = async (id) => {
+		const confirmed = window.confirm('Bạn có muốn xóa sản phẩm này?');
+		if (!confirmed) return;
+
+		try {
+			await deleteStock(id);
+			setInventoryItems((prev) => prev.filter((item) => item.id !== id));
+			toast.success('Xóa sản phẩm thành công');
+			navigate('/inventory');
+		} catch (error) {
+			console.error(error);
+			toast.error('Xóa thất bại');
+		}
+	};
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -247,7 +267,10 @@ function Inventory() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex space-x-2">
-                        <button className="p-1 text-primary hover:text-accent transition-colors">
+                        <button
+                          onClick={() => handleView(item.id)}
+                          className="p-1 text-primary hover:text-accent transition-colors"
+                        >
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -269,7 +292,10 @@ function Inventory() {
                             ></path>
                           </svg>
                         </button>
-                        <button className="p-1 text-primary hover:text-accent transition-colors">
+                        <button
+                          onClick={() => handleEdit(item.id)}
+                          className="p-1 text-primary hover:text-accent transition-colors"
+                        >
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -285,7 +311,10 @@ function Inventory() {
                             ></path>
                           </svg>
                         </button>
-                        <button className="p-1 text-red-500 hover:text-red-700 transition-colors">
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-1 text-red-500 hover:text-red-700 transition-colors"
+                        >
                           <svg
                             className="w-5 h-5"
                             fill="none"
