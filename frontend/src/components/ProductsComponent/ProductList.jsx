@@ -177,7 +177,7 @@ const ProductList = () => {
 						<thead className='bg-gray-50'>
 							<tr>
 								<th className='px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase'>
-									#
+									Mã SP
 								</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase'>
 									Sản phẩm
@@ -204,7 +204,8 @@ const ProductList = () => {
 							{filteredProducts.map((product, index) => (
 								<tr key={product.id}>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-										{(page - 1) * 8 + index + 1}
+										{/* {(page - 1) * 8 + index + 1} */}
+										{product.id}
 									</td>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
 										{product.name}

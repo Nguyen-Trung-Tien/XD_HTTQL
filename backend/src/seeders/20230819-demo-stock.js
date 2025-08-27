@@ -4,7 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert("Stocks", [{
 
-        productId: 1,
+        id: 1,
         note: "Nhập hàng tháng 1",
         name: "Gạo ST25",
         type: "Thực phẩm",
@@ -23,7 +23,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 2,
+        id: 2,
         note: "Nhập hàng tháng 10",
         name: "Nước suối Lavie",
         type: "Đồ uống",
@@ -42,7 +42,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 3,
+        id: 3,
         note: "Nhập hàng tháng 2",
         name: "Mì tôm Hảo Hảo",
         type: "Thực phẩm",
@@ -61,7 +61,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 4,
+        id: 4,
         note: "Nhập hàng tháng 3",
         name: "Sữa Vinamilk",
         type: "Đồ uống",
@@ -80,7 +80,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 5,
+        id: 5,
         note: "Nhập hàng tháng 3",
         name: "Trứng gà Ta",
         type: "Thực phẩm",
@@ -99,7 +99,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 6,
+        id: 6,
         note: "Nhập hàng tháng 3",
         name: "Bánh mì",
         type: "Thực phẩm",
@@ -118,7 +118,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 7,
+        id: 7,
         note: "Nhập hàng tháng 1",
         name: "Cafe Trung Nguyên",
         type: "Đồ uống",
@@ -137,7 +137,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 8,
+        id: 8,
         note: "Nhập hàng tháng 1",
         name: "Nước ngọt Coca",
         type: "Đồ uống",
@@ -156,7 +156,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 9,
+        id: 9,
         note: "Nhập hàng tháng 1",
         name: "Bánh quy",
         type: "Thực phẩm",
@@ -175,7 +175,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 10,
+        id: 10,
         note: "Nhập hàng tháng 1",
         name: "Phở khô",
         type: "Thực phẩm",
@@ -194,7 +194,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 11,
+        id: 11,
         note: "Nhập hàng tháng 11",
         name: "Gạo tám thơm",
         type: "Thực phẩm",
@@ -213,7 +213,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 12,
+        id: 12,
         note: "Nhập hàng tháng 4",
         name: "Sữa Ông Thọ",
         type: "Đồ uống",
@@ -232,7 +232,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 13,
+        id: 13,
         note: "Nhập hàng tháng 4",
         name: "Mì gói Acecook",
         type: "Thực phẩm",
@@ -251,7 +251,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 14,
+        id: 14,
         note: "Nhập hàng tháng 5",
         name: "Nước ép cam",
         type: "Đồ uống",
@@ -270,7 +270,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 15,
+        id: 15,
         note: "Nhập hàng tháng 5",
         name: "Trà Lipton",
         type: "Đồ uống",
@@ -289,7 +289,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 16,
+        id: 16,
         note: "Nhập hàng tháng 7",
         name: "Bánh chưng",
         type: "Thực phẩm",
@@ -308,7 +308,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 17,
+        id: 17,
         note: "Nhập hàng tháng 9",
         name: "Mật ong rừng",
         type: "Thực phẩm",
@@ -327,7 +327,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 18,
+        id: 18,
         note: "Nhập hàng tháng 6",
         name: "Nước tăng lực Red Bull",
         type: "Đồ uống",
@@ -346,7 +346,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 19,
+        id: 19,
         note: "Nhập hàng tháng 6",
         name: "Bánh su kem",
         type: "Thực phẩm",
@@ -365,7 +365,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 20,
+        id: 20,
         note: "Nhập hàng tháng 3",
         name: "Cà phê phin",
         type: "Đồ uống",
@@ -384,7 +384,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 21,
+        id: 21,
         note: "Nhập hàng tháng 2",
         name: "Sữa chua Vinamilk",
         type: "Đồ uống",
@@ -403,7 +403,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 22,
+        id: 22,
         note: "Nhập hàng tháng 3",
         name: "Gạo Nhật",
         type: "Thực phẩm",
@@ -422,7 +422,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 23,
+        id: 23,
         note: "Nhập hàng tháng 5",
         name: "Nước cam vắt",
         type: "Đồ uống",
@@ -441,7 +441,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 24,
+        id: 24,
         note: "Nhập hàng tháng 5",
         name: "Bánh gato",
         type: "Thực phẩm",
@@ -460,7 +460,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 25,
+        id: 25,
         note: "Nhập hàng tháng 10",
         name: "Mì Ý",
         type: "Thực phẩm",
@@ -479,7 +479,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 26,
+        id: 26,
         note: "Nhập hàng tháng 12",
         name: "Bột ngũ cốc",
         type: "Thực phẩm",
@@ -498,7 +498,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 27,
+        id: 27,
         note: "Nhập hàng tháng 12",
         name: "Cà phê hòa tan",
         type: "Đồ uống",
@@ -517,7 +517,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 28,
+        id: 28,
         note: "Nhập hàng tháng 11",
         name: "Trà Thái Nguyên",
         type: "Đồ uống",
@@ -536,7 +536,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 29,
+        id: 29,
         note: "Nhập hàng tháng 7",
         name: "Bánh bông lan",
         type: "Thực phẩm",
@@ -555,7 +555,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 30,
+        id: 30,
         note: "Nhập hàng tháng 6",
         name: "Sữa tươi TH",
         type: "Đồ uống",
@@ -574,7 +574,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 31,
+        id: 31,
         note: "Nhập hàng tháng 10",
         name: "Gạo nếp cái hoa vàng",
         type: "Thực phẩm",
@@ -593,7 +593,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 32,
+        id: 32,
         note: "Nhập hàng tháng 12",
         name: "Bánh tét",
         type: "Thực phẩm",
@@ -612,7 +612,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 33,
+        id: 33,
         note: "Nhập hàng tháng 11",
         name: "Nước ép táo",
         type: "Đồ uống",
@@ -631,7 +631,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 34,
+        id: 34,
         note: "Nhập hàng tháng 11",
         name: "Cà phê sữa đá",
         type: "Đồ uống",
@@ -650,7 +650,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 35,
+        id: 35,
         note: "Nhập hàng tháng 1",
         name: "Bánh mì que",
         type: "Thực phẩm",
@@ -669,7 +669,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 36,
+        id: 36,
         note: "Nhập hàng tháng 1",
         name: "Sữa đặc Vinamilk",
         type: "Đồ uống",
@@ -688,7 +688,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 37,
+        id: 37,
         note: "Nhập hàng tháng 1",
         name: "Bánh trung thu",
         type: "Thực phẩm",
@@ -707,7 +707,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 38,
+        id: 38,
         note: "Nhập hàng tháng 1",
         name: "Trà sữa",
         type: "Đồ uống",
@@ -726,7 +726,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 39,
+        id: 39,
         note: "Nhập hàng tháng 1",
         name: "Bánh pizza",
         type: "Thực phẩm",
@@ -745,7 +745,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 40,
+        id: 40,
         note: "Nhập hàng tháng 1",
         name: "Gạo Nhật Bản",
         type: "Thực phẩm",
@@ -764,7 +764,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 41,
+        id: 41,
         note: "Nhập hàng tháng 2",
         name: "Nước ép dứa",
         type: "Đồ uống",
@@ -783,7 +783,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 42,
+        id: 42,
         note: "Nhập hàng tháng 4",
         name: "Bánh mochi",
         type: "Thực phẩm",
@@ -802,7 +802,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 43,
+        id: 43,
         note: "Nhập hàng tháng 1",
         name: "Trà xanh Matcha",
         type: "Đồ uống",
@@ -821,7 +821,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 44,
+        id: 44,
         note: "Nhập hàng tháng 1",
         name: "Mì ăn liền Kokomi",
         type: "Thực phẩm",
@@ -840,7 +840,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 45,
+        id: 45,
         note: "Nhập hàng tháng 1",
         name: "Nước tăng lực Sting",
         type: "Đồ uống",
@@ -859,7 +859,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        productId: 46,
+        id: 46,
         note: "Nhập hàng tháng 1",
         name: "Bánh tart trứng",
         type: "Thực phẩm",
