@@ -10,6 +10,11 @@ module.exports = {
             as: "product",
             attributes: ["id", "name", "category", "price"],
           },
+          {
+            model: db.ImportDetails,
+            as: "importDetailData",
+            attributes: ["productId", "quantity"],
+          },
         ],
         attributes: [
           "id",

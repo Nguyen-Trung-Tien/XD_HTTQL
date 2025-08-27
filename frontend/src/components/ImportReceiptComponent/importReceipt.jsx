@@ -9,7 +9,6 @@ import {
 } from "../../API/importReceiptApi/importReceiptApi";
 import { getManySupplier } from "../../API/suppliersApi/suppliersApi";
 import { useLocation } from "react-router-dom";
-
 import ReceiptTable from "./ReceiptTable";
 import ReceiptFormModal from "./ReceiptFormModal";
 import { getStockProduct } from "../../API/stock/stockAPI";
@@ -64,16 +63,16 @@ export default function ImportReceipt() {
   const fetchStockProducts = async () => {
     try {
       const stocks = await getStockProduct();
-      const products = stocks.map((s) => ({
-        productId: s.product.id,
-        name: s.product.name,
-        unit: s.product.unit || "cái",
-        stock: s.stock,
-        price: Number(s.product.price) || 0,
+      const products = stocks.map((item) => ({
+        productId: item.product.id,
+        name: item.product.name,
+        unit: item.product.unit || "cái",
+        stock: item.stock,
+        price: Number(item.product.price) || 0,
       }));
       setProductOptions(products);
-    } catch (err) {
-      console.error("Lỗi khi tải sản phẩm từ kho:", err);
+    } catch (e) {
+      console.error(e);
       toast.error("Lỗi khi tải sản phẩm từ kho");
     }
   };
@@ -83,7 +82,7 @@ export default function ImportReceipt() {
       setSupplierOptions([...new Map(data.map((s) => [s.name, s])).values()]);
     } catch (e) {
       console.log(e);
-      toast.error("Lỗi khi tải danh sách nhà cung cấp");
+      toast.error("Lỗi server!");
     }
   };
 
@@ -95,19 +94,21 @@ export default function ImportReceipt() {
 
   useEffect(() => {
     const filtered = receipts.filter(
-      (r) =>
-        r.supplierData?.name
+      (item) =>
+        item.supplierData?.name
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        r.note?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        new Date(r.import_date)
+        item.note?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        new Date(item.import_date)
           .toLocaleDateString("vi-VN")
           .includes(searchQuery) ||
-        r.userData?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        `${r.userData?.firstName || ""} ${r.userData?.lastName || ""}`
+        item.userData?.email
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        `${item.userData?.firstName || ""} ${item.userData?.lastName || ""}`
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        String(r.userId).includes(searchQuery)
+        String(item.userId).includes(searchQuery)
     );
     setFilteredReceipts(filtered);
   }, [searchQuery, receipts]);
@@ -133,11 +134,11 @@ export default function ImportReceipt() {
         import_date: receipt.import_date?.split("T")[0] || "",
         note: receipt.note || "",
         details:
-          receipt.importDetailData?.map((d) => ({
-            productId: d.productId || "",
-            StockProductData: d.StockProductData || { name: "", unit: "" },
-            quantity: d.quantity || 1,
-            price: d.price || 0,
+          receipt.importDetailData?.map((item) => ({
+            productId: item.productId || "",
+            StockProductData: item.StockProductData || { name: "", unit: "" },
+            quantity: item.quantity || 1,
+            price: item.price || 0,
           })) || [],
         userId: receipt.userId || null,
       });
@@ -172,7 +173,7 @@ export default function ImportReceipt() {
     if (field === "quantity" || field === "price") value = Number(value) || 0;
     if (field === "productId")
       newDetails[index].StockProductData = productOptions.find(
-        (p) => p.id === value
+        (item) => item.id === value
       ) || { name: "", unit: "" };
     newDetails[index][field] = value;
     setReceiptFormData({ ...receiptFormData, details: newDetails });
@@ -222,7 +223,7 @@ export default function ImportReceipt() {
     }
     if (
       receiptFormData.details.some(
-        (d) => !d.productId || d.quantity <= 0 || d.price < 0
+        (item) => !item.productId || item.quantity <= 0 || item.price < 0
       )
     ) {
       toast.error("Vui lòng nhập đầy đủ chi tiết sản phẩm hợp lệ");
@@ -230,7 +231,7 @@ export default function ImportReceipt() {
       return;
     }
     if (
-      new Set(receiptFormData.details.map((d) => d.productId)).size !==
+      new Set(receiptFormData.details.map((item) => item.productId)).size !==
       receiptFormData.details.length
     ) {
       toast.error("Không được chọn sản phẩm trùng lặp");
@@ -243,10 +244,10 @@ export default function ImportReceipt() {
       userId: receiptFormData.userId,
       import_date: receiptFormData.import_date,
       note: receiptFormData.note,
-      details: receiptFormData.details.map((d) => ({
-        productId: d.productId,
-        quantity: d.quantity,
-        price: d.price,
+      details: receiptFormData.details.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
       })),
     };
 
@@ -277,7 +278,7 @@ export default function ImportReceipt() {
 
   const calculateTotalCost = (details) =>
     `${details
-      .reduce((sum, d) => sum + d.quantity * d.price, 0)
+      .reduce((sum, result) => sum + result.quantity * result.price, 0)
       .toLocaleString("vi-VN")} ${CURRENCY_UNIT}`;
 
   return (

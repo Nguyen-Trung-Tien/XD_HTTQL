@@ -76,13 +76,13 @@ export default function ImportDetails() {
 
       const res = await getAllImportDetails();
       if (res.data.success) setDetails(res.data.data || []);
-    } catch (err) {
+    } catch (e) {
       const message =
-        err.response?.data?.error || err.response?.data?.message || err.message;
-      if (message.includes("Import receipt") || message.includes("Product")) {
-        toast.error("Sản phẩm không tồn tại trong kho");
+        e.response?.data?.error || e.response?.data?.message || e.message;
+      if (message.includes("Product")) {
+        toast.error("Sản phẩm không tồn tại trong kho!");
       } else {
-        toast.error(message);
+        toast.error("Phiếu nhập không tồn tại!");
       }
     }
   };

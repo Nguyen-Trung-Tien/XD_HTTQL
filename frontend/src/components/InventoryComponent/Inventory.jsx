@@ -4,7 +4,6 @@ import InventoryStatusCard from "./InventoryStatusCard";
 import InventoryListCard from "./InventoryListCard";
 import { useNavigate } from "react-router-dom";
 
-
 function Inventory() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,7 +13,7 @@ function Inventory() {
   const navigate = useNavigate();
 
   const handleAddProduct = () => {
-    navigate("/products/create"); // 👈 đúng route bạn đã cấu hình trong App.jsx
+    navigate("/products/create");
   };
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -91,10 +90,13 @@ function Inventory() {
         item.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
       );
     });
-  
+
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = filteredItems.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   if (loading) {
     return <div className="p-6 text-center">Đang tải dữ liệu tồn kho...</div>;
@@ -220,7 +222,10 @@ function Inventory() {
               </thead>
               <tbody className="bg-white divide-y divide-border">
                 {currentItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={item.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-6 py-4 text-sm font-medium">{item.id}</td>
                     <td className="px-6 py-4 text-sm">{item.name}</td>
                     <td className="px-6 py-4 text-sm">{item.category}</td>
@@ -309,45 +314,45 @@ function Inventory() {
               Không tìm thấy sản phẩm nào phù hợp với tìm kiếm của bạn.
             </div>
           )}
-          
+
           <div className="flex justify-between items-center mt-6">
             <div className="text-sm text-textSecondary">
               Hiển thị {currentItems.length} / {filteredItems.length} sản phẩm
             </div>
             <div className="flex space-x-2">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 disabled:opacity-50"
-          >
-            Trước
-          </button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentPage(i + 1)}
-              className={`px-3 py-1 rounded-md ${
-                currentPage === i + 1
-                  ? "gradient-bg text-white"
-                  : "border border-border text-textSecondary hover:bg-gray-50"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() =>
-              setCurrentPage((p) => Math.min(totalPages, p + 1))  
-            }
-            className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 disabled:opacity-50"
-          >
-            Sau
-          </button>
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 disabled:opacity-50"
+              >
+                Trước
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-3 py-1 rounded-md ${
+                    currentPage === i + 1
+                      ? "gradient-bg text-white"
+                      : "border border-border text-textSecondary hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                className="px-3 py-1 border border-border rounded-md text-textSecondary hover:bg-gray-50 disabled:opacity-50"
+              >
+                Sau
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <InventoryStatusCard inventoryItems={inventoryItems} />
