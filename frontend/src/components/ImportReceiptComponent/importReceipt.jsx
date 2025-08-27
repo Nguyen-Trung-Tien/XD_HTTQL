@@ -63,12 +63,13 @@ export default function ImportReceipt() {
   const fetchStockProducts = async () => {
     try {
       const stocks = await getStockProduct();
+      console.log("Stock products:", stocks);
       const products = stocks.map((item) => ({
-        productId: item.product.id,
-        name: item.product.name,
-        unit: item.product.unit || "cái",
+        productId: item.stock.id,
+        name: item.stock.name,
+        unit: item.stock.unit || "cái",
         stock: item.stock,
-        price: Number(item.product.price) || 0,
+        price: Number(item.stock.price) || 0,
       }));
       setProductOptions(products);
     } catch (e) {
