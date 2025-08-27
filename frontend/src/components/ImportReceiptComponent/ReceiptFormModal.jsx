@@ -33,7 +33,6 @@ export default function ReceiptFormModal({
           {formData.id ? "Sửa phiếu nhập" : "Thêm phiếu nhập"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Supplier, Date, User ID */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex flex-col">
               <small className="text-gray-500 text-xs mb-1">
@@ -101,7 +100,6 @@ export default function ReceiptFormModal({
             </div>
           </div>
 
-          {/* Receipt Details */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <h4 className="font-semibold text-gray-700">Chi tiết sản phẩm</h4>
@@ -140,7 +138,6 @@ export default function ReceiptFormModal({
             </div>
           </div>
 
-          {/* Note */}
           <div className="flex flex-col">
             <small className="text-gray-500 text-xs mb-1">Ghi chú</small>
             <label className="block mb-1 font-medium text-gray-700">
@@ -154,7 +151,6 @@ export default function ReceiptFormModal({
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end gap-3 mt-5">
             <button
               type="button"

@@ -19,7 +19,12 @@ module.exports = {
         attributes: [
           "id",
           "productId",
+          "name",
           "stock",
+          "type",
+          "price",
+          "status",
+          "unit",
           "warehouseAddress",
           "updatedAt",
         ],
