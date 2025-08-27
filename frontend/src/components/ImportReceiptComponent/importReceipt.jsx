@@ -64,7 +64,7 @@ export default function ImportReceipt() {
     try {
       const stocks = await getStockProduct();
       const products = stocks.map((item) => ({
-        productId: item.productId,
+        id: item.id,
         name: item.name,
         unit: item.unit,
         stock: item.stock,

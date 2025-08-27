@@ -11,11 +11,9 @@ export default function ReceiptDetailRow({
   CURRENCY_UNIT,
 }) {
   const handleProductSelect = (e) => {
-    const productId = Number(e.target.value);
-    const selectedProduct = productOptions.find(
-      (p) => p.productId === productId
-    );
-    handleDetailChange(index, "productId", productId);
+    const stockId = Number(e.target.value);
+    const selectedProduct = productOptions.find((p) => p.id === stockId);
+    handleDetailChange(index, "productId", stockId);
     handleDetailChange(
       index,
       "StockProductData",
@@ -44,7 +42,7 @@ export default function ReceiptDetailRow({
                 : "--Chọn sản phẩm--"}
             </option>
             {productOptions.map((p) => (
-              <option key={p.productId} value={p.productId}>
+              <option key={p.id} value={p.id}>
                 {p.name} - Tồn kho: {p.stock} {p.unit}
               </option>
             ))}
