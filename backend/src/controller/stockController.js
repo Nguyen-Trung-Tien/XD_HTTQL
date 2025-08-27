@@ -4,30 +4,6 @@ module.exports = {
   getAllStocks: async (req, res) => {
     try {
       const stocks = await db.Stock.findAll({
-        include: [
-          {
-            model: db.Product,
-            as: "product",
-            attributes: ["id", "name", "category", "price"],
-          },
-          {
-            model: db.ImportDetails,
-            as: "importDetailData",
-            attributes: ["productId", "quantity"],
-          },
-        ],
-        attributes: [
-          "id",
-          "productId",
-          "name",
-          "stock",
-          "type",
-          "price",
-          "status",
-          "unit",
-          "warehouseAddress",
-          "updatedAt",
-        ],
         where: { deleted: false },
         order: [["createdAt", "DESC"]],
       });

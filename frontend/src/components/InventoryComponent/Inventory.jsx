@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {  getAllStock,deleteStock } from "../../API/stock/stockAPI";
+import { getAllStock, deleteStock } from "../../API/stock/stockAPI";
 import InventoryStatusCard from "./InventoryStatusCard";
 import InventoryListCard from "./InventoryListCard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Inventory() {
   const [activeTab, setActiveTab] = useState("all");

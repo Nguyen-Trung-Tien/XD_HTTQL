@@ -63,7 +63,6 @@ export default function ImportReceipt() {
   const fetchStockProducts = async () => {
     try {
       const stocks = await getStockProduct();
-      console.log("Stock products:", stocks);
       const products = stocks.map((item) => ({
         productId: item.productId,
         name: item.name,
