@@ -20,7 +20,7 @@ import Customer from "./components/CustomerComponent/Customer";
 import Suppliers from "./components/SuppliersComponent/Suppliers";
 import WarehouseManagement from "./components/WarehouseManagement/WarehouseManagement";
 import ProductDetail from "./components/ProductsComponent/ProductDetail";
-import Statistics from './components/StatisticsComponent/Statistics';
+
 
 function App() {
   const dispatch = useDispatch();
