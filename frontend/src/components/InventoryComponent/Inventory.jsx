@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllStock, deleteStock } from "../../API/stock/stockAPI";
+import {  getAllStock,deleteStock } from "../../API/stock/stockAPI";
 import InventoryStatusCard from "./InventoryStatusCard";
 import InventoryListCard from "./InventoryListCard";
 import { useNavigate } from "react-router-dom";
@@ -16,25 +16,25 @@ function Inventory() {
     navigate("/products/create");
   };
   const handleView = (id) => {
-  navigate(`/products/detail/${id}`);
+    navigate(`/products/detail/${id}`);
   };
   const handleEdit = (id) => {
-  navigate(`/products/edit/${id}`);
+    navigate(`/products/edit/${id}`);
   };
   const handleDelete = async (id) => {
-		const confirmed = window.confirm('Bạn có muốn xóa sản phẩm này?');
-		if (!confirmed) return;
+    const confirmed = window.confirm("Bạn có muốn xóa sản phẩm này?");
+    if (!confirmed) return;
 
-		try {
-			await deleteStock(id);
-			setInventoryItems((prev) => prev.filter((item) => item.id !== id));
-			toast.success('Xóa sản phẩm thành công');
-			navigate('/inventory');
-		} catch (error) {
-			console.error(error);
-			toast.error('Xóa thất bại');
-		}
-	};
+    try {
+      await deleteStock(id);
+      setInventoryItems((prev) => prev.filter((item) => item.id !== id));
+      toast.success("Xóa sản phẩm thành công");
+      navigate("/inventory");
+    } catch (error) {
+      console.error(error);
+      toast.error("Xóa thất bại");
+    }
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -48,10 +48,10 @@ function Inventory() {
       try {
         const data = await getAllStock();
         const formatted = (data || []).map((stock) => ({
-          id: stock.product?.id || stock.productId,
-          name: stock.product?.name || "Không rõ",
-          category: stock.product?.category || "Khác",
-          price: stock.product?.price || 0,
+          id: stock.id,
+          name: stock.name || "Không rõ",
+          category: stock.category || "Khác",
+          price: stock.price || 0,
           stock: stock.stock,
           status:
             stock.stock === 0

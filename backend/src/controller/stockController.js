@@ -4,27 +4,9 @@ module.exports = {
   getAllStocks: async (req, res) => {
     try {
       const stocks = await db.Stock.findAll({
-        include: [
-          {
-            model: db.Product,
-            as: "product",
-            attributes: ["id", "name", "category", "price"],
-          },
-          {
-            model: db.ImportDetails,
-            as: "importDetailData",
-            attributes: ["productId", "quantity"],
-          },
-        ],
-        attributes: [
-          "id",
-          "productId",
-          "stock",
-          "warehouseAddress",
-          "updatedAt",
-        ],
+        where: { deleted: false },
+        order: [["createdAt", "DESC"]],
       });
-
       return res.json(stocks);
     } catch (err) {
       console.error(err);
@@ -33,14 +15,9 @@ module.exports = {
         .json({ message: "Lỗi server", error: err.message });
     }
   },
-
   getStockById: async (req, res) => {
     try {
-      const stockRecord = await db.Stock.findByPk(req.params.id, {
-        include: [
-          { model: db.Product, as: "product", attributes: ["id", "name"] },
-        ],
-      });
+      const stockRecord = await db.Stock.findByPk(req.params.id, {});
       if (!stockRecord)
         return res.status(404).json({ message: "Không tìm thấy stock" });
       return res.json(stockRecord);
