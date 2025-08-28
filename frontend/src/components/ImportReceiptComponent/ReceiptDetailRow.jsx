@@ -50,7 +50,7 @@ export default function ReceiptDetailRow({
         </div>
 
         <div className="flex flex-col w-24">
-          <small className="text-gray-500 text-xs mb-1">SL</small>
+          <small className="text-gray-500 text-xs mb-1">Số lượng</small>
           <input
             type="number"
             min="1"

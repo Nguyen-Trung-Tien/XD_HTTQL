@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import {
   getAllImportReceipts,
   createImportReceipt,
@@ -8,14 +9,16 @@ import {
   deleteImportReceipt,
 } from "../../API/importReceiptApi/importReceiptApi";
 import { getManySupplier } from "../../API/suppliersApi/suppliersApi";
+import { getStockProduct } from "../../API/stock/stockAPI";
 import { useLocation } from "react-router-dom";
 import ReceiptTable from "./ReceiptTable";
 import ReceiptFormModal from "./ReceiptFormModal";
-import { getStockProduct } from "../../API/stock/stockAPI";
 
 const CURRENCY_UNIT = "VND";
 
 export default function ImportReceipt() {
+  const currentUser = useSelector((state) => state.user.currentUser);
+
   const [receipts, setReceipts] = useState([]);
   const [filteredReceipts, setFilteredReceipts] = useState([]);
   const [supplierOptions, setSupplierOptions] = useState([]);
@@ -31,6 +34,9 @@ export default function ImportReceipt() {
     note: "",
     details: [],
     userId: null,
+    userName: "",
+    userEmail: "",
+    userRole: "",
   });
 
   const location = useLocation();
@@ -46,14 +52,8 @@ export default function ImportReceipt() {
       const receiptData = res.data || res;
       setReceipts(receiptData);
       setFilteredReceipts(receiptData);
-
-      const products = receiptData
-        .flatMap((r) => r.importDetailData || [])
-        .map((d) => d.StockProductData)
-        .filter((p) => p && p.id && p.name && p.unit);
-      setProductOptions([...new Map(products.map((p) => [p.id, p])).values()]);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       toast.error("Lỗi khi tải dữ liệu phiếu nhập");
     } finally {
       setLoading(false);
@@ -79,12 +79,13 @@ export default function ImportReceipt() {
       toast.error("Lỗi khi tải sản phẩm từ kho");
     }
   };
+
   const fetchSuppliers = async () => {
     try {
       const data = await getManySupplier();
       setSupplierOptions([...new Map(data.map((s) => [s.name, s])).values()]);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       toast.error("Lỗi server!");
     }
   };
@@ -128,6 +129,11 @@ export default function ImportReceipt() {
   };
 
   const openReceiptForm = (receipt = null) => {
+    if (!currentUser || !currentUser.id) {
+      toast.warning("Không có thông tin người dùng. Vui lòng đăng nhập lại!");
+      return;
+    }
+
     fetchStockProducts();
 
     if (receipt) {
@@ -143,7 +149,9 @@ export default function ImportReceipt() {
             quantity: item.quantity || 1,
             price: item.price || 0,
           })) || [],
-        userId: receipt.userId || null,
+        userId: receipt.userId || currentUser.id,
+        userName: `${currentUser.firstName} ${currentUser.lastName}`,
+        userEmail: currentUser.email,
       });
     } else {
       setReceiptFormData({
@@ -159,7 +167,10 @@ export default function ImportReceipt() {
             price: 0,
           },
         ],
-        userId: null,
+        userId: currentUser.id,
+        userName: `${currentUser.firstName} ${currentUser.lastName}`,
+        userEmail: currentUser.email,
+        userRole: currentUser.role,
       });
     }
 
@@ -195,6 +206,7 @@ export default function ImportReceipt() {
         },
       ],
     });
+
   const removeReceiptDetail = (index) => {
     const newDetails = [...receiptFormData.details];
     newDetails.splice(index, 1);
@@ -204,6 +216,7 @@ export default function ImportReceipt() {
   const handleReceiptSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
+
     if (!receiptFormData.supplierData?.id) {
       toast.error("Vui lòng chọn nhà cung cấp");
       setFormLoading(false);
@@ -215,7 +228,7 @@ export default function ImportReceipt() {
       return;
     }
     if (!receiptFormData.userId || receiptFormData.userId <= 0) {
-      toast.error("Vui lòng nhập ID người dùng hợp lệ");
+      toast.error("Không có thông tin người nhập hợp lệ");
       setFormLoading(false);
       return;
     }
@@ -270,6 +283,9 @@ export default function ImportReceipt() {
         note: "",
         details: [],
         userId: null,
+        userName: "",
+        userEmail: "",
+        userRole: "",
       });
       fetchReceipts();
     } catch (e) {
@@ -281,7 +297,7 @@ export default function ImportReceipt() {
 
   const calculateTotalCost = (details) =>
     `${details
-      .reduce((sum, result) => sum + result.quantity * result.price, 0)
+      .reduce((sum, r) => sum + r.quantity * r.price, 0)
       .toLocaleString("vi-VN")} ${CURRENCY_UNIT}`;
 
   return (

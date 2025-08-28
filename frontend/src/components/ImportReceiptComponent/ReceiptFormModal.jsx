@@ -32,15 +32,10 @@ export default function ReceiptFormModal({
         <h2 className="text-2xl font-bold mb-6 text-center text-sky-700">
           {formData.id ? "Sửa phiếu nhập" : "Thêm phiếu nhập"}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex flex-col">
-              <small className="text-gray-500 text-xs mb-1">
-                Chọn nhà cung cấp
-              </small>
-              <label className="block mb-1 font-medium text-gray-700">
-                Nhà cung cấp
-              </label>
+            <div className="flex flex-col gap-1">
+              <small className="text-gray-400 text-xs">Chọn nhà cung cấp</small>
               <select
                 value={formData.supplierData?.id || ""}
                 onChange={(e) => {
@@ -64,13 +59,9 @@ export default function ReceiptFormModal({
                 ))}
               </select>
             </div>
-            <div className="flex flex-col">
-              <small className="text-gray-500 text-xs mb-1">
-                Chọn ngày nhập
-              </small>
-              <label className="block mb-1 font-medium text-gray-700">
-                Ngày nhập
-              </label>
+
+            <div className="flex flex-col gap-1">
+              <small className="text-gray-400 text-xs">Chọn ngày nhập</small>
               <input
                 type="date"
                 value={formData.import_date}
@@ -81,22 +72,30 @@ export default function ReceiptFormModal({
                 disabled={formLoading}
               />
             </div>
-            <div className="flex flex-col">
-              <small className="text-gray-500 text-xs mb-1">
-                ID người dùng
+
+            <div className="flex flex-col gap-1">
+              <small className="text-gray-400 text-xs">
+                Thông tin người nhập
               </small>
-              <label className="block mb-1 font-medium text-gray-700">
-                ID người dùng
-              </label>
-              <input
-                type="number"
-                min="1"
-                placeholder="Nhập ID người dùng"
-                value={formData.userId || ""}
-                onChange={(e) => handleFormChange("userId", e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
-                disabled={formLoading}
-              />
+              <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-700">
+                <div className="flex flex-col">
+                  {formData.userName && (
+                    <span className="text-gray-500 text-sm">
+                      Họ và tên: {formData.userName}
+                    </span>
+                  )}
+                  {formData.userRole && (
+                    <span className="text-blue-700 text-xs font-medium rounded-full mt-1">
+                      Vai trò: {formData.userRole}
+                    </span>
+                  )}
+                  {!formData.userName && (
+                    <span className="text-gray-400 text-sm">
+                      Chưa có thông tin người nhập
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -138,11 +137,8 @@ export default function ReceiptFormModal({
             </div>
           </div>
 
-          <div className="flex flex-col">
-            <small className="text-gray-500 text-xs mb-1">Ghi chú</small>
-            <label className="block mb-1 font-medium text-gray-700">
-              Ghi chú
-            </label>
+          <div className="flex flex-col gap-1">
+            <small className="text-gray-400 text-xs">Ghi chú</small>
             <textarea
               value={formData.note}
               onChange={(e) => handleFormChange("note", e.target.value)}

@@ -34,35 +34,6 @@ const userSlice = createSlice({
       state.refresh_token = user.refresh_token || "";
       state.currentUser = user;
     },
-    logout: (state) => {
-      state.id = "";
-      state.email = "";
-      state.firstName = "";
-      state.lastName = "";
-      state.address = "";
-      state.phoneNumber = "";
-      state.role = "";
-      state.image = "";
-      state.avatarBase64 = "";
-      state.access_token = "";
-      state.refresh_token = "";
-      state.currentUser = null;
-    },
-    updateUser: (state, action) => {
-      const user = action.payload;
-      state.id = user.id || state.id;
-      state.email = user.email || state.email;
-      state.firstName = user.firstName || state.firstName;
-      state.lastName = user.lastName || state.lastName;
-      state.address = user.address || state.address;
-      state.phoneNumber = user.phoneNumber || state.phoneNumber;
-      state.role = user.role || state.role;
-      state.image = user.image || state.image;
-      state.avatarBase64 = user.avatarBase64 || "";
-      state.access_token = user.access_token || state.access_token;
-      state.refresh_token = user.refresh_token || state.refresh_token;
-      state.currentUser = { ...state.currentUser, ...user };
-    },
     resetUser: (state) => {
       state.id = "";
       state.email = "";
@@ -91,5 +62,5 @@ export const loadUserFromStorage = () => {
   }
   return null;
 };
-export const { login, logout, updateUser, resetUser } = userSlice.actions;
+export const { login, resetUser } = userSlice.actions;
 export default userSlice.reducer;
