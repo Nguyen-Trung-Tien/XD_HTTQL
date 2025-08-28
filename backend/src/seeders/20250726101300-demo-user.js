@@ -11,6 +11,8 @@ module.exports = {
         firstName: "Admin",
         lastName: "admin",
         role: "admin",
+        status: "Hoạt động",
+        gender: "Nam",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

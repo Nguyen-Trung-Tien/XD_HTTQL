@@ -31,60 +31,41 @@ const checkUserEmail = async (userEmail) => {
   });
 };
 
-const handleLoginUser = (email, password) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let userData = {};
-      let isCheckEmail = await checkUserEmail(email);
-      if (isCheckEmail) {
-        let user = await db.User.findOne({
-          attributes: [
-            "id",
-            "email",
-            "password",
-            "role",
-            "lastName",
-            "firstName",
-            "image",
-            "address",
-          ],
-          where: { email: email },
-          raw: true,
-        });
+const handleLoginUser = async (email, password) => {
+  try {
+    const user = await db.User.findOne({
+      attributes: [
+        "id",
+        "email",
+        "password",
+        "role",
+        "lastName",
+        "firstName",
+        "image",
+        "address",
+        "status",
+        "gender",
+      ],
+      where: { email },
+      raw: true,
+    });
 
-        if (user) {
-          let checkPassword = await bcrypt.compareSync(password, user.password);
-
-          if (checkPassword) {
-            userData.errCode = 0;
-            userData.errMessage = "OK";
-            delete user.password;
-            userData.user = {
-              id: user.id,
-              email: user.email,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              role: user.role,
-              address: user.address,
-              image: user.image,
-            };
-          } else {
-            userData.errCode = 3;
-            userData.errMessage = "Wrong password!";
-          }
-        } else {
-          userData.errCode = 2;
-          userData.errMessage = `User's not found!`;
-        }
-      } else {
-        userData.errCode = 1;
-        userData.errMessage = "Your Email isn't exists. Please try another!";
-      }
-      resolve(userData);
-    } catch (e) {
-      reject(e);
+    if (!user) {
+      return { errCode: 1, errMessage: "Email hoặc mật khẩu không đúng" };
     }
-  });
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return { errCode: 1, errMessage: "Email hoặc mật khẩu không đúng" };
+    }
+
+    delete user.password;
+
+    return { errCode: 0, errMessage: "OK", user };
+  } catch (e) {
+    console.error("handleLoginUser failed:", e);
+    throw e;
+  }
 };
 
 const createNewUser = (data) => {
@@ -97,7 +78,9 @@ const createNewUser = (data) => {
           errMessage: "Your Email is already in use! Please try another email!",
         });
       }
+
       const hashedPassword = await hashUserPassword(data.password);
+
       await db.User.create({
         email: data.email,
         password: hashedPassword,
@@ -105,7 +88,9 @@ const createNewUser = (data) => {
         lastName: data.lastName,
         phoneNumber: data.phoneNumber,
         address: data.address,
-        role: data.role || "staff",
+        role: data.role,
+        status: data.status || "Hoạt động",
+        gender: data.gender || "Nam",
         image: data.image || null,
       });
 
@@ -119,20 +104,15 @@ const createNewUser = (data) => {
 const getAllUsers = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let users = "";
-      if (userId === "All") {
-      }
-      users = await db.User.findAll({
-        attributes: {
-          exclude: ["password"],
-        },
-      });
-      if (userId && userId !== "All") {
+      let users;
+      if (userId === "All" || !userId) {
+        users = await db.User.findAll({
+          attributes: { exclude: ["password"] },
+        });
+      } else {
         users = await db.User.findAll({
           where: { id: userId },
-          attributes: {
-            exclude: ["password"],
-          },
+          attributes: { exclude: ["password"] },
         });
       }
       resolve(users);
@@ -162,6 +142,8 @@ const UpdateUserData = (data) => {
         user.lastName = data.lastName;
         user.address = data.address;
         user.role = data.role;
+        user.gender = data.gender;
+        user.status = data.status;
         user.phoneNumber = data.phoneNumber;
         if (data.avatarBase64) {
           user.image = data.avatarBase64;

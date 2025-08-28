@@ -1,5 +1,8 @@
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 function Sidebar() {
+  const currentUser = useSelector((state) => state.user.currentUser);
   const menuItems = [
     {
       id: "dashboard",
@@ -18,6 +21,26 @@ function Sidebar() {
             strokeWidth="2"
             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
           ></path>
+        </svg>
+      ),
+    },
+    currentUser?.role === "admin" && {
+      id: "users",
+      name: "Nhân viên",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M5.121 17.804A7 7 0 0112 15a7 7 0 016.879 2.804M12 12a5 5 0 100-10 5 5 0 000 10z"
+          />
         </svg>
       ),
     },
@@ -81,6 +104,7 @@ function Sidebar() {
         </svg>
       ),
     },
+
     {
       id: "WarehouseManagement",
       name: "Nhập/xuất hóa đơn",
@@ -187,7 +211,7 @@ function Sidebar() {
         </svg>
       ),
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <>

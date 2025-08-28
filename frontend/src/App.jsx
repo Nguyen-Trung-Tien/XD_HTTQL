@@ -20,7 +20,7 @@ import Customer from "./components/CustomerComponent/Customer";
 import Suppliers from "./components/SuppliersComponent/Suppliers";
 import WarehouseManagement from "./components/WarehouseManagement/WarehouseManagement";
 import ProductDetail from "./components/ProductsComponent/ProductDetail";
-
+import Users from "./components/UsersComponent/UsersComponent";
 
 function App() {
   const dispatch = useDispatch();
@@ -55,7 +55,7 @@ function App() {
             <Route path="shippers" element={<Shippers />} />
             <Route path="stats" element={<Statistics />} />
             <Route path="customer" element={<Customer />} />
-            <Route path="suppliers" element={<Suppliers />} />
+            <Route path="users" element={<Users />} />
             <Route
               path="WarehouseManagement"
               element={<WarehouseManagement />}

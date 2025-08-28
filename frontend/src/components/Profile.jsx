@@ -140,13 +140,11 @@ const Profile = () => {
   return (
     <div className="flex justify-center items-center bg-blue-50 pt-6 px-2 pb-10 min-h-screen">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 border border-blue-200">
-        {/* Tiêu đề */}
         <h1 className="text-3xl text-center font-bold mb-6 text-gray-800">
           Thông Tin Cá Nhân
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Ảnh đại diện */}
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">
               Ảnh đại diện
@@ -182,7 +180,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Các input */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
               label="Email"
@@ -232,9 +229,9 @@ const Profile = () => {
             onChange={(e) => setUser({ ...user, role: e.target.value })}
             icon={<FiShield size={16} />}
             onEnter={handleSubmit}
+            disabled
           />
 
-          {/* Nút lưu */}
           <div className="text-center">
             <button
               type="submit"

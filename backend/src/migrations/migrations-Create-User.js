@@ -25,8 +25,13 @@ module.exports = {
         type: Sequelize.STRING,
       },
       role: {
-        type: Sequelize.ENUM("admin", "staff"),
-        defaultValue: "staff",
+        type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.STRING,
+      },
+      gender: {
+        type: Sequelize.STRING,
       },
       phoneNumber: {
         type: Sequelize.STRING,

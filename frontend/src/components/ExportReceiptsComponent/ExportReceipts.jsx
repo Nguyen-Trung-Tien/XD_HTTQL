@@ -7,18 +7,23 @@ import {
 } from "../../API/exportReceiptsApi/exportReceiptsApi";
 import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export default function ExportReceiptsTable() {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({
     userId: "",
     export_date: "",
     reason: "",
     note: "",
+    userName: "",
+    userEmail: "",
+    userRole: "",
   });
+  const currentUser = useSelector((state) => state.user.currentUser);
+
   const [details, setDetails] = useState([{ productId: "", quantity: "" }]);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -75,10 +80,33 @@ export default function ExportReceiptsTable() {
       .catch(() => toast.error("Đã có lỗi xảy ra!"));
   };
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    setIsModalOpen(true);
+
+    if (!isEditing && currentUser) {
+      setForm((prev) => ({
+        ...prev,
+        userId: currentUser.id || "",
+        userName: `${currentUser.firstName || ""} ${
+          currentUser.lastName || ""
+        }`.trim(),
+        userEmail: currentUser.email || "",
+        userRole: currentUser.role || "",
+        export_date: new Date().toISOString().split("T")[0],
+      }));
+    }
+  };
   const closeModal = () => {
     setIsModalOpen(false);
-    setForm({ userId: "", export_date: "", reason: "", note: "" });
+    setForm({
+      userId: "",
+      userName: "",
+      userEmail: "",
+      userRole: "",
+      export_date: "",
+      reason: "",
+      note: "",
+    });
     setDetails([{ productId: "", quantity: "" }]);
     setIsEditing(false);
     setEditId(null);
@@ -239,36 +267,30 @@ export default function ExportReceiptsTable() {
                 {isEditing ? "Cập nhật phiếu xuất" : "Thêm phiếu xuất"}
               </h3>
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col">
-                    <small className="text-gray-500 text-xs mb-1">
-                      ID người dùng thực hiện xuất kho
-                    </small>
-                    <input
-                      type="number"
-                      name="userId"
-                      placeholder="User ID"
-                      value={form.userId}
-                      onChange={handleChange}
-                      min={1}
-                      required
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <small className="text-gray-500 text-xs mb-1">
-                      Ngày thực hiện xuất kho
-                    </small>
-                    <input
-                      type="date"
-                      name="export_date"
-                      value={form.export_date}
-                      onChange={handleChange}
-                      required
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
-                    />
+                <div className="flex flex-col gap-1">
+                  <small className="text-gray-400 text-xs">
+                    Thông tin người xuất
+                  </small>
+                  <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-700">
+                    <div className="flex flex-col">
+                      {form.userName ? (
+                        <span className="text-gray-500 text-sm">
+                          Họ và tên: {form.userName}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-sm">
+                          Chưa có thông tin người xuất
+                        </span>
+                      )}
+                      {form.userRole && (
+                        <span className="text-blue-700 text-xs font-medium rounded-full mt-1">
+                          Vai trò: {form.userRole}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
+
                 <div className="flex flex-col">
                   <small className="text-gray-500 text-xs mb-1">
                     Lý do xuất kho (ví dụ: bán hàng, trả hàng)

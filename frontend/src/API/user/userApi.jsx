@@ -60,6 +60,17 @@ const GetDetailUser = async (userId) => {
     throw e;
   }
 };
+const DeleteUser = async (userId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/v1/user/delete-user`, {
+      data: { id: userId },
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
 
 const UpdateDetailUser = async (data) => {
   try {
@@ -104,5 +115,6 @@ export {
   RefreshToken,
   UserLogout,
   GetDetailUser,
+  DeleteUser,
   UpdateDetailUser,
 };

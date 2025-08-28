@@ -145,7 +145,6 @@ function SuppliersPage() {
           </div>
         </div>
 
-        {/* Content */}
         {loading ? (
           <div className="flex flex-col items-center py-12">
             <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mb-3"></div>
@@ -226,7 +225,6 @@ function SuppliersPage() {
               </table>
             </div>
 
-            {/* Pagination */}
             <div className="flex justify-center gap-2 mt-5 flex-wrap">
               <button
                 onClick={() => goToPage(1)}
@@ -278,7 +276,6 @@ function SuppliersPage() {
           </>
         )}
 
-        {/* Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
             <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md transform transition-transform duration-300 scale-100">
