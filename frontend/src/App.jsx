@@ -54,6 +54,7 @@ function App() {
             <Route path="orders" element={<Orders />} />
             <Route path="shippers" element={<Shippers />} />
             <Route path="stats" element={<Statistics />} />
+            <Route path="suppliers" element={<Suppliers />} />
             <Route path="customer" element={<Customer />} />
             <Route path="users" element={<Users />} />
             <Route

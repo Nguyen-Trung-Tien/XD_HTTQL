@@ -88,7 +88,7 @@ const createNewUser = (data) => {
         lastName: data.lastName,
         phoneNumber: data.phoneNumber,
         address: data.address,
-        role: data.role,
+        role: data.role || "Nhân viên",
         status: data.status || "Hoạt động",
         gender: data.gender || "Nam",
         image: data.image || null,
