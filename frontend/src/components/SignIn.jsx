@@ -26,7 +26,18 @@ const SignIn = () => {
 
     try {
       const data = await SignInUser(email, password);
+
       if (data?.errCode === 0) {
+        if (data.user.status === "Bị khóa") {
+          toast.error(
+            "Tài khoản bị khóa. Vui lòng liên hệ quản lý để được hỗ trợ!"
+          );
+          setError(
+            "Tài khoản bị khóa. Vui lòng liên hệ quản lý để được hỗ trợ!"
+          );
+          return;
+        }
+
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -58,7 +69,6 @@ const SignIn = () => {
   return (
     <div className="bg-gradient-to-br from-blue-100 via-sky-200 to-blue-200 min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
-        {/* Title */}
         <h1 className="text-3xl font-extrabold text-center text-sky-700">
           Đăng Nhập
         </h1>
