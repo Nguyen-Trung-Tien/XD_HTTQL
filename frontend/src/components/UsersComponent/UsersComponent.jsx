@@ -70,21 +70,11 @@ export default function UsersComponent() {
       address: "",
       image: "",
       phoneNumber: "",
-      avatarBase64: "",
     });
   };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setForm({ ...form, avatarBase64: reader.result });
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleSubmit = (e) => {
@@ -110,12 +100,6 @@ export default function UsersComponent() {
   };
 
   const handleEdit = (user) => {
-    let avatarBase64 = user.avatarBase64 || "";
-    if (!avatarBase64 && user.image?.data?.length > 0) {
-      avatarBase64 =
-        "data:image/jpeg;base64," + bufferToBase64(user.image.data);
-    }
-
     setForm({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -126,7 +110,6 @@ export default function UsersComponent() {
       status: user.status,
       address: user.address,
       phoneNumber: user.phoneNumber,
-      avatarBase64,
     });
     setEditId(user.id);
     setIsEditing(true);
@@ -241,13 +224,15 @@ export default function UsersComponent() {
                     >
                       <FiEdit className="w-5 h-5" />
                     </button>
-                    <button
-                      onClick={() => handleDelete(u.id)}
-                      className="p-1 text-red-500 hover:text-red-700 transition-colors"
-                      title="Xóa người dùng"
-                    >
-                      <FiTrash2 className="w-5 h-5" />
-                    </button>
+                    {u.role !== "admin" && (
+                      <button
+                        onClick={() => handleDelete(u.id)}
+                        className="p-1 text-red-500 hover:text-red-700 transition-colors"
+                        title="Xóa người dùng"
+                      >
+                        <FiTrash2 className="w-5 h-5" />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -272,7 +257,7 @@ export default function UsersComponent() {
                   value={form.firstName || ""}
                   onChange={handleChange}
                   required
-                  className="flex-1 p-2 border rounded shadow-sm"
+                  className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition"
                 />
                 <input
                   type="text"
@@ -281,7 +266,7 @@ export default function UsersComponent() {
                   value={form.lastName || ""}
                   onChange={handleChange}
                   required
-                  className="flex-1 p-2 border rounded shadow-sm"
+                  className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition"
                 />
               </div>
 
@@ -293,7 +278,7 @@ export default function UsersComponent() {
                   value={form.email || ""}
                   onChange={handleChange}
                   required
-                  className="w-full p-2 border rounded shadow-sm"
+                  className="w-full p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition"
                 />
               )}
 
@@ -305,7 +290,7 @@ export default function UsersComponent() {
                 }
                 value={form.password || ""}
                 onChange={handleChange}
-                className="w-full p-2 border rounded shadow-sm"
+                className="w-full p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition"
                 required={!isEditing}
               />
 
@@ -316,7 +301,7 @@ export default function UsersComponent() {
                   placeholder="Địa chỉ"
                   value={form.address || ""}
                   onChange={handleChange}
-                  className="flex-1 p-2 border rounded shadow-sm"
+                  className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition"
                 />
                 <input
                   type="text"
@@ -324,7 +309,7 @@ export default function UsersComponent() {
                   placeholder="Số điện thoại"
                   value={form.phoneNumber || ""}
                   onChange={handleChange}
-                  className="flex-1 p-2 border rounded shadow-sm"
+                  className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition"
                 />
               </div>
 
@@ -333,18 +318,18 @@ export default function UsersComponent() {
                   name="role"
                   value={form.role || ""}
                   onChange={handleChange}
-                  className="flex-1 p-2 border rounded shadow-sm"
+                  className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition appearance-none bg-white"
                 >
                   <option value="admin">Quản lý</option>
-                  <option value="accountant">Kế toán</option>
-                  <option value="staff">Nhân viên</option>
+                  <option value="Kế toán">Kế toán</option>
+                  <option value="Nhân viên">Nhân viên</option>
                 </select>
 
                 <select
                   name="gender"
                   value={form.gender || ""}
                   onChange={handleChange}
-                  className="flex-1 p-2 border rounded shadow-sm"
+                  className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition appearance-none bg-white"
                 >
                   <option value="Nam">Nam</option>
                   <option value="Nữ">Nữ</option>
@@ -355,38 +340,12 @@ export default function UsersComponent() {
                   name="status"
                   value={form.status || ""}
                   onChange={handleChange}
-                  className="flex-1 p-2 border rounded shadow-sm"
+                  className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition appearance-none bg-white"
                 >
                   <option value="Hoạt động">Hoạt động</option>
                   <option value="Không hoạt động">Không hoạt động</option>
                   <option value="Bị khóa">Bị khóa</option>
                 </select>
-              </div>
-
-              <div>
-                <label className="block mb-1 font-medium">Ảnh đại diện:</label>
-                <input
-                  type="file"
-                  onChange={handleImageChange}
-                  accept="image/*"
-                  className="mb-2"
-                />
-                {form.avatarBase64 && (
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={form.avatarBase64 || ""}
-                      alt="avatar"
-                      className="w-24 h-24 mt-1 rounded-full border"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setForm({ ...form, avatarBase64: "" })}
-                      className="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-                    >
-                      Xóa
-                    </button>
-                  </div>
-                )}
               </div>
 
               <div className="flex justify-end gap-3">
