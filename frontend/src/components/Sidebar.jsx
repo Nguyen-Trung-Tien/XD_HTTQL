@@ -44,6 +44,7 @@ function Sidebar() {
         </svg>
       ),
     },
+
     {
       id: "products",
       name: "Sản phẩm",
@@ -64,6 +65,7 @@ function Sidebar() {
         </svg>
       ),
     },
+
     {
       id: "inventory",
       name: "Tồn kho",
@@ -80,6 +82,26 @@ function Sidebar() {
             strokeLinejoin="round"
             strokeWidth="2"
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+          ></path>
+        </svg>
+      ),
+    },
+    {
+      id: "customer",
+      name: "Khách hàng",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M5.121 17.804A9 9 0 1118.878 6.196 9 9 0 015.12 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
           ></path>
         </svg>
       ),
@@ -105,32 +127,6 @@ function Sidebar() {
       ),
     },
 
-    {
-      id: "WarehouseManagement",
-      name: "Nhập/xuất hóa đơn",
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M4 4h16v4H4zM4 12h16v8H4z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M8 8v4m8-4v4M8 16v4m8-4v4"
-          />
-        </svg>
-      ),
-    },
     {
       id: "orders",
       name: "Đơn hàng",
@@ -171,9 +167,10 @@ function Sidebar() {
         </svg>
       ),
     },
+
     {
-      id: "customer",
-      name: "Khách hàng",
+      id: "WarehouseManagement",
+      name: "Nhập/xuất hóa đơn",
       icon: (
         <svg
           className="w-5 h-5"
@@ -186,8 +183,14 @@ function Sidebar() {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            d="M5.121 17.804A9 9 0 1118.878 6.196 9 9 0 015.12 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
-          ></path>
+            d="M4 4h16v4H4zM4 12h16v8H4z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M8 8v4m8-4v4M8 16v4m8-4v4"
+          />
         </svg>
       ),
     },

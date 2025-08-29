@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiPlus, FiSearch } from "react-icons/fi";
 import { toast } from "react-toastify";
 import {
   DeleteUser,
@@ -12,7 +12,8 @@ import { bufferToBase64 } from "../../utils/arrayBufferToString";
 export default function UsersComponent() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(6);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -29,7 +30,12 @@ export default function UsersComponent() {
     phoneNumber: "",
     avatarBase64: "",
   });
-
+  const [filters, setFilters] = useState({
+    search: "",
+    role: "All",
+    status: "All",
+    gender: "All",
+  });
   const loadUsers = () => {
     setLoading(true);
     GetDetailUser("All")
@@ -73,10 +79,31 @@ export default function UsersComponent() {
     });
   };
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleFilterChange = (e) =>
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  const filteredUsers = users.filter((result) => {
+    const matchSearch =
+      filters.search === "" ||
+      result.firstName?.toLowerCase().includes(filters.search.toLowerCase()) ||
+      result.lastName?.toLowerCase().includes(filters.search.toLowerCase()) ||
+      result.email?.toLowerCase().includes(filters.search.toLowerCase());
+    const matchRole = filters.role === "All" || result.role === filters.role;
+    const matchStatus =
+      filters.status === "All" || result.status === filters.status;
+    const matchGender =
+      filters.gender === "All" || result.gender === filters.gender;
+    return matchSearch && matchRole && matchStatus && matchGender;
+  });
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
   const handleSubmit = (e) => {
     e.preventDefault();
     const userData = isEditing ? { ...form, id: editId } : form;
@@ -146,87 +173,138 @@ export default function UsersComponent() {
         </button>
       </div>
 
+      <div className="bg-white p-4 rounded-lg shadow mb-4 flex flex-col md:flex-row gap-3">
+        <div className="flex items-center border rounded-lg px-3 flex-1 transition hover:border-[#00BFFF]">
+          <FiSearch className="text-gray-400 mr-2" />
+          <input
+            type="text"
+            name="search"
+            placeholder="Tìm kiếm theo tên hoặc email..."
+            value={filters.search}
+            onChange={handleFilterChange}
+            className="w-full p-2 focus:outline-none"
+          />
+        </div>
+        <select
+          name="role"
+          value={filters.role}
+          onChange={handleFilterChange}
+          className="p-2 border rounded bg-white hover:border-[#00BFFF] whitespace-nowrap text-sm text-gray-800"
+        >
+          <option value="All">Tất cả vai trò</option>
+          <option value="admin">Quản lý</option>
+          <option value="Kế toán">Kế toán</option>
+          <option value="Nhân viên">Nhân viên</option>
+        </select>
+        <select
+          name="status"
+          value={filters.status}
+          onChange={handleFilterChange}
+          className="p-2 border rounded bg-white hover:border-[#00BFFF] whitespace-nowrap text-sm text-gray-800"
+        >
+          <option value="All">Tất cả trạng thái</option>
+          <option value="Hoạt động">Hoạt động</option>
+          <option value="Bị khóa">Bị khóa</option>
+        </select>
+        <select
+          name="gender"
+          value={filters.gender}
+          onChange={handleFilterChange}
+          className="p-2 border rounded bg-white hover:border-[#00BFFF] whitespace-nowrap text-sm text-gray-800"
+        >
+          <option value="All">Tất cả giới tính</option>
+          <option value="Nam">Nam</option>
+          <option value="Nữ">Nữ</option>
+          <option value="Khác">Khác</option>
+        </select>
+      </div>
+
       <div className="overflow-x-auto rounded-lg border border-gray-200 mb-4">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID
-              </th>
-              <th className="px-6 py-3  text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Họ
-              </th>
-              <th className="px-6 py-3  text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tên
-              </th>
-              <th className="px-6 py-3  text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3  text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Vai trò
-              </th>
-              <th className="px-6 py-3  text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Giới tính
-              </th>
-              <th className="px-6 py-3  text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Trạng thái
-              </th>
-              <th className="px-6 py-3  text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Hành động
-              </th>
+              {[
+                "ID",
+                "Họ",
+                "Tên",
+                "Email",
+                "SĐT",
+                "Địa chỉ",
+                "Vai trò",
+                "Giới tính",
+                "Trạng thái",
+                "Hành động",
+              ].map((header) => (
+                <th
+                  key={header}
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((u) => (
+            {currentUsers.map((item, index) => (
               <tr
-                key={u.id}
+                key={index.id}
                 className="hover:bg-gray-50 transition-colors duration-200"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">
-                  {u.id}
+                <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                  {item.id}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">
-                  {u.lastName}
+                <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                  {item.lastName || "-"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">
-                  {u.firstName}
+                <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                  {item.firstName || "-"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">
-                  {u.email}
+                <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                  {item.email}
                 </td>
-                <td className="px-6 py-4 text-sm text-center">
+                <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                  {item.phoneNumber || "-"}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                  {item.address || "-"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-center">
                   <span
-                    className={`px-2 py-1 rounded-full text-white text-xs 
-                   ${u.role === "admin" ? "bg-red-500" : "bg-blue-500"}`}
+                    className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      item.role === "admin"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
                   >
-                    {u.role}
+                    {item.role}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">
-                  {u.gender}
+                <td className="px-6 py-4 text-sm text-gray-700 text-center">
+                  {item.gender}
                 </td>
-                <td className="px-6 py-4 text-sm text-center">
+                <td className="px-6 py-4 whitespace-nowrap text-center">
                   <span
-                    className={`px-2 py-1 rounded-full text-white text-xs 
-                   ${
-                     u.status === "Hoạt động" ? "bg-green-500" : "bg-gray-400"
-                   }`}
+                    className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      item.status === "Hoạt động"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
                   >
-                    {u.status}
+                    {item.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                <td className="px-6 py-4 text-center text-sm font-medium">
                   <div className="flex justify-center space-x-3">
                     <button
-                      onClick={() => handleEdit(u)}
+                      onClick={() => handleEdit(item)}
                       className="p-1 text-primary hover:text-blue-500 transition-colors rounded"
                       title="Chỉnh người dùng"
                     >
                       <FiEdit className="w-5 h-5" />
                     </button>
-                    {u.role !== "admin" && (
+                    {item.role !== "admin" && (
                       <button
-                        onClick={() => handleDelete(u.id)}
+                        onClick={() => handleDelete(item.id)}
                         className="p-1 text-red-500 hover:text-red-700 transition-colors"
                         title="Xóa người dùng"
                       >
@@ -239,6 +317,38 @@ export default function UsersComponent() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex justify-center gap-2 mt-5 flex-wrap">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Trước
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => paginate(i + 1)}
+            className={`px-3 py-1 border border-gray-300 rounded-md transition-colors ${
+              currentPage === i + 1
+                ? "bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] text-white shadow"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Sau
+        </button>
       </div>
 
       {isModalOpen && (
@@ -343,7 +453,6 @@ export default function UsersComponent() {
                   className="flex-1 p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00BFFF] transition appearance-none bg-white"
                 >
                   <option value="Hoạt động">Hoạt động</option>
-                  <option value="Không hoạt động">Không hoạt động</option>
                   <option value="Bị khóa">Bị khóa</option>
                 </select>
               </div>

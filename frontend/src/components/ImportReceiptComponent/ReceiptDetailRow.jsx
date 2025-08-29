@@ -33,7 +33,7 @@ export default function ReceiptDetailRow({
           <select
             value={detail.productId}
             onChange={handleProductSelect}
-            className="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+            className="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md whitespace-nowrap text-sm text-gray-700"
             disabled={formLoading || productOptions.length === 0}
           >
             <option value="">

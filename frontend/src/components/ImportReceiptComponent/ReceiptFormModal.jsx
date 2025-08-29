@@ -44,7 +44,7 @@ export default function ReceiptFormModal({
                   );
                   handleFormChange("supplierData", selected || null);
                 }}
-                className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md"
+                className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 transition shadow-sm hover:shadow-md whitespace-nowrap text-sm text-gray-700"
                 disabled={formLoading || supplierOptions.length === 0}
               >
                 <option value="">
@@ -60,8 +60,10 @@ export default function ReceiptFormModal({
               </select>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <small className="text-gray-400 text-xs">Chọn ngày nhập</small>
+            <div className="flex flex-col gap-1 whitespace-nowrap text-sm text-gray-700">
+              <small className="text-gray-400 text-xs whitespace-nowrap text-sm text-gray-700">
+                Chọn ngày nhập
+              </small>
               <input
                 type="date"
                 value={formData.import_date}
