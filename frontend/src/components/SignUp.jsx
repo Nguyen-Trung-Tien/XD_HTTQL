@@ -77,7 +77,7 @@ const SignUp = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-sky-400 focus:border-sky-400 outline-none transition shadow-sm hover:shadow-md"
-                placeholder="Nhập mật khẩu"
+                placeholder="Nhập email"
                 required
               />
             </div>
