@@ -10,6 +10,7 @@ export default function ReceiptDetailRow({
   formLoading,
   CURRENCY_UNIT,
 }) {
+  const DEFAULT_DISCOUNT_PERCENT = 10;
   const handleProductSelect = (e) => {
     const stockId = Number(e.target.value);
     const selectedProduct = productOptions.find((p) => p.id === stockId);
@@ -19,8 +20,12 @@ export default function ReceiptDetailRow({
       "StockProductData",
       selectedProduct || { name: "", unit: "" }
     );
-    if (selectedProduct) {
-      handleDetailChange(index, "price", selectedProduct.price || 0);
+    if (selectedProduct && selectedProduct.price != null) {
+      const basePrice = Number(selectedProduct.price) || 0;
+      const discounted = Math.round(basePrice * (1 - DEFAULT_DISCOUNT_PERCENT / 100));
+      handleDetailChange(index, "price", Math.max(0, discounted));
+    } else {
+      handleDetailChange(index, "price", 0);
     }
   };
   const StockProductData = detail.StockProductData || {};
