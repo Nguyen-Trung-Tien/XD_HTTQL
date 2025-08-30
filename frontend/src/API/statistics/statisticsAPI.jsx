@@ -8,6 +8,46 @@ export const fetchTotalRevenue = async () => {
   return res.data;
 };
 
+export const fetchAllOrders = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/v1/statistics/all-orders`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all orders:", error);
+    throw error.response.data || new Error("Không thể lấy danh sách đơn hàng");
+  }
+};
+
+export const fetchOrderDetails = async (orderId) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/v1/statistics/order-details/${orderId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    throw error.response.data || new Error("Không thể lấy thông tin đơn hàng");
+  }
+};
+
+export const fetchAllStock = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/v1/statistics/all-stock`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all stock:", error);
+    throw error.response.data || new Error("Không thể lấy danh sách tồn kho");
+  }
+};
+
+export const fetchAllCustomers = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/v1/statistics/all-customers`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all customers:", error);
+    throw error.response.data || new Error("Không thể lấy danh sách khách hàng");
+  }
+};
+
 // Lấy thống kê tổng quan
 export const fetchGeneralStats = async (period = 'month') => {
     try {

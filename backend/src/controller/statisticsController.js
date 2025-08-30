@@ -1,5 +1,5 @@
 
-const { Order, OrderItem } = require("../models");
+const { Order, OrderItem,Stock,Customers } = require("../models");
 const { Op , Sequelize} = require("sequelize");
 
 const getTotalRevenue = async (req, res) => {
@@ -26,7 +26,30 @@ const getTotalRevenue = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
+const getAllOrders = async (req,res) => {
+  try {
+    const orders = await Order.count();
+    res.status(200).json(orders); 
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi máy chủ nội bộ", error: error.message });
+  }
+}
+const getAllStock = async (req, res) => {
+  try {
+    const stock = await Stock.count();
+    res.status(200).json(stock);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi máy chủ nội bộ", error: error.message });
+  }
+};
+const getAllCustomers = async (req, res) => {
+  try {
+    const customers = await Customers.count();
+    res.status(200).json(customers);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi máy chủ nội bộ", error: error.message });
+  }
+};
 // Hàm trợ giúp để lấy ngày bắt đầu dựa trên khoảng thời gian
 const getStartDate = (period) => {
   const now = new Date();
@@ -185,5 +208,8 @@ module.exports = {
   getRevenueByPeriod,
   getTopSellingProducts,
   getOrderStatusStats,
+  getAllOrders,
+  getAllStock,
+  getAllCustomers
 };
 

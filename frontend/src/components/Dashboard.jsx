@@ -1,7 +1,9 @@
 import React , {useEffect,useState} from "react";
+import {useNavigate} from "react-router-dom";
 import RevenueChart from "./RevenueChart";
 import TopProducts from "./TopProducts";
-import { fetchTotalRevenue } from "../API/statistics/statisticsAPI";
+import { fetchTotalRevenue,fetchAllOrders,fetchAllStock,fetchAllCustomers} from "../API/statistics/statisticsAPI";
+import { use } from "react";
 function Dashboard() {
   return (
     <div className="p-6">
@@ -15,7 +17,11 @@ function Dashboard() {
 }
 
 function DashboardCards() {
+  const navigate = useNavigate();
   const [totalRevenue, setTotalRevenue] = useState(0);
+  const [allOrders, setAllOrders] = useState(0);
+  const [allStock, setAllStock] = useState(0);
+  const [allCustomers, setAllCustomers] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +35,43 @@ function DashboardCards() {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchAllOrders();
+        setAllOrders(data);
+      } catch (error) {
+        console.error("Error fetching all orders:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchAllStock();
+        setAllStock(data);
+      } catch (error) {
+        console.error("Error fetching all stock:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const data = await fetchAllCustomers();
+      setAllCustomers(data);
+    } catch (error) {
+      console.error("Error fetching all customers:", error);
+    }
+  };
+
+  fetchData();
+}, []);
 
   const stats = [
     {
@@ -52,10 +95,11 @@ function DashboardCards() {
           ></path>
         </svg>
       ),
+      path: "/"
     },
     {
-      title: "Đơn hàng mới",
-      value: "145",
+      title: "Đơn hàng",
+      value: allOrders,
       change: "+8.2%",
       isPositive: true,
       icon: (
@@ -74,10 +118,11 @@ function DashboardCards() {
           ></path>
         </svg>
       ),
+      path: "/orders"
     },
     {
       title: "Sản phẩm tồn kho",
-      value: "1,254",
+      value: allStock,
       change: "-2.4%",
       isPositive: false,
       icon: (
@@ -96,10 +141,11 @@ function DashboardCards() {
           ></path>
         </svg>
       ),
+      path: "/inventory"
     },
     {
       title: "Khách hàng mới",
-      value: "45",
+      value: allCustomers,
       change: "+15.3%",
       isPositive: true,
       icon: (
@@ -118,6 +164,7 @@ function DashboardCards() {
           ></path>
         </svg>
       ),
+      path: "/customer"
     },
   ];
 
@@ -126,6 +173,7 @@ function DashboardCards() {
       {stats.map((stat, index) => (
         <div
           key={index}
+           onClick={() => navigate(stat.path)} 
           className="bg-card shadow-card rounded-lg p-6 hover:shadow-hover transition-shadow"
         >
           <div className="flex items-center justify-between mb-4">
