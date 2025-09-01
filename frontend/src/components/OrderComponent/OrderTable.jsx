@@ -28,6 +28,37 @@ const statusMap = {
   },
 };
 
+function getPageNumbers(currentPage, totalPages, maxPagesToShow = 5) {
+  const pages = [];
+  if (totalPages <= maxPagesToShow) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    const sidePages = Math.floor(maxPagesToShow / 2);
+    let start = Math.max(2, currentPage - sidePages);
+    let end = Math.min(totalPages - 1, currentPage + sidePages);
+
+    // Điều chỉnh khi gần đầu hoặc cuối
+    if (currentPage <= sidePages) {
+      start = 2;
+      end = maxPagesToShow - 1;
+    } else if (currentPage >= totalPages - sidePages) {
+      start = totalPages - (maxPagesToShow - 2);
+      end = totalPages - 1;
+    }
+
+    pages.push(1); // luôn có trang đầu
+
+    if (start > 2) pages.push("...");
+
+    for (let i = start; i <= end; i++) pages.push(i);
+
+    if (end < totalPages - 1) pages.push("...");
+
+    pages.push(totalPages); // luôn có trang cuối
+  }
+  return pages;
+}
+
 const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,7 +104,6 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
             <FiPlus /> Tạo đơn hàng
           </button>
         </div>
-
 
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="min-w-full divide-y divide-border">
@@ -183,22 +213,25 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
             <FiChevronLeft size={18} />
           </button>
 
-          {Array.from({ length: totalPages }, (_, index) => {
-            const pageNumber = index + 1;
-            return (
+          {getPageNumbers(currentPage, totalPages).map((p, idx) =>
+            p === "..." ? (
+              <span key={idx} className="px-3 py-1">
+                ...
+              </span>
+            ) : (
               <button
-                key={pageNumber}
-                onClick={() => goToPage(pageNumber)}
+                key={idx}
+                onClick={() => goToPage(p)}
                 className={`px-3 py-1 border border-border rounded-md transition-colors ${
-                  currentPage === pageNumber
+                  currentPage === p
                     ? "gradient-bg text-white shadow"
                     : "text-textSecondary hover:bg-gray-50"
                 }`}
               >
-                {pageNumber}
+                {p}
               </button>
-            );
-          })}
+            )
+          )}
 
           <button
             onClick={() => goToPage(currentPage + 1)}

@@ -69,7 +69,7 @@ export const fetchRevenueByPeriod = async (period = "year") => {
 // Lấy top sản phẩm bán chạy
 export const fetchTopSellingProducts = async () => {
     try {
-        const response = await axios.get(`${API_URL}/api/v1/statistics/top-selling-products`);
+        const response = await axios.get(`${API_URL}/api/v1/statistics/top-products`);
         return response.data;
     } catch (error) {
         console.error("Error fetching top selling products:", error);

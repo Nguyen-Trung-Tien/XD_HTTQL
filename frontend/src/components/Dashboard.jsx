@@ -2,7 +2,7 @@ import React , {useEffect,useState} from "react";
 import {useNavigate} from "react-router-dom";
 import RevenueChart from "./RevenueChart";
 import TopProducts from "./TopProducts";
-import { fetchTotalRevenue,fetchAllOrders,fetchAllStock,fetchAllCustomers} from "../API/statistics/statisticsAPI";
+import { fetchTotalRevenue,fetchAllOrders,fetchAllStock,fetchAllCustomers} from "../api/statistics/statisticsApi";
 import { use } from "react";
 function Dashboard() {
   return (

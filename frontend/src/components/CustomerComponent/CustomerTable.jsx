@@ -6,7 +6,35 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 import CustomerOrderHistory from "./CustomerOrderHistory";
+function getPageNumbers(currentPage, totalPages, maxPagesToShow = 5) {
+  const pages = [];
+  if (totalPages <= maxPagesToShow) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    const sidePages = Math.floor(maxPagesToShow / 2);
+    let start = Math.max(2, currentPage - sidePages);
+    let end = Math.min(totalPages - 1, currentPage + sidePages);
 
+    if (currentPage <= sidePages) {
+      start = 2;
+      end = maxPagesToShow - 1;
+    } else if (currentPage >= totalPages - sidePages) {
+      start = totalPages - (maxPagesToShow - 2);
+      end = totalPages - 1;
+    }
+
+    pages.push(1);
+
+    if (start > 2) pages.push("...");
+
+    for (let i = start; i <= end; i++) pages.push(i);
+
+    if (end < totalPages - 1) pages.push("...");
+
+    pages.push(totalPages);
+  }
+  return pages;
+}
 export default function CustomerTable({
   customers,
   selectedIds,
@@ -44,22 +72,23 @@ export default function CustomerTable({
         <FiChevronLeft size={18} />
       </button>
 
-      {Array.from({ length: totalPages }, (_, index) => {
-        const pageNumber = index + 1;
-        return (
-          <button
-            key={pageNumber}
-            onClick={() => onPageChange(pageNumber)}
-            className={`px-3 py-1 border border-border rounded-md transition-colors ${
-              page === pageNumber
-                ? "gradient-bg text-white shadow"
-                : "text-textSecondary hover:bg-gray-50"
-            }`}
-          >
-            {pageNumber}
-          </button>
-        );
-      })}
+     {getPageNumbers(page, totalPages).map((p, idx) =>
+  p === "..." ? (
+    <span key={idx} className="px-3 py-1">...</span>
+  ) : (
+    <button
+      key={idx}
+      onClick={() => onPageChange(p)}
+      className={`px-3 py-1 border border-border rounded-md transition-colors ${
+        page === p
+          ? "gradient-bg text-white shadow"
+          : "text-textSecondary hover:bg-gray-50"
+      }`}
+    >
+      {p}
+    </button>
+  )
+)}
 
       <button
         onClick={() => onPageChange(Math.min(totalPages, page + 1))}
