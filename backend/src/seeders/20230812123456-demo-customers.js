@@ -1,119 +1,46 @@
 "use strict";
 
+function randomName() {
+  const firstNames = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Đặng", "Bùi", "Phan", "Vũ", "Đỗ"];
+  const lastNames = ["Văn A", "Thị B", "Văn C", "Thị D", "Văn E", "Thị F", "Văn G", "Thị H", "Thị I", "Văn J"];
+  return `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+}
+
+function randomEmail(name, index) {
+  return name.toLowerCase().replace(/\s+/g, "") + index + "@example.com";
+}
+
+function randomPhone() {
+  return "09" + Math.floor(10000000 + Math.random() * 90000000);
+}
+
+function randomLatLng() {
+  const lat = 10.7 + Math.random() * 0.15;
+  const lng = 106.6 + Math.random() * 0.15;
+  return { lat, lng };
+}
+
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert("Customers", [
-      {
-        id: 1,
-        email: "nguyenvana@example.com",
-        name: "Nguyễn Văn A",
-        phoneNumber: "0901234567",
-        address: "Lê Lợi, Quận 1, TP.HCM",
-        lat: 10.774,
-        lng: 106.7,
-        createdAt: new Date("2024-01-05T08:00:00Z"),
-        updatedAt: new Date("2024-01-06T10:00:00Z"),
-      },
-      {
-        id: 2,
-        email: "tranthib@example.com",
-        name: "Trần Thị B",
-        phoneNumber: "0912345678",
-        address: "Trần Hưng Đạo, Quận 5, TP.HCM",
-        lat: 10.7628,
-        lng: 106.691,
-        createdAt: new Date("2024-02-10T09:30:00Z"),
-        updatedAt: new Date("2024-02-11T11:45:00Z"),
-      },
-      {
-        id: 3,
-        email: "phamvanc@example.com",
-        name: "Phạm Văn C",
-        phoneNumber: "0923456789",
-        address: "Nguyễn Huệ, Quận 1, TP.HCM",
-        lat: 10.7759,
-        lng: 106.701,
-        createdAt: new Date("2024-03-15T07:15:00Z"),
-        updatedAt: new Date("2024-03-16T09:00:00Z"),
-      },
-      {
-        id: 4,
-        email: "lethid@example.com",
-        name: "Lê Thị D",
-        phoneNumber: "0934567890",
-        address: "Hai Bà Trưng, Quận 3, TP.HCM",
-        lat: 10.7808,
-        lng: 106.7,
-        createdAt: new Date("2024-04-20T10:00:00Z"),
-        updatedAt: new Date("2024-04-21T12:30:00Z"),
-      },
-      {
-        id: 5,
-        email: "hoangvane@example.com",
-        name: "Hoàng Văn E",
-        phoneNumber: "0945678901",
-        address: "Điện Biên Phủ, Bình Thạnh, TP.HCM",
-        lat: 10.7982,
-        lng: 106.705,
-        createdAt: new Date("2024-05-05T08:45:00Z"),
-        updatedAt: new Date("2024-05-06T09:30:00Z"),
-      },
-      {
-        id: 6,
-        email: "dangthif@example.com",
-        name: "Đặng Thị F",
-        phoneNumber: "0956789012",
-        address: "Võ Văn Kiệt, Quận 6, TP.HCM",
-        lat: 10.7479,
-        lng: 106.657,
-        createdAt: new Date("2024-06-12T07:00:00Z"),
-        updatedAt: new Date("2024-06-13T08:15:00Z"),
-      },
-      {
-        id: 7,
-        email: "buivang@example.com",
-        name: "Bùi Văn G",
-        phoneNumber: "0967890123",
-        address: "Phạm Văn Đồng, Thủ Đức, TP.HCM",
-        lat: 10.8354,
-        lng: 106.73,
-        createdAt: new Date("2024-07-18T09:00:00Z"),
-        updatedAt: new Date("2024-07-19T10:30:00Z"),
-      },
-      {
-        id: 8,
-        email: "phanthih@example.com",
-        name: "Phan Thị H",
-        phoneNumber: "0978901234",
-        address: "Nguyễn Văn Cừ, Quận 5, TP.HCM",
-        lat: 10.7632,
-        lng: 106.683,
-        createdAt: new Date("2024-08-05T08:00:00Z"),
-        updatedAt: new Date("2024-08-06T09:00:00Z"),
-      },
-      {
-        id: 9,
-        email: "ngothii@example.com",
-        name: "Ngô Thị I",
-        phoneNumber: "0989012345",
-        address: "Pasteur, Quận 3, TP.HCM",
-        lat: 10.8391,
-        lng: 106.767,
-        createdAt: new Date("2024-09-10T07:30:00Z"),
-        updatedAt: new Date("2024-09-11T08:45:00Z"),
-      },
-      {
-        id: 10,
-        email: "trinhvanj@example.com",
-        name: "Trịnh Văn J",
-        phoneNumber: "0990123456",
-        address: "Lý Thường Kiệt, Quận 10, TP.HCM",
-        lat: 10.7741,
-        lng: 106.657,
-        createdAt: new Date("2024-10-15T08:15:00Z"),
-        updatedAt: new Date("2024-10-16T09:30:00Z"),
-      },
-    ]);
+    const customers = [];
+    for (let i = 1; i <= 50; i++) {
+      const name = randomName();
+      const email = randomEmail(name, i);
+      const phoneNumber = randomPhone();
+      const { lat, lng } = randomLatLng();
+      customers.push({
+        id: i,
+        name,
+        email,
+        phoneNumber,
+        address: `Đường số ${i}, Quận ${1 + (i % 10)}, TP.HCM`,
+        lat,
+        lng,
+        createdAt: new Date("2024-01-01T08:00:00Z"),
+        updatedAt: new Date("2024-01-02T08:00:00Z"),
+      });
+    }
+    await queryInterface.bulkInsert("Customers", customers, {});
   },
 
   async down(queryInterface, Sequelize) {

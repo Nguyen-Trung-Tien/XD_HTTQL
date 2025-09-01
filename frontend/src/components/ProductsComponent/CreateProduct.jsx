@@ -136,7 +136,7 @@ const ProductForm = () => {
 					</div>
 
 					<div className='flex gap-2 mt-4'>
-						<label className='flex flex-col gap-1 block text-sm text-gray-600 mb-1'>
+						<label className='flex flex-col gap-1 text-sm text-gray-600 mb-1'>
 							<label className='block text-sm text-gray-600 mb-1'>Mô tả</label>
 							<textarea
 								value={description}
