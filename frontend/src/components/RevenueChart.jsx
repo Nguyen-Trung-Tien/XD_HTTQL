@@ -1,100 +1,186 @@
-import React from 'react'
+import React from "react";
+import { useEffect, useRef, useState } from "react";
+import { fetchRevenueByPeriod } from "../API/statistics/statisticsAPI";
+function niceNumber(value) {
+  const exponent = Math.floor(Math.log10(value));
+  const fraction = value / Math.pow(10, exponent);
+  let niceFraction;
 
+  if (fraction <= 1) niceFraction = 1;
+  else if (fraction <= 2) niceFraction = 2;
+  else if (fraction <= 5) niceFraction = 5;
+  else niceFraction = 10;
+
+  return niceFraction * Math.pow(10, exponent);
+}
 function RevenueChart() {
-      const [timeRange, setTimeRange] = React.useState('year');
-      const chartRef = React.useRef(null);
-      
-      React.useEffect(() => {
-        // Simulated chart data
-        const months = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
-        const data = [65, 59, 80, 81, 56, 55, 40, 84, 64, 120, 132, 91];
-        
-        // Create a simple bar chart visualization
-        if (chartRef.current) {
-          const ctx = chartRef.current;
-          const width = ctx.width;
-          const height = ctx.height;
-          const barWidth = (width - 60) / data.length - 10;
-          const maxValue = Math.max(...data);
-          
-          const canvas = ctx.getContext('2d');
-          canvas.clearRect(0, 0, width, height);
-          
-          // Draw axes
-          canvas.beginPath();
-          canvas.moveTo(40, 20);
-          canvas.lineTo(40, height - 40);
-          canvas.lineTo(width - 20, height - 40);
-          canvas.strokeStyle = '#E2E8F0';
-          canvas.stroke();
-          
-          // Draw bars
-          data.forEach((value, index) => {
-            const x = 50 + index * (barWidth + 10);
-            const barHeight = ((height - 60) * value) / maxValue;
-            const y = height - 40 - barHeight;
-            
-            // Draw bar
-            const gradient = canvas.createLinearGradient(x, y, x, height - 40);
-            gradient.addColorStop(0, '#00BFFF');
-            gradient.addColorStop(1, '#87CEFA');
-            
-            canvas.fillStyle = gradient;
-            canvas.fillRect(x, y, barWidth, barHeight);
-            
-            // Draw month label
-            canvas.fillStyle = '#718096';
-            canvas.font = '12px Inter';
-            canvas.textAlign = 'center';
-            canvas.fillText(months[index], x + barWidth / 2, height - 20);
-          });
-          
-          // Draw value labels
-          canvas.fillStyle = '#718096';
-          canvas.font = '12px Inter';
-          canvas.textAlign = 'right';
-          
-          const valueStep = maxValue / 5;
-          for (let i = 0; i <= 5; i++) {
-            const value = i * valueStep;
-            const y = height - 40 - ((height - 60) * value) / maxValue;
-            canvas.fillText(Math.round(value).toLocaleString() + 'tr', 35, y + 4);
-            
-            // Draw grid line
-            canvas.beginPath();
-            canvas.moveTo(40, y);
-            canvas.lineTo(width - 20, y);
-            canvas.strokeStyle = 'rgba(226, 232, 240, 0.5)';
-            canvas.stroke();
-          }
-        }
-      }, [timeRange]);
-      
-      return (
-        <div className="bg-card shadow-card rounded-lg p-6 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-textPrimary">Doanh thu theo tháng</h3>
-            <div className="flex space-x-2">
-              <button 
-                onClick={() => setTimeRange('year')}
-                className={`px-3 py-1 text-sm rounded-md ${timeRange === 'year' ? 'gradient-bg text-white' : 'bg-gray-100 text-textSecondary hover:bg-gray-200'} transition-colors`}
-              >
-                Năm nay
-              </button>
-              <button 
-                onClick={() => setTimeRange('lastYear')}
-                className={`px-3 py-1 text-sm rounded-md ${timeRange === 'lastYear' ? 'gradient-bg text-white' : 'bg-gray-100 text-textSecondary hover:bg-gray-200'} transition-colors`}
-              >
-                Năm trước
-              </button>
-            </div>
-          </div>
-          <div className="h-80">
-            <canvas ref={chartRef} width="800" height="320"></canvas>
-          </div>
-        </div>
+  const [timeRange, setTimeRange] = useState("year");
+  const chartRef = useRef(null);
+  const [revenueData, setRevenueData] = useState([]);
+  useEffect(() => {
+    let mounted = true;
+    fetchRevenueByPeriod(timeRange).then((data) => {
+      if (mounted) setRevenueData(data);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [timeRange]);
+  useEffect(() => {
+    if (chartRef.current) {
+      const canvas = chartRef.current;
+      const ctx = canvas.getContext("2d");
+
+      // đồng bộ kích thước thật
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      const width = canvas.width;
+      const height = canvas.height;
+      // console.log("RevenueData:", revenueData);
+      const data = revenueData.length
+        ? revenueData.map((item) => Number(item.revenue) || 0)
+        : [10, 59, 80, 81, 56, 55, 40, 84, 64, 120, 132, 91];
+      const labels = revenueData.length
+        ? revenueData.map((item) => {
+            // Hiển thị "T1", "T2", ... từ period "2024-01"
+            const m = item.period.split("-")[1];
+            return "T" + Number(m);
+          })
+        : [
+            "T1",
+            "T2",
+            "T3",
+            "T4",
+            "T5",
+            "T6",
+            "T7",
+            "T8",
+            "T9",
+            "T10",
+            "T11",
+            "T12",
+          ];
+
+      const maxValue = niceNumber(Math.max(...data, 1));
+      const padding = 40;
+      const chartWidth = width - padding * 2;
+      const chartHeight = height - padding * 2;
+      const pointSpacing = chartWidth / (data.length - 1);
+      // Clear canvas
+      ctx.clearRect(0, 0, width, height);
+
+      // Vẽ trục
+      ctx.beginPath();
+      ctx.moveTo(padding, padding);
+      ctx.lineTo(padding, height - padding);
+      ctx.lineTo(width - padding, height - padding);
+      ctx.strokeStyle = "#E2E8F0";
+      ctx.stroke();
+
+      // Lưới ngang
+      ctx.beginPath();
+      for (let i = 0; i <= 5; i++) {
+        const y = padding + (chartHeight / 5) * i;
+        ctx.moveTo(padding, y);
+        ctx.lineTo(width - padding, y);
+      }
+      ctx.strokeStyle = "rgba(226, 232, 240, 0.5)";
+      ctx.stroke();
+
+      // Line chart
+      ctx.beginPath();
+      ctx.moveTo(
+        padding,
+        height - padding - (data[0] / maxValue) * chartHeight
       );
+      for (let i = 1; i < data.length; i++) {
+        const x = padding + i * pointSpacing;
+        const y = height - padding - (data[i] / maxValue) * chartHeight;
+        ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = "#00BFFF";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Chấm tròn
+      for (let i = 0; i < data.length; i++) {
+        const x = padding + i * pointSpacing;
+        const y = height - padding - (data[i] / maxValue) * chartHeight;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fill();
+        ctx.strokeStyle = "#00BFFF";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Nhãn tháng
+      ctx.fillStyle = "#718096";
+      ctx.font = "12px Inter";
+      ctx.textAlign = "center";
+      for (let i = 0; i < labels.length; i++) {
+        const x = padding + i * pointSpacing;
+        ctx.fillText(labels[i], x, height - padding + 20);
+      }
+
+      // Nhãn trục Y
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 5; i++) {
+        const value = maxValue * (1 - i / 5);
+        const y = padding + (chartHeight / 5) * i;
+        const valueTrieu = value / 1_000_000;
+
+        ctx.fillText(
+          valueTrieu >= 1
+            ? valueTrieu.toLocaleString("vi-VN", { maximumFractionDigits: 1 }) +
+                "tr"
+            : Math.round(value / 1_000).toLocaleString("vi-VN") + "k",
+          padding - 10,
+          y + 4
+        );
+      }
     }
+  }, [timeRange, revenueData]);
 
+  return (
+    <div className="bg-card shadow-card rounded-lg p-6 mb-8">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg font-semibold text-textPrimary">
+          Doanh thu theo tháng
+        </h3>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setTimeRange("year")}
+            className={`px-3 py-1 text-sm rounded-md ${
+              timeRange === "year"
+                ? "gradient-bg text-white"
+                : "bg-gray-100 text-textSecondary hover:bg-gray-200"
+            } transition-colors`}
+          >
+            Năm nay
+          </button>
+          <button
+            onClick={() => setTimeRange("lastYear")}
+            className={`px-3 py-1 text-sm rounded-md ${
+              timeRange === "lastYear"
+                ? "gradient-bg text-white"
+                : "bg-gray-100 text-textSecondary hover:bg-gray-200"
+            } transition-colors`}
+          >
+            Năm trước
+          </button>
+        </div>
+      </div>
+      <div className="h-80">
+        <canvas
+          ref={chartRef}
+          style={{ width: "100%", height: "100%" }}
+        ></canvas>
+      </div>
+    </div>
+  );
+}
 
-export default RevenueChart
+export default RevenueChart;
