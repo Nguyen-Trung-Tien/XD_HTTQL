@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import axiosInstance from "../../API/utils/axiosInstance";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const fetchTotalRevenue = async () => {
@@ -62,18 +62,10 @@ export const fetchGeneralStats = async (period = 'month') => {
 };
 
 // Lấy dữ liệu doanh thu để vẽ biểu đồ
-export const fetchRevenueByPeriod = async (period = 'month') => {
-    try {
-        const response = await axios.get(`${API_URL}/api/v1/statistics/revenue-by-period`, {
-            params: { period }
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching revenue data:", error);
-        throw error.response.data || new Error("Không thể lấy dữ liệu doanh thu");
-    }
+export const fetchRevenueByPeriod = async (period = "year") => {
+  const res = await axiosInstance.get(`/statistics/revenue-by-period?period=${period}`);
+  return res.data;
 };
-
 // Lấy top sản phẩm bán chạy
 export const fetchTopSellingProducts = async () => {
     try {

@@ -115,51 +115,59 @@ const getGeneralStats = async (req, res) => {
 //lấy doanh thu theo kỳ
 const getRevenueByPeriod = async (req, res) => {
   try {
-    const { period = "month" } = req.query; // 'day', 'week', 'month', 'year'
-    let groupBy, dateFormat;
+    // period: "year" | "lastYear" | "2023" | "2024" ...
+    const period = req.query.period || "year";
+    const now = new Date();
+    let year = now.getFullYear();
 
-    switch (period) {
-      case "day":
-        groupBy = [sequelize.fn("DATE", sequelize.col("createdAt"))];
-        dateFormat = "%Y-%m-%d";
-        break;
-      case "week":
-        groupBy = [
-          sequelize.fn("YEAR", sequelize.col("createdAt")),
-          sequelize.fn("WEEK", sequelize.col("createdAt")),
-        ];
-        dateFormat = "%Y-%u";
-        break;
-      case "year":
-        groupBy = [
-          sequelize.fn("YEAR", sequelize.col("createdAt")),
-          sequelize.fn("MONTH", sequelize.col("createdAt")),
-        ];
-        dateFormat = "%Y-%m";
-        break;
-      default: // month
-        groupBy = [sequelize.fn("DATE", sequelize.col("createdAt"))];
-        dateFormat = "%Y-%m-%d";
-        break;
+    if (period === "lastYear") {
+      year = year - 1;
+    } else if (!isNaN(Number(period))) {
+      year = Number(period); 
     }
-
-    const revenue = await Order.findAll({
-      attributes: [
-        [
-          sequelize.fn("DATE_FORMAT", sequelize.col("createdAt"), dateFormat),
-          "period",
-        ],
-        [sequelize.fn("SUM", sequelize.col("total")), "revenue"],
+    // Lấy tất cả đơn hàng hoàn thành trong năm
+    const orders = await Order.findAll({
+      where: {
+        status: "delivered",
+        createdAt: {
+          [Op.gte]: new Date(`${year}-01-01`),
+          [Op.lte]: new Date(`${year}-12-31`),
+        },
+      },
+      attributes: ["id", "createdAt"],
+      include: [
+        {
+          model: OrderItem,
+          as: "orderitems",
+          attributes: ["price", "quantity"],
+        },
       ],
-      where: { status: "completed" },
-      group: groupBy,
-      order: [[sequelize.col("period"), "ASC"]],
     });
-    res.status(200).json(revenue);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Lỗi máy chủ nội bộ", error: error.message });
+
+    // Tính tổng doanh thu từng tháng
+    const revenueByMonth = Array(12).fill(0);
+    orders.forEach((order) => {
+      const month = new Date(order.createdAt).getMonth(); // 0-11
+      let sum = 0;
+      if (order.orderitems && order.orderitems.length) {
+        sum = order.orderitems.reduce(
+          (acc, d) => acc + Number(d.price || 0) * Number(d.quantity || 0),
+          0
+        );
+      }
+      revenueByMonth[month] += sum;
+    });
+
+    // Trả về dạng [{ period: "2025-01", revenue: 12345 }, ...]
+    const result = revenueByMonth.map((revenue, idx) => ({
+      period: `${year}-${String(idx + 1).padStart(2, "0")}`,
+      revenue,
+    }));
+
+    res.json(result);
+  } catch (err) {
+    console.error("getRevenueByPeriod error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
