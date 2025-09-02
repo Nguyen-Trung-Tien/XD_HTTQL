@@ -23,7 +23,7 @@ const createOrder = async (req, res) => {
     const order = await db.Order.create(
       {
         orderNumber:
-          "DH-" + ((await db.Order.count()) + 1).toString().padStart(4, "0"),
+          "DH-" + ((await db.Order.count()) + 1).toString().padStart(3, "0"),
         customerId,
         customerName,
         customerEmail,
@@ -55,19 +55,15 @@ const createOrder = async (req, res) => {
         });
         if (!stockRecord) {
           await t.rollback();
-          return res
-            .status(400)
-            .json({
-              message: `Không tìm thấy tồn kho cho sản phẩm ID ${item.productId}`,
-            });
+          return res.status(400).json({
+            message: `Không tìm thấy tồn kho cho sản phẩm ID ${item.productId}`,
+          });
         }
         if (stockRecord.stock < item.quantity) {
           await t.rollback();
-          return res
-            .status(400)
-            .json({
-              message: `Số lượng tồn kho không đủ cho sản phẩm ${stockRecord.name}`,
-            });
+          return res.status(400).json({
+            message: `Số lượng tồn kho không đủ cho sản phẩm ${stockRecord.name}`,
+          });
         }
         await stockRecord.decrement("stock", {
           by: item.quantity,
@@ -100,8 +96,8 @@ const getAllOrders = async (req, res) => {
   try {
     const orders = await db.Order.findAll({
       include: [
-        { 
-          model: db.OrderItem, 
+        {
+          model: db.OrderItem,
           as: "items",
         },
         { model: db.Shipper, as: "shipper" },

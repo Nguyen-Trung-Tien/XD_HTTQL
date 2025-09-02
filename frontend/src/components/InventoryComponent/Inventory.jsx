@@ -57,7 +57,7 @@ function Inventory() {
           status:
             stock.stock === 0
               ? "out-of-stock"
-              : stock.stock < 10
+              : stock.stock <= 10
               ? "low-stock"
               : "in-stock",
           location: stock.warehouseAddress || "Kho chưa rõ",

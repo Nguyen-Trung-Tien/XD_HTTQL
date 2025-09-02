@@ -10,6 +10,7 @@ import {
 } from "../../API/importReceiptApi/importReceiptApi";
 import { getManySupplier } from "../../API/suppliersApi/suppliersApi";
 import { getStockProduct } from "../../API/stock/stockAPI";
+import { getOutOfStockProduct } from "../../API/stock/stockAPI";
 import { useLocation } from "react-router-dom";
 import ReceiptTable from "./ReceiptTable";
 import ReceiptFormModal from "./ReceiptFormModal";
@@ -62,7 +63,7 @@ export default function ImportReceipt() {
 
   const fetchStockProducts = async () => {
     try {
-      const stocks = await getStockProduct();
+      const stocks = await getOutOfStockProduct();
       const products = stocks.map((item) => ({
         id: item.id,
         name: item.name,
@@ -76,7 +77,7 @@ export default function ImportReceipt() {
       setProductOptions(products);
     } catch (e) {
       console.error(e);
-      toast.error("Lỗi khi tải sản phẩm từ kho");
+      toast.error("Lỗi khi tải sản phẩm hết hàng từ kho");
     }
   };
 

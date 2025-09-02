@@ -61,4 +61,27 @@ module.exports = {
         .json({ message: "Lỗi server", error: err.message });
     }
   },
+  getLowOrOutOfStock: async (req, res) => {
+    try {
+      const threshold = parseInt(req.query.threshold) || 10;
+
+      const stocks = await db.Stock.findAll({
+        where: {
+          deleted: false,
+          stock: {
+            [db.Sequelize.Op.lte]: threshold, 
+          },
+        },
+        order: [["stock", "ASC"]],
+      });
+
+      return res.json(stocks);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        message: "Lỗi server",
+        error: err.message,
+      });
+    }
+  },
 };

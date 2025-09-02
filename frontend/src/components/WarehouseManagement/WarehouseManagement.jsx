@@ -32,16 +32,16 @@ export default function WarehouseManagement() {
       label: "Chi tiết nhập",
       icon: <FiClipboard className="w-5 h-5" />,
     },
-    {
-      id: "exportReceipts",
-      label: "Phiếu xuất",
-      icon: <FiTruck className="w-5 h-5" />,
-    },
-    {
-      id: "exportDetails",
-      label: "Chi tiết xuất",
-      icon: <FiArchive className="w-5 h-5" />,
-    },
+    // {
+    //   id: "exportReceipts",
+    //   label: "Phiếu xuất",
+    //   icon: <FiTruck className="w-5 h-5" />,
+    // },
+    // {
+    //   id: "exportDetails",
+    //   label: "Chi tiết xuất",
+    //   icon: <FiArchive className="w-5 h-5" />,
+    // },
   ];
 
   return (

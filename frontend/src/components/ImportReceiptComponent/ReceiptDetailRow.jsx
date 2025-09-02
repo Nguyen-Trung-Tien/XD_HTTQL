@@ -86,7 +86,7 @@ export default function ReceiptDetailRow({
           <input
             type="number"
             min="0"
-            step="1000"
+            step="100"
             value={detail.price}
             onChange={(e) =>
               handleDetailChange(index, "price", Number(e.target.value))
