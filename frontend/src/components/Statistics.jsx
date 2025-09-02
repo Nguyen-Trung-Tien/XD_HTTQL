@@ -1,15 +1,15 @@
-import React , {useState,useEffect,useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchTotalRevenue } from "../api/statistics/statisticsApi";
 function Statistics() {
   const [timeRange, setTimeRange] = useState("month");
   const [activeTab, setActiveTab] = useState("sales");
   const [totalRevenue, setTotalRevenue] = useState(0);
-  
+
   const salesChartRef = useRef(null);
   const inventoryChartRef = useRef(null);
-  useEffect(() => { 
+  useEffect(() => {
     fetchTotalRevenue()
-      .then(data => setTotalRevenue(data.totalRevenue))
+      .then((data) => setTotalRevenue(data.totalRevenue))
       .catch(() => setTotalRevenue(0));
     if (activeTab === "sales" && salesChartRef.current) {
       const ctx = salesChartRef.current;
@@ -166,62 +166,62 @@ function Statistics() {
     }
   }, [timeRange, activeTab]);
 
-  const topSellingProducts = [
-    {
-      id: 1,
-      name: "Điện thoại X Pro",
-      category: "Điện tử",
-      sales: 245,
-      revenue: "5.635.000.000đ",
-      growth: "+12.5%",
-      isPositive: true,
-    },
-    {
-      id: 2,
-      name: "Laptop Ultra Pro",
-      category: "Điện tử",
-      sales: 189,
-      revenue: "6.615.000.000đ",
-      growth: "+8.3%",
-      isPositive: true,
-    },
-    {
-      id: 3,
-      name: "Tai nghe không dây",
-      category: "Phụ kiện",
-      sales: 384,
-      revenue: "1.152.000.000đ",
-      growth: "-2.8%",
-      isPositive: false,
-    },
-  ];
+  // const topSellingProducts = [
+  //   {
+  //     id: 1,
+  //     name: "Điện thoại X Pro",
+  //     category: "Điện tử",
+  //     sales: 245,
+  //     revenue: "5.635.000.000đ",
+  //     growth: "+12.5%",
+  //     isPositive: true,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Laptop Ultra Pro",
+  //     category: "Điện tử",
+  //     sales: 189,
+  //     revenue: "6.615.000.000đ",
+  //     growth: "+8.3%",
+  //     isPositive: true,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Tai nghe không dây",
+  //     category: "Phụ kiện",
+  //     sales: 384,
+  //     revenue: "1.152.000.000đ",
+  //     growth: "-2.8%",
+  //     isPositive: false,
+  //   },
+  // ];
 
-  const salesByChannel = [
-    {
-      channel: "Website",
-      percentage: 45,
-      value: "560.250.000đ",
-      color: "bg-blue-500",
-    },
-    {
-      channel: "Cửa hàng",
-      percentage: 30,
-      value: "373.500.000đ",
-      color: "bg-green-500",
-    },
-    {
-      channel: "Đại lý",
-      percentage: 15,
-      value: "186.750.000đ",
-      color: "bg-yellow-500",
-    },
-    {
-      channel: "Sàn TMĐT",
-      percentage: 10,
-      value: "124.500.000đ",
-      color: "bg-red-500",
-    },
-  ];
+  // const salesByChannel = [
+  //   {
+  //     channel: "Website",
+  //     percentage: 45,
+  //     value: "560.250.000đ",
+  //     color: "bg-blue-500",
+  //   },
+  //   {
+  //     channel: "Cửa hàng",
+  //     percentage: 30,
+  //     value: "373.500.000đ",
+  //     color: "bg-green-500",
+  //   },
+  //   {
+  //     channel: "Đại lý",
+  //     percentage: 15,
+  //     value: "186.750.000đ",
+  //     color: "bg-yellow-500",
+  //   },
+  //   {
+  //     channel: "Sàn TMĐT",
+  //     percentage: 10,
+  //     value: "124.500.000đ",
+  //     color: "bg-red-500",
+  //   },
+  // ];
 
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
@@ -310,7 +310,7 @@ function Statistics() {
               ></canvas>
             </div>
 
-            <div className="bg-card shadow-card rounded-lg p-6">
+            {/* <div className="bg-card shadow-card rounded-lg p-6">
               <h3 className="text-lg font-bold text-textPrimary mb-4">
                 Sản phẩm bán chạy nhất
               </h3>
@@ -348,7 +348,7 @@ function Statistics() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
           </div>
         )}
 

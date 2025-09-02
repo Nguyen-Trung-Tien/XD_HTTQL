@@ -50,13 +50,17 @@ const handleLoginUser = async (email, password) => {
       raw: true,
     });
 
-    if (!user) {
-      return { errCode: 1, errMessage: "Email hoặc mật khẩu không đúng" };
-    }
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return { errCode: 1, errMessage: "Email hoặc mật khẩu không đúng" };
+    }
+
+    if (!user) {
+      return { errCode: -1, errMessage: "Email hoặc mật khẩu không đúng" };
+    }
+
+    if (user.status === "Bị khóa") {
+      return { errCode: -4, errMessage: "Tài khoản đã bị khóa" };
     }
 
     delete user.password;
