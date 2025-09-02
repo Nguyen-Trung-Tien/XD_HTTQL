@@ -13,7 +13,7 @@ module.exports = {
       productId: {
         type: Sequelize.INTEGER,
       },
-      
+
       note: {
         type: Sequelize.TEXT,
       },

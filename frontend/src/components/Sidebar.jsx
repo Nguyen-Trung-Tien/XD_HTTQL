@@ -170,7 +170,7 @@ function Sidebar() {
 
     {
       id: "WarehouseManagement",
-      name: "Nhập/xuất hóa đơn",
+      name: "Nhập hóa đơn",
       icon: (
         <svg
           className="w-5 h-5"

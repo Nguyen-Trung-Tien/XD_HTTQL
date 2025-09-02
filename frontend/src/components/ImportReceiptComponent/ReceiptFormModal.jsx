@@ -82,8 +82,11 @@ export default function ReceiptFormModal({
               <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-700">
                 <div className="flex flex-col">
                   {formData.userName && (
+                    // <span className="text-gray-500 text-sm">
+                    //   Họ và tên: {formData.userName}
+                    // </span>
                     <span className="text-gray-500 text-sm">
-                      Họ và tên: {formData.userName}
+                      Email: {formData.userEmail}
                     </span>
                   )}
                   {formData.userRole && (

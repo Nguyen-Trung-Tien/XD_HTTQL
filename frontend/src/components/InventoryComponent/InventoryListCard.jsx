@@ -63,7 +63,8 @@ const InventoryListCard = ({
                       {item.name}
                     </div>
                     <div className="text-xs text-textSecondary">
-                      Mã: {item.id} | Kho: {item.location}
+                      {/* Mã: {item.id} | Kho: {item.location} */}
+                      Mã:{item.id}
                     </div>
                   </div>
                 </div>

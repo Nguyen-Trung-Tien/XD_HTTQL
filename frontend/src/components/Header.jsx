@@ -143,7 +143,7 @@ function Header() {
                       Hồ sơ
                     </button>
                     <button
-                      onClick={() => alert("Cài đặt chưa làm")}
+                       onClick={() => toast.info("Chức năng đang phát triển")}
                       className="block w-full text-left px-4 py-2 text-sm text-textPrimary hover:bg-primaryLight/10"
                     >
                       Cài đặt

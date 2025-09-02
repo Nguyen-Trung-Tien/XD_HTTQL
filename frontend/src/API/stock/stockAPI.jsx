@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import axiosInstance from "../utils/axiosInstance";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const getAllStock = async (page = 1, limit = 10) => {
@@ -31,5 +31,11 @@ export const updateStock = async (id, data) => {
 
 export const deleteStock = async (id) => {
   const res = await axios.delete(`${API_URL}/api/v1/stock/${id}`);
+  return res.data;
+};
+
+
+export const getOutOfStockProduct = async () => {
+  const res = await axiosInstance.get("/stock/low-stock");
   return res.data;
 };

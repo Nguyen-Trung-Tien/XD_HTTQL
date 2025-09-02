@@ -34,9 +34,7 @@ const createImportReceipt = async (data) => {
   const { details, ...receiptData } = data;
   const t = await db.sequelize.transaction();
   try {
-    const receipt = await db.ImportReceipts.create(receiptData, {
-      transaction: t,
-    });
+    const receipt = await db.ImportReceipts.create(receiptData, { transaction: t });
 
     if (details?.length) {
       const detailData = details.map((item) => ({
@@ -44,6 +42,14 @@ const createImportReceipt = async (data) => {
         ...item,
       }));
       await db.ImportDetails.bulkCreate(detailData, { transaction: t });
+
+      // Tăng stock cho từng sản phẩm
+      for (const item of details) {
+        const stock = await db.Stock.findByPk(item.productId, { transaction: t });
+        if (stock) {
+          await stock.increment("stock", { by: Number(item.quantity), transaction: t });
+        }
+      }
     }
 
     await t.commit();

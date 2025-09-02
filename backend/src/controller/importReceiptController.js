@@ -22,7 +22,7 @@ const getById = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
-
+  
 const create = async (req, res) => {
   try {
     const receipt = await importReceiptService.createImportReceipt(req.body);
