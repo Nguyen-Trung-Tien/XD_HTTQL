@@ -2,7 +2,7 @@
 
 ## Giới thiệu
 
-XD_HTTQL là hệ thống quản lý kho hàng hiện đại, hỗ trợ quản lý sản phẩm, tồn kho, nhập/xuất kho, đơn hàng, khách hàng, nhà cung cấp, shipper và thống kê doanh thu. Dự án gồm hai phần: **Backend** (Node.js, Express, Sequelize, MySQL) và **Frontend** (React, Vite, Redux, TailwindCSS).
+XD_HTTQL là hệ thống quản lý kho hàng hiện đại, hỗ trợ quản lý sản phẩm, tồn kho, nhập/xuất kho, đơn hàng, khách hàng, nhân viên, nhà cung cấp, shipper và thống kê doanh thu. Dự án gồm hai phần: **Backend** (Node.js, Express, Sequelize, MySQL) và **Frontend** (React, Vite, Redux, TailwindCSS).
 
 ---
 
@@ -84,7 +84,7 @@ npm install
 ## Tính năng chính
 
 - Quản lý sản phẩm, tồn kho, nhập kho, xuất kho
-- Quản lý đơn hàng, khách hàng, nhà cung cấp, shipper
+- Quản lý đơn hàng, nhân viên, khách hàng, nhà cung cấp, shipper
 - Thống kê doanh thu, sản phẩm bán chạy, trạng thái đơn hàng
 - Tìm kiếm, lọc, phân trang, xuất Excel
 - Đăng nhập, phân quyền người dùng
