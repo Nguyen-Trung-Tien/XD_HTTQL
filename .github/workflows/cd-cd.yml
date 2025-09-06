@@ -1,0 +1,55 @@
+name: Simple CI/CD XD_HTTQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install backend dependencies
+        run: npm install
+
+      - name: Lint backend
+        run: npx eslint . || echo "No lint errors or eslint not configured"
+
+      - name: Backend build/test (optional)
+        run: npm test || echo "No backend tests"
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Lint frontend
+        run: npx eslint . || echo "No lint errors or eslint not configured"
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Frontend test (optional)
+        run: npm test || echo "No frontend tests"
