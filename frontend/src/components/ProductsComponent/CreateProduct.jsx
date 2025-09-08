@@ -2,21 +2,32 @@ import { useState } from 'react';
 import { createProduct } from '../../API/products/productsApi';
 import { toast } from 'react-toastify';
 import upload_area from '../../assets/assets';
+import { useNavigate } from 'react-router';
 
-const ProductForm = () => {
+const CreateProduct = () => {
 	const [name, setName] = useState('');
-	const [image, setImage] = useState(false);
+	const [image, setImage] = useState(null);
 	const [price, setPrice] = useState('');
 	const [category, setCategory] = useState('');
 	const [unit, setUnit] = useState('');
 	const [description, setDescription] = useState('');
 	const [status, setStatus] = useState('Còn hàng');
 	const [adding, setAdding] = useState(false);
+	const [preview, setPreview] = useState(null);
+
+	const navigate = useNavigate();
+
+	const handleImageChange = (e) => {
+		const file = e.target.files[0];
+		if (file) {
+			setImage(file);
+			setPreview(URL.createObjectURL(file));
+		}
+	};
 
 	const handleSubmit = async (e) => {
 		try {
 			e.preventDefault();
-
 			setAdding(true);
 
 			if (
@@ -33,7 +44,6 @@ const ProductForm = () => {
 			}
 
 			const stock = 0;
-
 			const formData = new FormData();
 
 			formData.append('name', name);
@@ -49,6 +59,7 @@ const ProductForm = () => {
 
 			if (data.success) {
 				toast.success(data.message);
+				navigate('/products');
 			} else {
 				toast.error(data.message);
 			}
@@ -60,115 +71,138 @@ const ProductForm = () => {
 	};
 
 	return (
-		<div className='flex'>
-			<div>
-				<button
-					onClick={() => window.history.back()}
-					className='mt-6 ml-6 font-medium text-sm bg-white px-4 py-2 rounded-full text-blue-600 hover:text-blue-800'>
-					&larr; Quay lại
-				</button>
-			</div>
-			<form
-				onSubmit={handleSubmit}
-				className='bg-white shadow-md rounded-2xl mt-6 p-8 w-full max-w-md mx-[450px]'>
-				<h2 className='text-2xl font-semibold text-gray-800 mb-6 text-center'>
-					Thêm sản phẩm mới
-				</h2>
-
-				<div className='space-y-4'>
-					<div>
-						<label className='block text-sm text-gray-600 mb-1'>Ảnh</label>
-						<label htmlFor='image'>
-							<img
-								src={!image ? upload_area : URL.createObjectURL(image)}
-								alt=''
-								className='mt-2 h-16 rounded cursor-pointer'
-							/>
-							<input
-								onChange={(e) => setImage(e.target.files[0])}
-								type='file'
-								id='image'
-								hidden
-							/>
+		<div className='w-full max-w-2xl mx-auto'>
+			<form onSubmit={handleSubmit} className='space-y-6'>
+				<div className='grid grid-cols-2 gap-6'>
+					<div className='col-span-2'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Ảnh sản phẩm
 						</label>
+						<div className='flex items-center justify-center'>
+							<label htmlFor='create-product-image' className='cursor-pointer'>
+								<div className='relative h-40 w-40 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors'>
+									<img
+										src={preview || upload_area}
+										alt=''
+										className='absolute inset-0 w-full h-full object-cover rounded-lg'
+									/>
+									<div className='absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-20 text-white opacity-0 hover:opacity-100 transition-opacity rounded-lg'>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											className='h-8 w-8'
+											fill='none'
+											viewBox='0 0 24 24'
+											stroke='currentColor'>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												strokeWidth={2}
+												d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+											/>
+										</svg>
+										<p className='mt-2 text-xs'>Tải ảnh lên</p>
+									</div>
+								</div>
+								<input
+									type='file'
+									id='create-product-image'
+									onChange={handleImageChange}
+									className='hidden'
+									accept='image/*'
+								/>
+							</label>
+						</div>
 					</div>
-					<div>
-						<label className='block text-sm text-gray-600 mb-1'>
+
+					<div className='col-span-2'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
 							Tên sản phẩm
 						</label>
 						<input
 							type='text'
 							value={name}
 							onChange={(e) => setName(e.target.value)}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập tên sản phẩm'
 						/>
 					</div>
 
 					<div>
-						<label className='block text-sm text-gray-600 mb-1'>Danh mục</label>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Danh mục
+						</label>
 						<input
 							type='text'
 							value={category}
 							onChange={(e) => setCategory(e.target.value)}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập danh mục'
 						/>
 					</div>
 
 					<div>
-						<label className='block text-sm text-gray-600 mb-1'>Giá</label>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Giá
+						</label>
 						<input
 							type='number'
-							name='price'
 							value={price}
 							onChange={(e) => setPrice(e.target.value)}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập giá'
 						/>
 					</div>
 
 					<div>
-						<label className='block text-sm text-gray-600 mb-1'>Đơn vị</label>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Đơn vị
+						</label>
 						<input
 							type='text'
 							value={unit}
 							onChange={(e) => setUnit(e.target.value)}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập đơn vị'
 						/>
 					</div>
 
-					<div className='flex gap-2 mt-4'>
-						<label className='flex flex-col gap-1 text-sm text-gray-600 mb-1'>
-							<label className='block text-sm text-gray-600 mb-1'>Mô tả</label>
-							<textarea
-								value={description}
-								onChange={(e) => setDescription(e.target.value)}
-								className='w-[384px] h-[100px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
-							/>
-						</label>
-					</div>
-
 					<div>
-						<label className='block text-sm text-gray-600 mb-1'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
 							Trạng thái
 						</label>
 						<select
-							name='status'
 							value={status}
 							onChange={(e) => setStatus(e.target.value)}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'>
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'>
 							<option value='Còn hàng'>Còn hàng</option>
 							<option value='Hết hàng'>Hết hàng</option>
 						</select>
 					</div>
 
-					<button
-						type='submit'
-						className='w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition'>
-						{adding ? 'Đang tạo...' : 'Tạo sản phẩm'}
-					</button>
+					<div className='col-span-2'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Mô tả
+						</label>
+						<textarea
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+							rows='4'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập mô tả sản phẩm'
+						/>
+					</div>
+
+					<div className='col-span-2'>
+						<button
+							type='submit'
+							className='w-full py-3 px-4 text-white font-medium bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200'>
+							{adding ? 'Đang tạo...' : 'Tạo sản phẩm'}
+						</button>
+					</div>
 				</div>
 			</form>
 		</div>
 	);
 };
 
-export default ProductForm;
+export default CreateProduct;

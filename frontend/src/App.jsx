@@ -44,12 +44,7 @@ function App() {
 				<Route element={<RequireAuth />}>
 					<Route path='/' element={<Layout />}>
 						<Route index element={<Dashboard />} />
-						<Route path='products'>
-							<Route index element={<ProductList />} />
-							<Route path='create' element={<CreateProduct />} />
-							<Route path='edit/:id' element={<EditProduct />} />
-							<Route path='detail/:id' element={<ProductDetail />} />
-						</Route>
+						<Route path='products' element={<ProductList />} />
 						<Route path='inventory' element={<Inventory />} />
 						<Route path='orders' element={<Orders />} />
 						<Route path='shippers' element={<Shippers />} />

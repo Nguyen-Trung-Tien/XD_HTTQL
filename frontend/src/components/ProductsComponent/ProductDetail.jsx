@@ -1,26 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import { getAllProducts } from '../../API/products/productsApi';
 import upload_area from '../../assets/assets';
 
-const ProductDetail = () => {
-	const { id } = useParams();
-
-	const [product, setProduct] = useState(null);
+const ProductDetail = ({ productData }) => {
+	const [product, setProduct] = useState(productData);
 
 	useEffect(() => {
-		const fetchProduct = async () => {
-			try {
-				const { products } = await getAllProducts();
-				const selected = products.find((p) => p.id === parseInt(id));
-				setProduct(selected || null);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-
-		if (id) fetchProduct();
-	}, [id]);
+		setProduct(productData);
+	}, [productData]);
 
 	if (!product) return <div className='p-6'>Không tìm thấy sản phẩm.</div>;
 
@@ -33,83 +19,88 @@ const ProductDetail = () => {
 
 	const createdAt = product.createdAt ? new Date(product.createdAt) : null;
 
-	const location = product.warehouseAddress || '-';
+	const warehouseAddress = product.warehouseAddress || '-';
 
 	const imageSrc = product.image || upload_area;
 
 	return (
-		<div className='relative w-full'>
-			<button
-				onClick={() => window.history.back()}
-				className='absolute left-6 inline-flex items-center gap-2 font-medium text-sm bg-white px-4 py-2 rounded-full text-blue-600 hover:text-blue-800 shadow-sm'>
-				&larr; Quay lại
-			</button>
-
-			<div className='max-w-5xl mx-auto p-6 mt-6'>
-				<div className='bg-white shadow-lg rounded-xl overflow-hidden'>
-					<div className='p-8 lg:flex lg:gap-8 items-center'>
-						<div className='flex-shrink-0 mx-auto lg:mx-0'>
-							<img
-								src={imageSrc}
-								alt={product.name}
-								className='w-48 h-48 lg:w-64 lg:h-64 object-cover rounded-md border'
-							/>
+		<div className='w-full'>
+			<div className='w-full max-w-3xl mx-auto'>
+				<div className='bg-white rounded-xl overflow-hidden'>
+					<div className='flex flex-col md:flex-row'>
+						<div className='md:w-1/2 p-6'>
+							<div className='aspect-square rounded-lg overflow-hidden bg-gray-100'>
+								<img
+									src={imageSrc}
+									alt={product.name}
+									className='w-full h-full object-cover'
+								/>
+							</div>
 						</div>
 
-						<div className='mt-6 lg:mt-0 flex-1'>
-							<div className='flex items-start justify-between'>
+						<div className='md:w-1/2 p-6'>
+							<div className='flex justify-between items-start'>
 								<div>
-									<h2 className='text-3xl font-semibold text-gray-800'>
+									<h1 className='text-xl font-bold text-gray-900 mb-1'>
 										{product.name}
-									</h2>
-									<p className='text-sm text-gray-500 mt-1'>
+									</h1>
+									<p className='text-sm text-gray-500'>
 										Danh mục: {product.category || '-'}
 									</p>
 								</div>
+								<span
+									className={`px-3 py-1 rounded-full text-center text-xs font-semibold ${
+										product.status === 'Hết hàng'
+											? 'bg-red-100 text-red-800'
+											: 'bg-green-100 text-green-800'
+									}`}>
+									{product.status}
+								</span>
+							</div>
 
-								<div className='text-right'>
-									<div
-										className={
-											product.status === 'Hết hàng'
-												? 'inline-block px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800'
-												: 'inline-block px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800'
-										}>
-										{product.status}
+							<div className='mt-6'>
+								<div className='text-3xl font-bold text-gray-900 mb-4'>
+									{priceFormatted}
+								</div>
+
+								<div className='space-y-4'>
+									<div className='bg-gray-50 rounded-lg p-4'>
+										<div className='grid grid-cols-2 gap-4'>
+											<div>
+												<p className='text-sm text-gray-500'>
+													Số lượng trong kho
+												</p>
+												<p className='font-medium'>
+													{product.stock
+														? `${product.stock} ${product.unit}`
+														: '-'}
+												</p>
+											</div>
+											<div>
+												<p className='text-sm text-gray-500'>Vị trí</p>
+												<p className='font-medium'>{warehouseAddress}</p>
+											</div>
+										</div>
+									</div>
+
+									<div className='border-t border-gray-200 pt-4'>
+										<h3 className='text-sm font-medium text-gray-900 mb-2'>
+											Mô tả
+										</h3>
+										<p className='text-gray-700 text-sm'>
+											{product.description || '-'}
+										</p>
+									</div>
+
+									<div className='border-t border-gray-200 pt-4'>
+										<div className='flex items-center justify-between text-sm text-gray-500'>
+											<span>Ghi chú: {product.note || '-'}</span>
+											<span>
+												{createdAt ? createdAt.toLocaleString() : '-'}
+											</span>
+										</div>
 									</div>
 								</div>
-							</div>
-
-							<div className='mt-6 grid grid-cols-2 gap-x-10 gap-y-3 text-sm text-gray-700'>
-								<div>
-									<div className='text-gray-500'>Giá</div>
-									<div className='font-medium text-base'>{priceFormatted}</div>
-								</div>
-								<div>
-									<div className='text-gray-500'>Số lượng</div>
-									<div className='font-medium text-base'>
-										{product.stock ?? '-'}
-									</div>
-								</div>
-
-								<div>
-									<div className='text-gray-500'>Kho</div>
-									<div className='font-medium'>{location}</div>
-								</div>
-								<div>
-									<div className='text-gray-500'>Ghi chú</div>
-									<div className='font-medium'>{product.note || '-'}</div>
-								</div>
-							</div>
-
-							<div className='mt-6 text-gray-700'>
-								<div className='text-gray-500 text-sm'>Mô tả</div>
-								<div className='mt-2 text-base'>
-									{product.description || '-'}
-								</div>
-							</div>
-
-							<div className='mt-6 text-sm text-gray-500'>
-								Ngày tạo: {createdAt ? createdAt.toLocaleString() : '-'}
 							</div>
 						</div>
 					</div>

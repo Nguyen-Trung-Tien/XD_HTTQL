@@ -4,38 +4,70 @@ module.exports = {
   getAllStocks: async (req, res) => {
     try {
       const stocks = await db.Stock.findAll({
-        where: { deleted: false },
-        order: [["createdAt", "DESC"]],
+        where: {
+          deleted: false
+        },
+        order: [
+          ["createdAt", "DESC"]
+        ],
       });
-      return res.json(stocks);
+
+      const baseUrl = 'http://localhost:3001';
+
+      const allProducts = stocks.map(p => {
+        const product = p.toJSON();
+        return {
+          ...product,
+          image: product.image ? `${baseUrl}${product.image}` : null,
+          status: product.stock !== 0 ? 'Còn hàng' : 'Hết hàng'
+        };
+      });
+
+      return res.json(allProducts);
     } catch (err) {
       console.error(err);
       return res
         .status(500)
-        .json({ message: "Lỗi server", error: err.message });
+        .json({
+          message: "Lỗi server",
+          error: err.message
+        });
     }
   },
   getStockById: async (req, res) => {
     try {
       const stockRecord = await db.Stock.findByPk(req.params.id, {});
       if (!stockRecord)
-        return res.status(404).json({ message: "Không tìm thấy stock" });
+        return res.status(404).json({
+          message: "Không tìm thấy stock"
+        });
       return res.json(stockRecord);
     } catch (err) {
       return res
         .status(500)
-        .json({ message: "Lỗi server", error: err.message });
+        .json({
+          message: "Lỗi server",
+          error: err.message
+        });
     }
   },
 
   updateStock: async (req, res) => {
     try {
-      const { stock, warehouseAddress } = req.body;
+      const {
+        stock,
+        warehouseAddress
+      } = req.body;
       const stockRecord = await db.Stock.findByPk(req.params.id);
       if (!stockRecord)
-        return res.status(404).json({ message: "Không tìm thấy stock" });
+        return res.status(404).json({
+          message: "Không tìm thấy stock"
+        });
 
-      await stockRecord.update({ stock, warehouseAddress });
+      await stockRecord.update({
+        stock,
+        warehouseAddress
+      });
       return res.json({
         message: "Cập nhật stock thành công",
         data: stockRecord,
@@ -43,7 +75,10 @@ module.exports = {
     } catch (err) {
       return res
         .status(500)
-        .json({ message: "Lỗi server", error: err.message });
+        .json({
+          message: "Lỗi server",
+          error: err.message
+        });
     }
   },
 
@@ -51,14 +86,21 @@ module.exports = {
     try {
       const stockRecord = await db.Stock.findByPk(req.params.id);
       if (!stockRecord)
-        return res.status(404).json({ message: "Không tìm thấy stock" });
+        return res.status(404).json({
+          message: "Không tìm thấy stock"
+        });
 
       await stockRecord.destroy();
-      return res.json({ message: "Đã xoá stock" });
+      return res.json({
+        message: "Đã xoá stock"
+      });
     } catch (err) {
       return res
         .status(500)
-        .json({ message: "Lỗi server", error: err.message });
+        .json({
+          message: "Lỗi server",
+          error: err.message
+        });
     }
   },
   getLowOrOutOfStock: async (req, res) => {
@@ -69,10 +111,12 @@ module.exports = {
         where: {
           deleted: false,
           stock: {
-            [db.Sequelize.Op.lte]: threshold, 
+            [db.Sequelize.Op.lte]: threshold,
           },
         },
-        order: [["stock", "ASC"]],
+        order: [
+          ["stock", "ASC"]
+        ],
       });
 
       return res.json(stocks);

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
-import { getAllProducts, editProduct } from '../../API/products/productsApi';
-import { useParams } from 'react-router';
+import { editProduct } from '../../API/products/productsApi';
 import { toast } from 'react-toastify';
 import upload_area from '../../assets/assets';
+import { useNavigate } from 'react-router';
 
-const EditProduct = () => {
-	const { id } = useParams();
-
-	const [previewUrl, setPreviewUrl] = useState('');
+const EditProduct = ({ productData }) => {
+	const id = productData?.id;
+	const [preview, setPreview] = useState('');
 	const [editing, setEditing] = useState(false);
-	const [image, setImage] = useState('');
+
+	const navigate = useNavigate();
 
 	const [form, setForm] = useState({
 		name: '',
@@ -21,34 +21,24 @@ const EditProduct = () => {
 	});
 
 	useEffect(() => {
-		const fetchProduct = async () => {
-			try {
-				const { products } = await getAllProducts();
-				const selectedProduct = products.find((p) => p.id === parseInt(id));
-				setForm({
-					name: selectedProduct.name,
-					category: selectedProduct.category,
-					price: selectedProduct.price,
-					description: selectedProduct.description,
-					status: selectedProduct.status,
-					image: selectedProduct.image,
-				});
-				setImage(selectedProduct.image);
-				setPreviewUrl(selectedProduct.image);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-		fetchProduct();
-	}, [id]);
+		if (productData) {
+			setForm({
+				name: productData.name,
+				category: productData.category,
+				price: productData.price,
+				description: productData.description,
+				status: productData.status,
+				image: productData.image,
+			});
+			setPreview(productData.image);
+		}
+	}, [productData]);
 
 	const handleImageChange = (e) => {
 		const file = e.target.files[0];
 		if (file) {
 			setForm((prev) => ({ ...prev, image: file }));
-			setPreviewUrl(URL.createObjectURL(file));
-		} else {
-			setForm((prev) => ({ ...prev, image: image }));
+			setPreview(URL.createObjectURL(file));
 		}
 	};
 
@@ -58,7 +48,6 @@ const EditProduct = () => {
 			setEditing(true);
 
 			const formData = new FormData();
-
 			formData.append('name', form.name);
 			formData.append('category', form.category);
 			formData.append('description', form.description);
@@ -67,14 +56,13 @@ const EditProduct = () => {
 
 			if (form.image instanceof File) {
 				formData.append('image', form.image);
-			} else if (form.image && typeof form.image === 'string') {
-				formData.append('image', form.image);
 			}
 
 			const data = await editProduct(id, formData);
 
 			if (data.success) {
 				toast.success(data.message);
+				navigate('/products');
 			} else {
 				toast.error(data.message);
 			}
@@ -86,111 +74,131 @@ const EditProduct = () => {
 	};
 
 	return (
-		<div className='flex'>
-			<div>
-				<button
-					onClick={() => window.history.back()}
-					className='mt-6 ml-6 font-medium text-sm bg-white px-4 py-2 rounded-full text-blue-600 hover:text-blue-800'>
-					&larr; Quay lại
-				</button>
-			</div>
-			<form
-				onSubmit={handleSubmit}
-				className='bg-white shadow-md rounded-2xl mt-6 p-8 w-full max-w-md mx-[450px]'>
-				<h2 className='text-2xl font-semibold text-gray-800 mb-6 text-center'>
-					Chỉnh sửa sản phẩm
-				</h2>
-
-				<div className='space-y-4'>
-					<div>
-						<label className='block text-sm text-gray-600 mb-1'>Ảnh</label>
-						<label htmlFor='image'>
-							<img
-								src={previewUrl || upload_area}
-								alt=''
-								className='mt-2 h-16 rounded cursor-pointer'
-							/>
-							<input
-								onChange={handleImageChange}
-								type='file'
-								id='image'
-								hidden
-							/>
+		<div className='w-full max-w-2xl mx-auto'>
+			<form onSubmit={handleSubmit} className='space-y-6'>
+				<div className='grid grid-cols-2 gap-6'>
+					<div className='col-span-2'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Ảnh sản phẩm
 						</label>
+						<div className='flex items-center justify-center'>
+							<label htmlFor='edit-product-image' className='cursor-pointer'>
+								<div className='relative h-40 w-40 rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors'>
+									<img
+										src={preview || upload_area}
+										alt=''
+										className='absolute inset-0 w-full h-full object-cover rounded-lg'
+									/>
+									<div className='absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-20 text-white opacity-0 hover:opacity-100 transition-opacity rounded-lg'>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											className='h-8 w-8'
+											fill='none'
+											viewBox='0 0 24 24'
+											stroke='currentColor'>
+											<path
+												strokeLinecap='round'
+												strokeLinejoin='round'
+												strokeWidth={2}
+												d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+											/>
+										</svg>
+										<p className='mt-2 text-xs'>Tải ảnh lên</p>
+									</div>
+								</div>
+								<input
+									type='file'
+									id='edit-product-image'
+									onChange={handleImageChange}
+									className='hidden'
+									accept='image/*'
+								/>
+							</label>
+						</div>
 					</div>
-					<div>
-						<label className='block text-sm text-gray-600 mb-1'>
+
+					<div className='col-span-2'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
 							Tên sản phẩm
 						</label>
 						<input
 							type='text'
+							value={form.name}
 							onChange={(e) =>
 								setForm((prev) => ({ ...prev, name: e.target.value }))
 							}
-							value={form.name}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập tên sản phẩm'
 						/>
 					</div>
 
 					<div>
-						<label className='block text-sm text-gray-600 mb-1'>Danh mục</label>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Danh mục
+						</label>
 						<input
 							type='text'
+							value={form.category}
 							onChange={(e) =>
 								setForm((prev) => ({ ...prev, category: e.target.value }))
 							}
-							value={form.category}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập danh mục'
 						/>
 					</div>
 
 					<div>
-						<label className='block text-sm text-gray-600 mb-1'>Giá</label>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Giá
+						</label>
 						<input
 							type='number'
-							name='price'
+							value={form.price}
 							onChange={(e) =>
 								setForm((prev) => ({ ...prev, price: e.target.value }))
 							}
-							value={form.price}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập giá'
 						/>
 					</div>
 
-					<div className='flex gap-2 mt-4'>
-						<label className='flex flex-col gap-1 text-sm text-gray-600 mb-1'>
-							<label className='block text-sm text-gray-600 mb-1'>Mô tả</label>
-							<textarea
-								onChange={(e) =>
-									setForm((prev) => ({ ...prev, description: e.target.value }))
-								}
-								value={form.description}
-								className='w-[384px] h-[128px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
-							/>
+					<div className='col-span-2'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
+							Mô tả
 						</label>
+						<textarea
+							value={form.description}
+							onChange={(e) =>
+								setForm((prev) => ({ ...prev, description: e.target.value }))
+							}
+							rows='4'
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
+							placeholder='Nhập mô tả sản phẩm'
+						/>
 					</div>
 
 					<div>
-						<label className='block text-sm text-gray-600 mb-1'>
+						<label className='block text-sm font-medium text-gray-700 mb-2'>
 							Trạng thái
 						</label>
 						<select
-							name='status'
 							value={form.status}
 							onChange={(e) =>
 								setForm((prev) => ({ ...prev, status: e.target.value }))
 							}
-							className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'>
+							className='w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'>
 							<option value='Còn hàng'>Còn hàng</option>
 							<option value='Hết hàng'>Hết hàng</option>
 						</select>
 					</div>
 
-					<button
-						type='submit'
-						className='w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition'>
-						{editing ? 'Đang chỉnh sửa...' : 'Chỉnh sửa sản phẩm'}
-					</button>
+					<div className='col-span-2'>
+						<button
+							type='submit'
+							className='w-full py-3 px-4 text-white font-medium bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200'>
+							{editing ? 'Đang chỉnh sửa...' : 'Lưu thay đổi'}
+						</button>
+					</div>
 				</div>
 			</form>
 		</div>

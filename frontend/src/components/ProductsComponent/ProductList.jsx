@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
 import { getAllProducts, deleteProduct } from '../../API/products/productsApi';
 import { toast } from 'react-toastify';
+import Modal from './Modal';
+import CreateProduct from './CreateProduct';
+import EditProduct from './EditProduct';
+import ProductDetail from './ProductDetail';
 
 const ProductList = () => {
-	const navigate = useNavigate();
-
 	const [products, setProducts] = useState([]);
 	const [filter, setFilter] = useState('Tất cả');
 	const [search, setSearch] = useState('');
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 	const [loading, setLoading] = useState(false);
+
+	// Modal states
+	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+	const [selectedProduct, setSelectedProduct] = useState(null);
 
 	useEffect(() => {
 		const fetchProduct = async () => {
@@ -34,8 +41,6 @@ const ProductList = () => {
 		switch (status) {
 			case 'Còn hàng':
 				return 'bg-green-100 text-green-800';
-			case 'Sắp hết':
-				return 'bg-yellow-100 text-yellow-800';
 			case 'Hết hàng':
 				return 'bg-red-100 text-red-800';
 			default:
@@ -51,7 +56,6 @@ const ProductList = () => {
 			await deleteProduct(id);
 			setProducts((prev) => prev.filter((product) => product.id !== id));
 			toast.success('Xóa sản phẩm thành công');
-			navigate('/products');
 		} catch (error) {
 			console.error(error);
 			toast.error('Xóa thất bại');
@@ -163,11 +167,11 @@ const ProductList = () => {
 						</div>
 					</div>
 
-					<NavLink
-						to={'/products/create'}
+					<button
+						onClick={() => setIsCreateModalOpen(true)}
 						className='px-4 py-2 gradient-bg text-white rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-sm'>
 						Thêm
-					</NavLink>
+					</button>
 				</div>
 			</div>
 
@@ -177,7 +181,7 @@ const ProductList = () => {
 						<thead className='bg-gray-50'>
 							<tr>
 								<th className='px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase'>
-									Mã SP
+									STT
 								</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase'>
 									Sản phẩm
@@ -204,8 +208,7 @@ const ProductList = () => {
 							{filteredProducts.map((product, index) => (
 								<tr key={product.id}>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
-										{/* {(page - 1) * 8 + index + 1} */}
-										{product.id}
+										{(page - 1) * 8 + index + 1}
 									</td>
 									<td className='px-6 py-4 whitespace-nowrap text-sm text-textPrimary'>
 										{product.name}
@@ -230,9 +233,10 @@ const ProductList = () => {
 									<td className='px-6 py-4 whitespace-nowrap text-sm'>
 										<div className='flex space-x-2'>
 											<button
-												onClick={() =>
-													navigate(`/products/detail/${product.id}`)
-												}
+												onClick={() => {
+													setSelectedProduct(product);
+													setIsDetailModalOpen(true);
+												}}
 												className='p-1 text-primary hover:text-accent transition-colors'>
 												<svg
 													className='w-5 h-5'
@@ -254,7 +258,10 @@ const ProductList = () => {
 												</svg>
 											</button>
 											<button
-												onClick={() => navigate(`/products/edit/${product.id}`)}
+												onClick={() => {
+													setSelectedProduct(product);
+													setIsEditModalOpen(true);
+												}}
 												className='p-1 text-primary hover:text-accent transition-colors'>
 												<svg
 													className='w-5 h-5'
@@ -340,6 +347,28 @@ const ProductList = () => {
 					{'>>'}
 				</button>
 			</div>
+
+			{/* Modals */}
+			<Modal
+				isOpen={isCreateModalOpen}
+				onClose={() => setIsCreateModalOpen(false)}
+				title='Thêm sản phẩm mới'>
+				<CreateProduct />
+			</Modal>
+
+			<Modal
+				isOpen={isEditModalOpen}
+				onClose={() => setIsEditModalOpen(false)}
+				title='Chỉnh sửa sản phẩm'>
+				<EditProduct productData={selectedProduct} />
+			</Modal>
+
+			<Modal
+				isOpen={isDetailModalOpen}
+				onClose={() => setIsDetailModalOpen(false)}
+				title='Chi tiết sản phẩm'>
+				<ProductDetail productData={selectedProduct} />
+			</Modal>
 		</div>
 	);
 };
