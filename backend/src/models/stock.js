@@ -3,12 +3,10 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Stock extends Model {
     static associate(models) {
-      // Quan hệ với Product
       Stock.belongsTo(models.Product, {
         foreignKey: "productId",
         as: "product",
       });
-      // Quan hệ với InventoryLog
       Stock.hasMany(models.InventoryLog, {
         foreignKey: "stockId",
         as: "logs",
@@ -26,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Stock.init(
     {
-      // thêm các field tham chiếu từ Product
       name: DataTypes.STRING,
       type: DataTypes.STRING,
       price: DataTypes.STRING,
@@ -36,16 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       unit: DataTypes.STRING,
       status: DataTypes.STRING,
       description: DataTypes.TEXT,
-
-      // thông tin kho chứa
       warehouseAddress: DataTypes.STRING,
       warehouseLat: DataTypes.FLOAT,
       warehouseLng: DataTypes.FLOAT,
-
-    // quản lý tồn kho
       note: DataTypes.TEXT,
-
-      // cờ xoá
       deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

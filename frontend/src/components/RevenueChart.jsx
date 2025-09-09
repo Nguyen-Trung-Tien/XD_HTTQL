@@ -37,7 +37,6 @@ function RevenueChart() {
 
       const width = canvas.width;
       const height = canvas.height;
-      // console.log("RevenueData:", revenueData);
       const data = revenueData.length
         ? revenueData.map((item) => Number(item.revenue) || 0)
         : [10, 59, 80, 81, 56, 55, 40, 84, 64, 120, 132, 91];

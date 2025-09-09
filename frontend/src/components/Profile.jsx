@@ -112,11 +112,11 @@ const Profile = () => {
           setAvatarPreview(avatarBase64 || null);
         }
       } else {
-        toast.error(res.message || "Cập nhật thất bại!");
+        toast.error(res.message || "Lỗi cập nhật!");
       }
     } catch (err) {
       console.error("Update failed:", err);
-      toast.error("Lỗi khi cập nhật!");
+      toast.error("Lỗi cập nhật!");
     } finally {
       setLoading(false);
     }
