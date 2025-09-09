@@ -1,14 +1,17 @@
-import React , {useEffect,useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import RevenueChart from "./RevenueChart";
 import TopProducts from "./TopProducts";
-import { fetchTotalRevenue,fetchAllOrders,fetchAllStock,fetchAllCustomers} from "../api/statistics/statisticsApi";
-import { use } from "react";
+import {
+  fetchTotalRevenue,
+  fetchAllOrders,
+  fetchAllStock,
+  fetchAllCustomers,
+} from "../api/statistics/statisticsApi";
 function Dashboard() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-textPrimary mb-6">Tổng quan</h1>
-
       <DashboardCards />
       <RevenueChart />
       <TopProducts />
@@ -60,18 +63,18 @@ function DashboardCards() {
 
     fetchData();
   }, []);
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const data = await fetchAllCustomers();
-      setAllCustomers(data);
-    } catch (error) {
-      console.error("Error fetching all customers:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchAllCustomers();
+        setAllCustomers(data);
+      } catch (error) {
+        console.error("Error fetching all customers:", error);
+      }
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
   const stats = [
     {
@@ -95,7 +98,7 @@ useEffect(() => {
           ></path>
         </svg>
       ),
-      path: "/"
+      path: "/",
     },
     {
       title: "Đơn hàng",
@@ -118,7 +121,7 @@ useEffect(() => {
           ></path>
         </svg>
       ),
-      path: "/orders"
+      path: "/orders",
     },
     {
       title: "Sản phẩm tồn kho",
@@ -141,7 +144,7 @@ useEffect(() => {
           ></path>
         </svg>
       ),
-      path: "/inventory"
+      path: "/inventory",
     },
     {
       title: "Khách hàng mới",
@@ -164,7 +167,7 @@ useEffect(() => {
           ></path>
         </svg>
       ),
-      path: "/customer"
+      path: "/customer",
     },
   ];
 
@@ -173,7 +176,7 @@ useEffect(() => {
       {stats.map((stat, index) => (
         <div
           key={index}
-           onClick={() => navigate(stat.path)} 
+          onClick={() => navigate(stat.path)}
           className="bg-card shadow-card rounded-lg p-6 hover:shadow-hover transition-shadow"
         >
           <div className="flex items-center justify-between mb-4">
