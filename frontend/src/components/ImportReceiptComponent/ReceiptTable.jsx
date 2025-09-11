@@ -14,35 +14,34 @@ export default function ReceiptTable({
       .toLocaleString("vi-VN")} ${CURRENCY_UNIT}`;
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 mb-4">
+    <div className="w-full overflow-x-auto rounded-lg border border-gray-200 mb-4">
       {loading ? (
         <div className="flex justify-center items-center py-20">
           <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
         </div>
       ) : (
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="w-full divide-y divide-gray-200 table-fixed">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="w-28 px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Ngày nhập
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="w-36 px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Người nhập
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="w-36 px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Nhà cung cấp
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="w-40 px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Ghi chú
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="w-48 px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Chi tiết sản phẩm
               </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="w-36 px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Tổng giá
               </th>
-
-              <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th className="w-20 px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Hành động
               </th>
             </tr>
@@ -50,35 +49,32 @@ export default function ReceiptTable({
           <tbody className="hover:bg-gray-50 transition-colors duration-200">
             {receipts.length > 0 ? (
               receipts.map((r) => (
-                <tr
-                  key={r.id}
-                  className="px-6 py-4 text-sm text-gray-700 text-center"
-                >
-                  <td className="px-6 py-4 text-sm text-gray-800">
+                <tr key={r.id} className="text-sm text-gray-700">
+                  <td className="px-4 py-4 text-sm text-gray-800">
                     {new Date(r.import_date).toLocaleDateString("vi-VN")}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-800">
+                  <td className="px-4 py-4 text-sm text-gray-800">
                     {r.userData
                       ? `${r.userData.firstName} ${r.userData.lastName}`.trim() ||
                         r.userData.email ||
                         `ID ${r.userId}`
                       : `ID ${r.userId}`}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-800">
+                  <td className="px-4 py-4 text-sm text-gray-800">
                     {r.supplierData?.name || `ID ${r.supplierId}`}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-800">
+                  <td className="px-4 py-4 text-sm text-gray-800">
                     {r.note || "-"}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-800 align-top">
+                  <td className="px-4 py-4 text-sm text-gray-800 align-top">
                     <div className="max-h-40 overflow-y-auto space-y-3">
                       {r.importDetailData?.length ? (
                         r.importDetailData.map((d, i) => (
                           <div
-                            key={i}
+                            key={`${r.id}-${d.productId}-${i}`}
                             className="whitespace-pre-line break-words border-b pb-2 last:border-b-0"
                           >
-                            <div className=" text-left">
+                            <div className="text-left">
                               SP:{" "}
                               {d.StockProductData?.name ||
                                 `Sản phẩm #${d.productId}`}
@@ -104,11 +100,11 @@ export default function ReceiptTable({
                     </div>
                   </td>
 
-                  <td className="px-6 py-4 text-sm text-gray-800">
+                  <td className="px-4 py-4 text-sm text-gray-800">
                     {calculateTotalCost(r.importDetailData || [])}
                   </td>
 
-                  <td className="px-6 py-4 text-sm text-gray-800 text-center">
+                  <td className="px-4 py-4 text-sm text-gray-800 text-center">
                     <div className="flex justify-center space-x-3">
                       <button
                         onClick={() => handleEdit(r)}

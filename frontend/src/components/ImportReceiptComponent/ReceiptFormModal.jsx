@@ -60,10 +60,8 @@ export default function ReceiptFormModal({
               </select>
             </div>
 
-            <div className="flex flex-col gap-1 whitespace-nowrap text-sm text-gray-700">
-              <small className="text-gray-400 text-xs whitespace-nowrap text-sm text-gray-700">
-                Chọn ngày nhập
-              </small>
+            <div className="flex flex-col gap-1">
+              <small className="text-gray-400 text-xs">Chọn ngày nhập</small>
               <input
                 type="date"
                 value={formData.import_date}
@@ -116,7 +114,7 @@ export default function ReceiptFormModal({
               )}
               {formData.details.map((d, i) => (
                 <ReceiptDetailRow
-                  key={i}
+                  key={`detail-${d.productId || "empty"}-${i}`}
                   detail={d}
                   index={i}
                   productOptions={productOptions}

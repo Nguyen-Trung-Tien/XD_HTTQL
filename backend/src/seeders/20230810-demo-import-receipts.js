@@ -2,188 +2,44 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert("ImportReceipts", [
-      {
-        id: 1,
-        supplierId: 1,
-        userId: 1,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 8",
+    // Xóa dữ liệu cũ trước
+    await queryInterface.bulkDelete("ImportReceipts", null, {});
+
+    // Tạo thời gian ngẫu nhiên từ 2024 đến 9/2025
+    const generateRandomDate = () => {
+      const startDate = new Date("2024-01-01");
+      const endDate = new Date("2025-09-30");
+      const randomTime =
+        startDate.getTime() +
+        Math.random() * (endDate.getTime() - startDate.getTime());
+      return new Date(randomTime);
+    };
+
+    // Tạo note khớp với thời gian
+    const generateNote = (date) => {
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      return `Nhập hàng tháng ${month}/${year}`;
+    };
+
+    // Tạo dữ liệu với thời gian và note khớp nhau
+    const receipts = [];
+    for (let i = 1; i <= 15; i++) {
+      const randomDate = generateRandomDate();
+      const note = generateNote(randomDate);
+
+      receipts.push({
+        id: i,
+        supplierId: (i % 3) + 1, 
+        userId: (i % 3) + 1, 
+        import_date: randomDate,
+        note: note,
         createdAt: new Date(),
         updatedAt: new Date(),
-      },
-      {
-        id: 2,
-        supplierId: 2,
-        userId: 2,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 9",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 3,
-        supplierId: 3,
-        userId: 1,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 10",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 4,
-        supplierId: 1,
-        userId: 2,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 11",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 5,
-        supplierId: 2,
-        userId: 3,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 12",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 6,
-        supplierId: 3,
-        userId: 1,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 1",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 7,
-        supplierId: 1,
-        userId: 3,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 2",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 8,
-        supplierId: 2,
-        userId: 2,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 3",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 9,
-        supplierId: 3,
-        userId: 1,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 4",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 10,
-        supplierId: 1,
-        userId: 2,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 5",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 11,
-        supplierId: 2,
-        userId: 3,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 6",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 12,
-        supplierId: 3,
-        userId: 1,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 7",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 13,
-        supplierId: 1,
-        userId: 2,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 8",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 14,
-        supplierId: 2,
-        userId: 3,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 9",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 15,
-        supplierId: 3,
-        userId: 1,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 10",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 16,
-        supplierId: 1,
-        userId: 2,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 11",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 17,
-        supplierId: 2,
-        userId: 3,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 12",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 18,
-        supplierId: 3,
-        userId: 1,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 1",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 19,
-        supplierId: 1,
-        userId: 2,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 2",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 20,
-        supplierId: 2,
-        userId: 3,
-        import_date: new Date(),
-        note: "Nhập hàng tháng 3",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ]);
+      });
+    }
+
+    await queryInterface.bulkInsert("ImportReceipts", receipts);
   },
 
   async down(queryInterface, Sequelize) {
