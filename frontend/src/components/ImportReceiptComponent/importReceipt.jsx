@@ -135,8 +135,6 @@ export default function ImportReceipt() {
       return;
     }
 
-    fetchStockProducts();
-
     if (receipt) {
       setReceiptFormData({
         id: receipt.id,
