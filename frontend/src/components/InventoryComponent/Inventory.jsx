@@ -193,7 +193,7 @@ function Inventory() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
-                    Mã SP
+                    STT
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-textSecondary uppercase">
                     Sản phẩm
@@ -219,12 +219,12 @@ function Inventory() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-border">
-                {currentItems.map((item) => (
+                {currentItems.map((item,index) => (
                   <tr
                     key={item.id}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm font-medium">{item.id}</td>
+                    <td className="px-6 py-4 text-sm font-medium">{startIndex + index + 1}</td>
                     <td className="px-6 py-4 text-sm">{item.name}</td>
                     <td className="px-6 py-4 text-sm">{item.category}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
