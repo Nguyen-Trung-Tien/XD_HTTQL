@@ -9,7 +9,7 @@ import {
   deleteImportReceipt,
 } from "../../API/importReceiptApi/importReceiptApi";
 import { getManySupplier } from "../../API/suppliersApi/suppliersApi";
-import { getStockProduct } from "../../API/stock/stockAPI";
+// import { getStockProduct } from "../../API/stock/stockAPI";
 import { getOutOfStockProduct } from "../../API/stock/stockAPI";
 import { useLocation } from "react-router-dom";
 import ReceiptTable from "./ReceiptTable";
@@ -119,6 +119,10 @@ export default function ImportReceipt() {
   }, [searchQuery, receipts]);
 
   const handleReceiptDelete = async (id) => {
+    if (currentUser.role !== "admin") {
+      toast.warning("Liên hệ quản lý!");
+      return;
+    }
     if (!window.confirm("Bạn có chắc muốn xóa phiếu nhập này?")) return;
     try {
       await deleteImportReceipt(id);

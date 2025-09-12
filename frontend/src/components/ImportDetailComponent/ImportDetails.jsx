@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
 import { toast } from "react-toastify";
 import {
-  createImportDetail,
+  // createImportDetail,
   deleteImportDetail,
   getAllImportDetails,
-  updateImportDetail,
+  // updateImportDetail,
 } from "../../API/importDetailApi/importDetailsApi";
+import { useSelector } from "react-redux";
 
 const formatPrice = (price) => {
   if (!price) return "";
@@ -14,15 +15,17 @@ const formatPrice = (price) => {
 };
 
 export default function ImportDetails() {
+  const currentUser = useSelector((state) => state.user.currentUser);
+
   const [details, setDetails] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    importId: "",
-    productId: "",
-    quantity: "",
-    price: "",
-  });
-  const [editingId, setEditingId] = useState(null);
+  // const [form, setForm] = useState({
+  //   importId: "",
+  //   productId: "",
+  //   quantity: "",
+  //   price: "",
+  // });
+  // const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,59 +49,63 @@ export default function ImportDetails() {
     fetchData();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    if (
-      !form.importId ||
-      !form.productId ||
-      !form.quantity ||
-      !form.price ||
-      Number(form.importId) <= 0 ||
-      Number(form.productId) <= 0 ||
-      Number(form.quantity) <= 0 ||
-      Number(form.price) <= 0
-    ) {
-      toast.error("Vui lòng nhập tất cả các trường và khác 0");
-      return;
-    }
+  //   if (
+  //     !form.importId ||
+  //     !form.productId ||
+  //     !form.quantity ||
+  //     !form.price ||
+  //     Number(form.importId) <= 0 ||
+  //     Number(form.productId) <= 0 ||
+  //     Number(form.quantity) <= 0 ||
+  //     Number(form.price) <= 0
+  //   ) {
+  //     toast.error("Vui lòng nhập tất cả các trường và khác 0");
+  //     return;
+  //   }
 
-    try {
-      if (editingId) {
-        await updateImportDetail(editingId, form);
-        toast.success("Cập nhật thành công");
-      } else {
-        await createImportDetail(form);
-        toast.success("Thêm thành công");
-      }
-      setForm({ importId: "", productId: "", quantity: "", price: "" });
-      setEditingId(null);
+  //   try {
+  //     if (editingId) {
+  //       await updateImportDetail(editingId, form);
+  //       toast.success("Cập nhật thành công");
+  //     } else {
+  //       await createImportDetail(form);
+  //       toast.success("Thêm thành công");
+  //     }
+  //     setForm({ importId: "", productId: "", quantity: "", price: "" });
+  //     setEditingId(null);
 
-      const res = await getAllImportDetails();
-      if (res.data.success) setDetails(res.data.data || []);
-    } catch (e) {
-      const message =
-        e.response?.data?.error || e.response?.data?.message || e.message;
-      if (message.includes("Product")) {
-        toast.error("Sản phẩm không tồn tại trong kho!");
-      } else {
-        toast.error("Phiếu nhập không tồn tại!");
-      }
-    }
-  };
+  //     const res = await getAllImportDetails();
+  //     if (res.data.success) setDetails(res.data.data || []);
+  //   } catch (e) {
+  //     const message =
+  //       e.response?.data?.error || e.response?.data?.message || e.message;
+  //     if (message.includes("Product")) {
+  //       toast.error("Sản phẩm không tồn tại trong kho!");
+  //     } else {
+  //       toast.error("Phiếu nhập không tồn tại!");
+  //     }
+  //   }
+  // };
 
-  const handleEdit = (item) => {
-    setForm({
-      importId: item.importId,
-      productId: item.productId,
-      quantity: item.quantity,
-      price: item.price,
-    });
-    setEditingId(item.id);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  // const handleEdit = (item) => {
+  //   setForm({
+  //     importId: item.importId,
+  //     productId: item.productId,
+  //     quantity: item.quantity,
+  //     price: item.price,
+  //   });
+  //   setEditingId(item.id);
+  //   window.scrollTo({ top: 0, behavior: "smooth" });
+  // };
 
   const handleDelete = async (id) => {
+    if (currentUser.role !== "admin") {
+      toast.warning("Liên hệ quản lý!");
+      return;
+    }
     if (!window.confirm("Bạn có chắc muốn xóa?")) return;
     try {
       await deleteImportDetail(id);
@@ -112,86 +119,9 @@ export default function ImportDetails() {
   return (
     <div className="p-6 bg-blue-50 min-h-screen">
       <h1 className="text-2xl font-bold text-textPrimary mb-6">
-        {editingId
-          ? "Cập nhật chi tiết nhập hàng"
-          : "Quản lý chi tiết nhập hàng"}
+        Quản lý chi tiết nhập hàng
       </h1>
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <form
-          onSubmit={handleSubmit}
-          className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-3 bg-white p-4 rounded-lg shadow items-end"
-        >
-          <div className="flex flex-col">
-            <small className="text-gray-500 text-xs mb-1">
-              Nhập ID của phiếu nhập
-            </small>
-            <input
-              type="number"
-              placeholder="Mã hóa đơn"
-              className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-              value={form.importId}
-              onChange={(e) => setForm({ ...form, importId: e.target.value })}
-              min={1}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <small className="text-gray-500 text-xs mb-1">
-              Nhập ID sản phẩm
-            </small>
-            <input
-              type="number"
-              placeholder="Mã sản phẩm"
-              className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-              value={form.productId}
-              onChange={(e) => setForm({ ...form, productId: e.target.value })}
-              min={1}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <small className="text-gray-500 text-xs mb-1">
-              Số lượng sản phẩm
-            </small>
-            <input
-              type="number"
-              placeholder="Số lượng"
-              className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-              value={form.quantity}
-              min={1}
-              onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <small className="text-gray-500 text-xs mb-1">
-              Giá sản phẩm (VND)
-            </small>
-            <div className="relative">
-              <input
-                type="number"
-                placeholder="Giá"
-                className="border border-gray-300 rounded p-2 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full text-base placeholder-gray-400 transition"
-                value={form.price}
-                min={1}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
-              />
-              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
-                VND
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              className="flex items-center gap-3 px-5 py-2 rounded-lg text-white bg-gradient-to-r from-[#00BFFF] to-[#87CEFA] hover:scale-105 transition-transform duration-200"
-            >
-              <FiPlus /> {editingId ? "Cập nhật" : "Thêm mới"}
-            </button>
-          </div>
-        </form>
-
         {loading ? (
           <div className="text-center py-6 text-[#00BFFF] font-semibold">
             Đang tải dữ liệu...
@@ -239,12 +169,6 @@ export default function ImportDetails() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                         <div className="flex justify-center space-x-3">
-                          <button
-                            onClick={() => handleEdit(item)}
-                            className="p-1 text-primary hover:text-blue-500 transition-colors rounded"
-                          >
-                            <FiEdit className="w-5 h-5" />
-                          </button>
                           <button
                             onClick={() => handleDelete(item.id)}
                             className="p-1 text-red-500 hover:text-red-700 transition-colors"

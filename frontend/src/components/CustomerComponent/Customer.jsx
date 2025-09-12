@@ -11,8 +11,11 @@ import FilterBar from "./FilterBar";
 import ExportExcel from "./ImportExportCSV";
 import CustomerModal from "./CustomerModal";
 import CustomerTable from "./CustomerTable";
+import { useSelector } from "react-redux";
 
 function Customer() {
+  const currentUser = useSelector((state) => state.user.currentUser);
+
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -119,6 +122,10 @@ function Customer() {
   };
 
   const handleDelete = async (id) => {
+    if (currentUser.role !== "admin") {
+      toast.warning("Liên hệ quản lý!");
+      return;
+    }
     if (!window.confirm("Bạn có chắc muốn xóa khách hàng này?")) return;
     try {
       const res = await deleteCustomer(id);
@@ -136,6 +143,10 @@ function Customer() {
   };
 
   const handleDeleteMultiple = async () => {
+    if (currentUser.role !== "admin") {
+      toast.warning("Liên hệ quản lý!");
+      return;
+    }
     if (!selectedIds.length) return;
     if (
       !window.confirm(`Bạn có chắc muốn xóa ${selectedIds.length} khách hàng?`)

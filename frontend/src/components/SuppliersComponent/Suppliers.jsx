@@ -14,8 +14,11 @@ import {
   updateSupplier,
   deleteSupplier,
 } from "../../API/suppliersApi/suppliersApi";
+import { useSelector } from "react-redux";
 
 function SuppliersPage() {
+  const currentUser = useSelector((state) => state.user.currentUser);
+
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
@@ -88,6 +91,10 @@ function SuppliersPage() {
   };
 
   const handleDelete = async (id) => {
+    if (currentUser.role !== "admin") {
+      toast.warning("Liên hệ quản lý!");
+      return;
+    }
     if (window.confirm("Bạn có chắc muốn xóa nhà cung cấp này?")) {
       try {
         await deleteSupplier(id);
