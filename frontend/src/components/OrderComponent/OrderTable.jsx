@@ -72,7 +72,11 @@ const OrderTable = ({ orders, loading, onCreateOrder, onOrderChanged }) => {
     }
   }, [orders, itemsPerPage]);
 
-  const paginatedOrders = orders.slice(
+  const sortedOrders = [...orders].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
+  const paginatedOrders = sortedOrders.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
