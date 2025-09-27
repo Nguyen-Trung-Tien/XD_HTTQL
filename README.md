@@ -2,6 +2,8 @@
 
 ## Giới thiệu
 
+![Home](public/home.png)
+
 XD_HTTQL là hệ thống quản lý kho hàng hiện đại, hỗ trợ quản lý sản phẩm, tồn kho, nhập/xuất kho, đơn hàng, khách hàng, nhân viên, nhà cung cấp, shipper và thống kê doanh thu. Dự án gồm hai phần: **Backend** (Node.js, Express, Sequelize, MySQL) và **Frontend** (React, Vite, Redux, TailwindCSS).
 
 ---
@@ -106,4 +108,5 @@ npm install
   `npm run dev`
 
 ---
+
 ## Tài liệu: https://sequelize.org/docs/v6/other-topics/migrations/
